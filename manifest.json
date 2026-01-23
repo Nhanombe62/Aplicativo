@@ -1,8 +1,8 @@
 {
-  "id": "https://nhanomb3.github.io/planodeaula/",
+  "id": "https://plano-de-aula-moz.web.app",
   "name": "Plano de Aula MZ",
   "short_name": "Plano Aula MZ",
-  "description": "Aplicativo para criação e gerenciamento de planos de aula na Escola Básica 4 de Outubro, Moçambique.",
+  "description": "Aplicativo para criação e gerenciamento de planos de aula - Moçambique.",
   "start_url": "/planodeaula/",
   "scope": "/planodeaula/",
   "display": "standalone",
