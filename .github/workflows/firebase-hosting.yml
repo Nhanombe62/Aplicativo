@@ -3,16 +3,21 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches:
-      - main   # ou a branch que você usa
+      - main   # ou master, dependendo da sua branch principal
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseToken: ${{ secrets.FIREBASE_TOKEN }}
-          projectId: plano-de-aula-moz
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy to Firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          firebase deploy --only hosting --project plano-de-aula-moz
