@@ -28,6 +28,7 @@
             width: 100%;
             max-width: 500px;
             overflow: hidden;
+            display: none; /* Inicialmente escondido até verificar */
         }
 
         .header {
@@ -122,16 +123,17 @@
             display: block;
         }
 
-        .loading-container {
-            display: none;
+        .loading {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
+            color: white;
+            font-size: 18px;
         }
 
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
+            border-top: 4px solid white;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
@@ -142,116 +144,40 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .already-registered {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .already-registered h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .already-registered p {
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        .user-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            border-left: 4px solid #667eea;
-        }
-
-        .user-info-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .user-info-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .user-info-label {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .user-info-value {
-            color: #333;
-        }
-
-        .redirect-countdown {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Tela de carregamento -->
+    <div class="loading" id="loadingScreen">
+        <div class="spinner"></div>
+        <p>Verificando cadastro...</p>
+    </div>
+
+    <!-- Container principal (formulário) -->
+    <div class="container" id="mainContainer">
         <div class="header">
-            <h1>📝 Sistema de Cadastro</h1>
-            <p id="header-subtitle">Complete seu registro para acessar o sistema</p>
+            <h1>📝 Primeiro Acesso</h1>
+            <p>Complete o formulário para se cadastrar</p>
         </div>
 
-        <!-- Tela de carregamento -->
-        <div class="loading-container" id="loadingScreen">
-            <div class="loading-spinner"></div>
-            <p>Verificando seu status de cadastro...</p>
-        </div>
-
-        <!-- Tela de usuário já cadastrado -->
-        <div class="already-registered" id="alreadyRegistered">
-            <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
-            <h2>Você já está cadastrado!</h2>
-            <p>Redirecionando para a tela principal...</p>
-            
-            <div class="user-info" id="userInfoDisplay">
-                <!-- Informações do usuário serão carregadas aqui -->
-            </div>
-            
-            <div class="redirect-countdown">
-                Redirecionando em <span id="countdown">5</span> segundos...
-            </div>
-            <button class="btn" id="goNowBtn" style="margin-top: 20px;">
-                Ir agora
-            </button>
-        </div>
-
-        <!-- Formulário de cadastro -->
-        <div class="form-container" id="registrationForm">
+        <div class="form-container">
             <form id="cadastroForm">
                 <div class="form-group">
                     <label for="nome">Nome Completo *</label>
                     <input type="text" id="nome" required 
-                           placeholder="Digite seu nome completo"
-                           autocomplete="name">
+                           placeholder="Digite seu nome completo">
                 </div>
 
                 <div class="form-group">
                     <label for="numero">Número de Telefone *</label>
                     <input type="tel" id="numero" required 
-                           placeholder="Ex: 841234567"
-                           pattern="[0-9]{9}"
-                           title="Digite 9 dígitos sem espaços"
-                           autocomplete="tel">
+                           placeholder="Ex: 841234567">
                 </div>
 
                 <div class="form-group">
                     <label for="escola">Escola *</label>
                     <input type="text" id="escola" required 
-                           placeholder="Nome da escola"
-                           autocomplete="organization">
+                           placeholder="Nome da escola">
                 </div>
 
                 <div class="form-group">
@@ -284,170 +210,72 @@
         // URL do seu Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWsH88RWwFLK1bbjVjaFRNx894boMEyKeNsIjNctkdxOx90CzkCNRaXEwNZpY8JPA25Q/exec';
 
-        // Chave fixa para localStorage
-        const USER_STORAGE_KEY = 'sistema_cadastro_usuario';
+        // Chave SIMPLES para localStorage
+        const STORAGE_KEY = 'usuario_cadastrado';
 
         // Elementos DOM
-        const container = document.querySelector('.container');
         const loadingScreen = document.getElementById('loadingScreen');
-        const alreadyRegistered = document.getElementById('alreadyRegistered');
-        const registrationForm = document.getElementById('registrationForm');
-        const userInfoDisplay = document.getElementById('userInfoDisplay');
-        const countdownElement = document.getElementById('countdown');
-        const goNowBtn = document.getElementById('goNowBtn');
+        const mainContainer = document.getElementById('mainContainer');
         const form = document.getElementById('cadastroForm');
         const submitBtn = document.getElementById('submitBtn');
         const btnText = document.getElementById('btnText');
         const messageDiv = document.getElementById('message');
-        const headerSubtitle = document.getElementById('header-subtitle');
 
-        // Variáveis de controle
-        let countdownInterval;
-        let countdown = 5;
-
-        // Função para verificar se o usuário já está cadastrado
-        function checkUserRegistration() {
-            console.log('Verificando cadastro do usuário...');
+        // Função PRINCIPAL que verifica o localStorage
+        function verificarCadastro() {
+            console.log('🔍 Verificando localStorage...');
             
-            // Mostrar tela de carregamento
-            loadingScreen.style.display = 'block';
-            alreadyRegistered.style.display = 'none';
-            registrationForm.style.display = 'none';
+            // Buscar no localStorage
+            const usuarioSalvo = localStorage.getItem(STORAGE_KEY);
             
-            // Verificar no localStorage
-            const usuarioSalvo = localStorage.getItem(USER_STORAGE_KEY);
-            
-            console.log('Dados recuperados do localStorage:', usuarioSalvo);
-            
-            // Simular um pequeno delay para visualização
-            setTimeout(() => {
-                if (usuarioSalvo) {
-                    try {
-                        const usuario = JSON.parse(usuarioSalvo);
-                        if (usuario && usuario.nome && usuario.numero) {
-                            // Usuário já cadastrado
-                            console.log('Usuário já cadastrado:', usuario);
-                            showAlreadyRegisteredScreen(usuario);
-                            return;
-                        }
-                    } catch (error) {
-                        console.error('Erro ao parsear dados do localStorage:', error);
-                    }
-                }
-                
-                // Usuário não cadastrado
-                console.log('Usuário não cadastrado, mostrando formulário...');
-                showRegistrationForm();
-            }, 800);
+            if (usuarioSalvo) {
+                console.log('✅ Usuário JÁ cadastrado. Redirecionando...');
+                // Usuário já cadastrado - redireciona para tela.html
+                setTimeout(() => {
+                    window.location.href = 'tela.html';
+                }, 1000);
+            } else {
+                console.log('❌ Usuário NÃO cadastrado. Mostrando formulário...');
+                // Usuário não cadastrado - mostra formulário
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainContainer.style.display = 'block';
+                }, 1000);
+            }
         }
 
-        // Mostrar tela de usuário já cadastrado
-        function showAlreadyRegisteredScreen(usuario) {
-            loadingScreen.style.display = 'none';
-            alreadyRegistered.style.display = 'block';
-            registrationForm.style.display = 'none';
-            
-            // Atualizar informações do usuário
-            userInfoDisplay.innerHTML = `
-                <div class="user-info-item">
-                    <span class="user-info-label">Nome:</span>
-                    <span class="user-info-value">${usuario.nome || 'N/A'}</span>
-                </div>
-                <div class="user-info-item">
-                    <span class="user-info-label">Telefone:</span>
-                    <span class="user-info-value">${usuario.numero || 'N/A'}</span>
-                </div>
-                <div class="user-info-item">
-                    <span class="user-info-label">Escola:</span>
-                    <span class="user-info-value">${usuario.escola || 'N/A'}</span>
-                </div>
-                <div class="user-info-item">
-                    <span class="user-info-label">Província:</span>
-                    <span class="user-info-value">${usuario.provincia || 'N/A'}</span>
-                </div>
-                <div class="user-info-item">
-                    <span class="user-info-label">Data do Cadastro:</span>
-                    <span class="user-info-value">${usuario.dataRegistro || usuario.dataCadastro || 'N/A'}</span>
-                </div>
-            `;
-            
-            // Iniciar contagem regressiva
-            startCountdown();
-        }
-
-        // Iniciar contagem regressiva para redirecionamento
-        function startCountdown() {
-            countdown = 5;
-            countdownElement.textContent = countdown;
-            
-            countdownInterval = setInterval(() => {
-                countdown--;
-                countdownElement.textContent = countdown;
-                
-                if (countdown <= 0) {
-                    clearInterval(countdownInterval);
-                    redirectToTela();
-                }
-            }, 1000);
-        }
-
-        // Redirecionar para tela.html
-        function redirectToTela() {
-            console.log('Redirecionando para tela.html...');
-            window.location.href = 'tela.html';
-        }
-
-        // Mostrar formulário de cadastro
-        function showRegistrationForm() {
-            loadingScreen.style.display = 'none';
-            alreadyRegistered.style.display = 'none';
-            registrationForm.style.display = 'block';
-            headerSubtitle.textContent = 'Complete o formulário para se cadastrar';
-        }
-
-        // Salvar dados no localStorage
-        function salvarNoLocalStorage(dados) {
+        // Salvar dados NOVOS no localStorage
+        function salvarUsuario(dados) {
             try {
+                // Criar objeto do usuário
                 const usuario = {
                     nome: dados.nome,
                     numero: dados.numero,
                     escola: dados.escola,
                     provincia: dados.provincia,
-                    dataCadastro: new Date().toISOString(),
-                    id: Date.now(),
-                    dataRegistro: new Date().toLocaleString('pt-MZ', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    })
+                    data: new Date().toLocaleString('pt-MZ'),
+                    timestamp: Date.now()
                 };
                 
-                // Salvar no localStorage
-                localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(usuario));
+                // Salvar SIMPLES no localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(usuario));
                 
-                console.log('Dados salvos no localStorage:', usuario);
-                console.log('Chave usada:', USER_STORAGE_KEY);
-                console.log('LocalStorage após salvar:', localStorage.getItem(USER_STORAGE_KEY));
+                console.log('💾 Usuário salvo no localStorage:', usuario);
+                console.log('Chave usada:', STORAGE_KEY);
+                console.log('Valor salvo:', localStorage.getItem(STORAGE_KEY));
                 
-                return { success: true, usuario: usuario };
+                return true;
             } catch (error) {
                 console.error('Erro ao salvar no localStorage:', error);
-                return { success: false, error: error.message };
+                return false;
             }
         }
 
-        // Enviar dados para o Google Apps Script
+        // Enviar dados para Google Sheets
         async function enviarParaGoogleSheets(dados) {
             try {
-                // Mostrar estado de carregamento
                 submitBtn.disabled = true;
                 btnText.textContent = 'Enviando...';
-                
-                // Adicionar data atual
-                dados.dataCadastro = new Date().toLocaleString('pt-MZ');
                 
                 // Enviar para o Google Apps Script
                 await fetch(SCRIPT_URL, {
@@ -459,17 +287,11 @@
                     body: JSON.stringify(dados)
                 });
 
-                return { 
-                    success: true, 
-                    message: 'Dados enviados com sucesso para o servidor!' 
-                };
-                
+                console.log('📤 Dados enviados para Google Sheets');
+                return true;
             } catch (error) {
                 console.error('Erro ao enviar para Google Sheets:', error);
-                return { 
-                    success: false, 
-                    message: 'Erro na conexão. Os dados foram salvos localmente.' 
-                };
+                return false;
             } finally {
                 submitBtn.disabled = false;
                 btnText.textContent = 'Cadastrar';
@@ -495,40 +317,27 @@
             }
 
             // Validar número de telefone
-            const telefoneRegex = /^[0-9]{9}$/;
-            if (!telefoneRegex.test(dados.numero)) {
-                showMessage('Número de telefone inválido. Use 9 dígitos (ex: 841234567).', 'error');
+            if (!/^[0-9]{9}$/.test(dados.numero)) {
+                showMessage('Número de telefone inválido. Use 9 dígitos.', 'error');
                 return;
             }
 
-            // Desabilitar botão e mostrar mensagem
-            submitBtn.disabled = true;
-            btnText.textContent = 'Processando...';
-            showMessage('Processando seu cadastro...', 'info');
-
-            // 1. Salvar no localStorage
-            const resultadoLocal = salvarNoLocalStorage(dados);
+            // 1. Salvar NO localStorage
+            const salvo = salvarUsuario(dados);
             
-            if (!resultadoLocal.success) {
+            if (!salvo) {
                 showMessage('Erro ao salvar localmente. Tente novamente.', 'error');
-                submitBtn.disabled = false;
-                btnText.textContent = 'Cadastrar';
                 return;
             }
 
-            // Mostrar mensagem de sucesso
-            showMessage('✓ Cadastro realizado com sucesso! Redirecionando...', 'success');
-
-            // 2. Tentar enviar para o Google Sheets (em segundo plano)
-            enviarParaGoogleSheets(dados).then(resultado => {
-                if (!resultado.success) {
-                    console.log('Aviso: Dados não foram enviados ao servidor. Salvos apenas localmente.');
-                }
-            });
-
+            showMessage('✓ Cadastro realizado! Redirecionando...', 'success');
+            
+            // 2. Enviar para Google Sheets (em segundo plano)
+            enviarParaGoogleSheets(dados);
+            
             // 3. Redirecionar para tela.html após 2 segundos
             setTimeout(() => {
-                redirectToTela();
+                window.location.href = 'tela.html';
             }, 2000);
         });
 
@@ -537,55 +346,13 @@
             messageDiv.textContent = text;
             messageDiv.className = `message ${type}`;
             messageDiv.style.display = 'block';
-            
-            // Auto-esconder mensagens de erro após 5 segundos
-            if (type === 'error') {
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                }, 5000);
-            }
         }
 
-        // Testar localStorage
-        function testLocalStorage() {
-            console.log('=== TESTE LOCALSTORAGE ===');
-            console.log('Disponível?', typeof localStorage !== 'undefined');
-            
-            // Tentar salvar um teste
-            const testKey = 'teste_localstorage';
-            const testValue = {test: 'OK', timestamp: Date.now()};
-            
-            try {
-                localStorage.setItem(testKey, JSON.stringify(testValue));
-                const retrieved = localStorage.getItem(testKey);
-                console.log('Teste de escrita/leitura:', retrieved);
-                localStorage.removeItem(testKey);
-                console.log('LocalStorage funcionando corretamente');
-                return true;
-            } catch (error) {
-                console.error('LocalStorage não funcionando:', error);
-                return false;
-            }
-        }
-
-        // Event listeners
-        goNowBtn.addEventListener('click', () => {
-            clearInterval(countdownInterval);
-            redirectToTela();
-        });
-
-        // Verificar cadastro ao carregar a página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== INICIANDO SISTEMA ===');
-            
-            // Testar localStorage primeiro
-            if (!testLocalStorage()) {
-                alert('AVISO: O armazenamento local não está funcionando. Seu cadastro pode não ser lembrado.');
-            }
-            
-            // Verificar usuário
-            checkUserRegistration();
-        });
+        // INICIAR VERIFICAÇÃO quando a página carrega
+        window.onload = function() {
+            console.log('🚀 Página carregada. Iniciando verificação...');
+            verificarCadastro();
+        };
     </script>
 </body>
-  </html>
+</html>
