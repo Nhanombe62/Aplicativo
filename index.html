@@ -122,21 +122,6 @@
             display: block;
         }
 
-        .progress {
-            margin-top: 10px;
-            height: 5px;
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 1s ease-in-out;
-        }
-
         .loading-container {
             display: none;
             text-align: center;
@@ -299,12 +284,8 @@
         // URL do seu Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWsH88RWwFLK1bbjVjaFRNx894boMEyKeNsIjNctkdxOx90CzkCNRaXEwNZpY8JPA25Q/exec';
 
-        // Chaves para localStorage
-        const STORAGE_KEYS = {
-            USUARIO_ATUAL: 'sistema_usuario_atual',
-            DATA_CADASTRO: 'sistema_data_cadastro',
-            ULTIMO_ACESSO: 'sistema_ultimo_acesso'
-        };
+        // Chave fixa para localStorage
+        const USER_STORAGE_KEY = 'sistema_cadastro_usuario';
 
         // Elementos DOM
         const container = document.querySelector('.container');
@@ -334,19 +315,29 @@
             registrationForm.style.display = 'none';
             
             // Verificar no localStorage
-            const usuarioAtual = localStorage.getItem(STORAGE_KEYS.USUARIO_ATUAL);
+            const usuarioSalvo = localStorage.getItem(USER_STORAGE_KEY);
+            
+            console.log('Dados recuperados do localStorage:', usuarioSalvo);
             
             // Simular um pequeno delay para visualização
             setTimeout(() => {
-                if (usuarioAtual) {
-                    // Usuário já cadastrado
-                    console.log('Usuário já cadastrado, redirecionando...');
-                    showAlreadyRegisteredScreen(JSON.parse(usuarioAtual));
-                } else {
-                    // Usuário não cadastrado
-                    console.log('Usuário não cadastrado, mostrando formulário...');
-                    showRegistrationForm();
+                if (usuarioSalvo) {
+                    try {
+                        const usuario = JSON.parse(usuarioSalvo);
+                        if (usuario && usuario.nome && usuario.numero) {
+                            // Usuário já cadastrado
+                            console.log('Usuário já cadastrado:', usuario);
+                            showAlreadyRegisteredScreen(usuario);
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Erro ao parsear dados do localStorage:', error);
+                    }
                 }
+                
+                // Usuário não cadastrado
+                console.log('Usuário não cadastrado, mostrando formulário...');
+                showRegistrationForm();
             }, 800);
         }
 
@@ -373,6 +364,10 @@
                 <div class="user-info-item">
                     <span class="user-info-label">Província:</span>
                     <span class="user-info-value">${usuario.provincia || 'N/A'}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Data do Cadastro:</span>
+                    <span class="user-info-value">${usuario.dataRegistro || usuario.dataCadastro || 'N/A'}</span>
                 </div>
             `;
             
@@ -414,7 +409,10 @@
         function salvarNoLocalStorage(dados) {
             try {
                 const usuario = {
-                    ...dados,
+                    nome: dados.nome,
+                    numero: dados.numero,
+                    escola: dados.escola,
+                    provincia: dados.provincia,
                     dataCadastro: new Date().toISOString(),
                     id: Date.now(),
                     dataRegistro: new Date().toLocaleString('pt-MZ', {
@@ -422,14 +420,17 @@
                         month: '2-digit',
                         year: 'numeric',
                         hour: '2-digit',
-                        minute: '2-digit'
+                        minute: '2-digit',
+                        second: '2-digit'
                     })
                 };
                 
                 // Salvar no localStorage
-                localStorage.setItem(STORAGE_KEYS.USUARIO_ATUAL, JSON.stringify(usuario));
-                localStorage.setItem(STORAGE_KEYS.DATA_CADASTRO, usuario.dataCadastro);
-                localStorage.setItem(STORAGE_KEYS.ULTIMO_ACESSO, new Date().toISOString());
+                localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(usuario));
+                
+                console.log('Dados salvos no localStorage:', usuario);
+                console.log('Chave usada:', USER_STORAGE_KEY);
+                console.log('LocalStorage após salvar:', localStorage.getItem(USER_STORAGE_KEY));
                 
                 return { success: true, usuario: usuario };
             } catch (error) {
@@ -545,6 +546,28 @@
             }
         }
 
+        // Testar localStorage
+        function testLocalStorage() {
+            console.log('=== TESTE LOCALSTORAGE ===');
+            console.log('Disponível?', typeof localStorage !== 'undefined');
+            
+            // Tentar salvar um teste
+            const testKey = 'teste_localstorage';
+            const testValue = {test: 'OK', timestamp: Date.now()};
+            
+            try {
+                localStorage.setItem(testKey, JSON.stringify(testValue));
+                const retrieved = localStorage.getItem(testKey);
+                console.log('Teste de escrita/leitura:', retrieved);
+                localStorage.removeItem(testKey);
+                console.log('LocalStorage funcionando corretamente');
+                return true;
+            } catch (error) {
+                console.error('LocalStorage não funcionando:', error);
+                return false;
+            }
+        }
+
         // Event listeners
         goNowBtn.addEventListener('click', () => {
             clearInterval(countdownInterval);
@@ -552,7 +575,17 @@
         });
 
         // Verificar cadastro ao carregar a página
-        document.addEventListener('DOMContentLoaded', checkUserRegistration);
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== INICIANDO SISTEMA ===');
+            
+            // Testar localStorage primeiro
+            if (!testLocalStorage()) {
+                alert('AVISO: O armazenamento local não está funcionando. Seu cadastro pode não ser lembrado.');
+            }
+            
+            // Verificar usuário
+            checkUserRegistration();
+        });
     </script>
 </body>
-</html>
+    </html>
