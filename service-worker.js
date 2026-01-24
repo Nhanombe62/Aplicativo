@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plano-aula-v3.3.0';
+const CACHE_NAME = 'plano-aula-v3.4.0';
 const urlsToCache = [
   '/',
   '/sobre.html',
