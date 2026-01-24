@@ -136,33 +136,137 @@
             width: 0%;
             transition: width 1s ease-in-out;
         }
+
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .already-registered {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .already-registered h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .already-registered p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .user-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .user-info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .user-info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .user-info-value {
+            color: #333;
+        }
+
+        .redirect-countdown {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📝 Primeiro Acesso</h1>
-            <p>Complete o formulário para se cadastrar</p>
+            <h1>📝 Sistema de Cadastro</h1>
+            <p id="header-subtitle">Complete seu registro para acessar o sistema</p>
         </div>
 
-        <div class="form-container">
+        <!-- Tela de carregamento -->
+        <div class="loading-container" id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <p>Verificando seu status de cadastro...</p>
+        </div>
+
+        <!-- Tela de usuário já cadastrado -->
+        <div class="already-registered" id="alreadyRegistered">
+            <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+            <h2>Você já está cadastrado!</h2>
+            <p>Redirecionando para a tela principal...</p>
+            
+            <div class="user-info" id="userInfoDisplay">
+                <!-- Informações do usuário serão carregadas aqui -->
+            </div>
+            
+            <div class="redirect-countdown">
+                Redirecionando em <span id="countdown">5</span> segundos...
+            </div>
+            <button class="btn" id="goNowBtn" style="margin-top: 20px;">
+                Ir agora
+            </button>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div class="form-container" id="registrationForm">
             <form id="cadastroForm">
                 <div class="form-group">
                     <label for="nome">Nome Completo *</label>
                     <input type="text" id="nome" required 
-                           placeholder="Digite seu nome completo">
+                           placeholder="Digite seu nome completo"
+                           autocomplete="name">
                 </div>
 
                 <div class="form-group">
                     <label for="numero">Número de Telefone *</label>
                     <input type="tel" id="numero" required 
-                           placeholder="Ex: 841234567">
+                           placeholder="Ex: 841234567"
+                           pattern="[0-9]{9}"
+                           title="Digite 9 dígitos sem espaços"
+                           autocomplete="tel">
                 </div>
 
                 <div class="form-group">
                     <label for="escola">Escola *</label>
                     <input type="text" id="escola" required 
-                           placeholder="Nome da escola">
+                           placeholder="Nome da escola"
+                           autocomplete="organization">
                 </div>
 
                 <div class="form-group">
@@ -184,9 +288,6 @@
 
                 <button type="submit" class="btn" id="submitBtn">
                     <span id="btnText">Cadastrar</span>
-                    <div class="progress" style="display: none; margin-top: 10px;">
-                        <div class="progress-bar"></div>
-                    </div>
                 </button>
 
                 <div class="message" id="message"></div>
@@ -195,41 +296,140 @@
     </div>
 
     <script>
-        // URL do seu Google Apps Script (substitua com seu URL após publicar)
+        // URL do seu Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWsH88RWwFLK1bbjVjaFRNx894boMEyKeNsIjNctkdxOx90CzkCNRaXEwNZpY8JPA25Q/exec';
 
         // Chaves para localStorage
         const STORAGE_KEYS = {
-            CADASTROS: 'cadastros_registrados',
-            ULTIMO_CADASTRO: 'ultimo_cadastro',
-            USUARIO_ATUAL: 'usuario_atual'
+            USUARIO_ATUAL: 'sistema_usuario_atual',
+            DATA_CADASTRO: 'sistema_data_cadastro',
+            ULTIMO_ACESSO: 'sistema_ultimo_acesso'
         };
 
         // Elementos DOM
+        const container = document.querySelector('.container');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const alreadyRegistered = document.getElementById('alreadyRegistered');
+        const registrationForm = document.getElementById('registrationForm');
+        const userInfoDisplay = document.getElementById('userInfoDisplay');
+        const countdownElement = document.getElementById('countdown');
+        const goNowBtn = document.getElementById('goNowBtn');
         const form = document.getElementById('cadastroForm');
         const submitBtn = document.getElementById('submitBtn');
         const btnText = document.getElementById('btnText');
         const messageDiv = document.getElementById('message');
+        const headerSubtitle = document.getElementById('header-subtitle');
+
+        // Variáveis de controle
+        let countdownInterval;
+        let countdown = 5;
+
+        // Função para verificar se o usuário já está cadastrado
+        function checkUserRegistration() {
+            console.log('Verificando cadastro do usuário...');
+            
+            // Mostrar tela de carregamento
+            loadingScreen.style.display = 'block';
+            alreadyRegistered.style.display = 'none';
+            registrationForm.style.display = 'none';
+            
+            // Verificar no localStorage
+            const usuarioAtual = localStorage.getItem(STORAGE_KEYS.USUARIO_ATUAL);
+            
+            // Simular um pequeno delay para visualização
+            setTimeout(() => {
+                if (usuarioAtual) {
+                    // Usuário já cadastrado
+                    console.log('Usuário já cadastrado, redirecionando...');
+                    showAlreadyRegisteredScreen(JSON.parse(usuarioAtual));
+                } else {
+                    // Usuário não cadastrado
+                    console.log('Usuário não cadastrado, mostrando formulário...');
+                    showRegistrationForm();
+                }
+            }, 800);
+        }
+
+        // Mostrar tela de usuário já cadastrado
+        function showAlreadyRegisteredScreen(usuario) {
+            loadingScreen.style.display = 'none';
+            alreadyRegistered.style.display = 'block';
+            registrationForm.style.display = 'none';
+            
+            // Atualizar informações do usuário
+            userInfoDisplay.innerHTML = `
+                <div class="user-info-item">
+                    <span class="user-info-label">Nome:</span>
+                    <span class="user-info-value">${usuario.nome || 'N/A'}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Telefone:</span>
+                    <span class="user-info-value">${usuario.numero || 'N/A'}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Escola:</span>
+                    <span class="user-info-value">${usuario.escola || 'N/A'}</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Província:</span>
+                    <span class="user-info-value">${usuario.provincia || 'N/A'}</span>
+                </div>
+            `;
+            
+            // Iniciar contagem regressiva
+            startCountdown();
+        }
+
+        // Iniciar contagem regressiva para redirecionamento
+        function startCountdown() {
+            countdown = 5;
+            countdownElement.textContent = countdown;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    redirectToTela();
+                }
+            }, 1000);
+        }
+
+        // Redirecionar para tela.html
+        function redirectToTela() {
+            console.log('Redirecionando para tela.html...');
+            window.location.href = 'tela.html';
+        }
+
+        // Mostrar formulário de cadastro
+        function showRegistrationForm() {
+            loadingScreen.style.display = 'none';
+            alreadyRegistered.style.display = 'none';
+            registrationForm.style.display = 'block';
+            headerSubtitle.textContent = 'Complete o formulário para se cadastrar';
+        }
 
         // Salvar dados no localStorage
         function salvarNoLocalStorage(dados) {
             try {
-                // Obter cadastros existentes
-                const cadastros = JSON.parse(localStorage.getItem(STORAGE_KEYS.CADASTRADOS) || '[]');
-                
-                // Adicionar novo cadastro
                 const usuario = {
                     ...dados,
                     dataCadastro: new Date().toISOString(),
                     id: Date.now(),
-                    dataRegistro: new Date().toLocaleString('pt-MZ')
+                    dataRegistro: new Date().toLocaleString('pt-MZ', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
                 };
                 
-                cadastros.push(usuario);
-                
                 // Salvar no localStorage
-                localStorage.setItem(STORAGE_KEYS.CADASTRADOS, JSON.stringify(cadastros));
                 localStorage.setItem(STORAGE_KEYS.USUARIO_ATUAL, JSON.stringify(usuario));
+                localStorage.setItem(STORAGE_KEYS.DATA_CADASTRO, usuario.dataCadastro);
+                localStorage.setItem(STORAGE_KEYS.ULTIMO_ACESSO, new Date().toISOString());
                 
                 return { success: true, usuario: usuario };
             } catch (error) {
@@ -241,7 +441,7 @@
         // Enviar dados para o Google Apps Script
         async function enviarParaGoogleSheets(dados) {
             try {
-                // Mostrar progresso
+                // Mostrar estado de carregamento
                 submitBtn.disabled = true;
                 btnText.textContent = 'Enviando...';
                 
@@ -249,7 +449,7 @@
                 dados.dataCadastro = new Date().toLocaleString('pt-MZ');
                 
                 // Enviar para o Google Apps Script
-                const response = await fetch(SCRIPT_URL, {
+                await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
@@ -258,7 +458,10 @@
                     body: JSON.stringify(dados)
                 });
 
-                return { success: true, message: 'Dados enviados com sucesso!' };
+                return { 
+                    success: true, 
+                    message: 'Dados enviados com sucesso para o servidor!' 
+                };
                 
             } catch (error) {
                 console.error('Erro ao enviar para Google Sheets:', error);
@@ -270,14 +473,6 @@
                 submitBtn.disabled = false;
                 btnText.textContent = 'Cadastrar';
             }
-        }
-
-        // Redirecionar para tela.html
-        function redirecionarParaTela() {
-            // Aguardar 2 segundos para mostrar mensagem de sucesso
-            setTimeout(() => {
-                window.location.href = 'tela.html';
-            }, 2000);
         }
 
         // Manipular envio do formulário
@@ -301,20 +496,28 @@
             // Validar número de telefone
             const telefoneRegex = /^[0-9]{9}$/;
             if (!telefoneRegex.test(dados.numero)) {
-                showMessage('Número de telefone inválido. Use 9 dígitos.', 'error');
+                showMessage('Número de telefone inválido. Use 9 dígitos (ex: 841234567).', 'error');
                 return;
             }
+
+            // Desabilitar botão e mostrar mensagem
+            submitBtn.disabled = true;
+            btnText.textContent = 'Processando...';
+            showMessage('Processando seu cadastro...', 'info');
 
             // 1. Salvar no localStorage
             const resultadoLocal = salvarNoLocalStorage(dados);
             
             if (!resultadoLocal.success) {
                 showMessage('Erro ao salvar localmente. Tente novamente.', 'error');
+                submitBtn.disabled = false;
+                btnText.textContent = 'Cadastrar';
                 return;
             }
 
-            showMessage('✓ Cadastro realizado! Redirecionando...', 'success');
-            
+            // Mostrar mensagem de sucesso
+            showMessage('✓ Cadastro realizado com sucesso! Redirecionando...', 'success');
+
             // 2. Tentar enviar para o Google Sheets (em segundo plano)
             enviarParaGoogleSheets(dados).then(resultado => {
                 if (!resultado.success) {
@@ -322,16 +525,34 @@
                 }
             });
 
-            // 3. Redirecionar para tela.html
-            redirecionarParaTela();
+            // 3. Redirecionar para tela.html após 2 segundos
+            setTimeout(() => {
+                redirectToTela();
+            }, 2000);
         });
 
         // Função para mostrar mensagens
         function showMessage(text, type) {
             messageDiv.textContent = text;
             messageDiv.className = `message ${type}`;
-            messageDiv.style.display = text ? 'block' : 'none';
+            messageDiv.style.display = 'block';
+            
+            // Auto-esconder mensagens de erro após 5 segundos
+            if (type === 'error') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
         }
+
+        // Event listeners
+        goNowBtn.addEventListener('click', () => {
+            clearInterval(countdownInterval);
+            redirectToTela();
+        });
+
+        // Verificar cadastro ao carregar a página
+        document.addEventListener('DOMContentLoaded', checkUserRegistration);
     </script>
 </body>
 </html>
