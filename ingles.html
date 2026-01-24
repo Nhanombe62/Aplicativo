@@ -461,17 +461,17 @@
   <div class="desktop-warning" id="desktopWarning">
     <div class="desktop-warning-content">
       <div style="font-size: 40px; margin-bottom: 15px;">📱</div>
-      <h2>⚠️ ACESSO BLOQUEADO EM DESKTOP</h2>
-      <p><strong>Este aplicativo é exclusivo para dispositivos móveis.</strong></p>
-      <p>Por questões de segurança e otimização, o acesso é permitido apenas em smartphones e tablets.</p>
+      <h2>⚠️ DESKTOP ACCESS BLOCKED</h2>
+      <p><strong>This application is exclusive for mobile devices.</strong></p>
+      <p>For security and optimization reasons, access is only allowed on smartphones and tablets.</p>
       <p style="margin-top: 15px; padding: 10px; background: rgba(255, 107, 107, 0.1); border-radius: 6px; border: 1px solid #ff6b6b; font-size: 12px;">
-        <strong>📌 Instruções:</strong><br>
-        1. Abra este link no seu smartphone<br>
-        2. Use o aplicativo normalmente<br>
-        3. Gere seu plano de aula em PDF
+        <strong>📌 Instructions:</strong><br>
+        1. Open this link on your smartphone<br>
+        2. Use the application normally<br>
+        3. Generate your lesson plan in PDF
       </p>
       <p style="margin-top: 15px; color: #aaa; font-size: 12px;">
-        Desenvolvido por Prof. Edmilson Nhanombe | IFP Morrumbala
+        Developed by Teacher Edmilson Nhanombe | IFP Morrumbala
       </p>
     </div>
   </div>
@@ -480,7 +480,7 @@
   <div class="container" id="mainContainer">
     <!-- Mobile Instructions -->
     <div class="mobile-instructions">
-      <strong>Plano de Aula Mz</strong>
+      <strong>Lesson Plan Mz</strong>
     </div>
     
     <!-- Circular Progress Overlay -->
@@ -770,18 +770,21 @@
         trackEvent('device', 'mobile_access', 'Mobile access granted');
       }
       
-      // Load saved data
+      // Load saved data (except chatgptExplanation)
       const savedData = localStorage.getItem('lessonPlanData');
       if (savedData) {
         try {
           const data = JSON.parse(savedData);
           for (const key in data) {
-            const element = document.getElementById(key);
-            if (element) {
-              element.value = data[key];
+            // Do not load the chatgptExplanation field
+            if (key !== 'chatgptExplanation') {
+              const element = document.getElementById(key);
+              if (element) {
+                element.value = data[key];
+              }
             }
           }
-          trackEvent('data', 'load_saved', 'Loaded saved lesson plan');
+          trackEvent('data', 'load_saved', 'Loaded saved lesson plan (without ChatGPT explanation)');
         } catch (e) {
           console.error('Error loading saved data:', e);
         }
@@ -820,6 +823,11 @@
         return;
       }
       
+      // Clear the chatgptExplanation field when leaving flow4
+      if (currentFlow === 4) {
+        document.getElementById('chatgptExplanation').value = '';
+      }
+      
       trackEvent('navigation', 'next_flow', `From flow ${currentFlow} to ${next}`);
       autoSaveData();
       
@@ -831,6 +839,11 @@
     }
     
     function prevFlow(prev) {
+      // Clear the chatgptExplanation field when leaving flow4
+      if (currentFlow === 4) {
+        document.getElementById('chatgptExplanation').value = '';
+      }
+      
       trackEvent('navigation', 'prev_flow', `From flow ${currentFlow} to ${prev}`);
       autoSaveData();
       
@@ -971,7 +984,6 @@
       const grade = document.getElementById('grade').value || 'Grade 8';
       const subject = document.getElementById('subject').value || 'subject';
       const lessonType = document.getElementById('lessonType').value || 'lesson type';
-      const outcomes = document.getElementById('outcomes').value || 'lesson outcomes';
       const duration = document.getElementById('duration').value || '45 minutes';
       
       const query = `You are an expert English lesson planner. Create a detailed lesson plan for teaching "${topic}" in ${subject} (${lessonType}) for ${grade}. Lesson duration: ${duration}.
@@ -997,14 +1009,7 @@ LEARNER ACTIVITIES: [Detailed learner activities for production. Start with "Lea
 
 CONCLUSION SECTION
 TEACHER ACTIVITIES: [Detailed teacher activities for conclusion. Start with "Teacher:" and use bullet points with "-" for each activity.]
-LEARNER ACTIVITIES: [Detailed learner activities for conclusion. Start with "Learners:" and use bullet points with "-" for each activity.]
-
-Additional context:
-- Lesson type: ${lessonType}
-- Specific outcomes: ${outcomes}
-- Duration: ${duration}
-- Include hands-on, interactive activities
-- Make it practical for classroom implementation`;
+LEARNER ACTIVITIES: [Detailed learner activities for conclusion. Start with "Learners:" and use bullet points with "-" for each activity.]`;
 
       const url = `https://chat.openai.com/?q=${encodeURIComponent(query)}`;
       window.open(url, '_blank');
@@ -1296,26 +1301,26 @@ Additional context:
       }
     }
     
-    // Manual save function
-    function saveAllData() {
-      const planData = collectAllData();
-      localStorage.setItem('lessonPlanData', JSON.stringify(planData));
-      alert('✅ All data saved successfully!');
-      trackEvent('action', 'save_data', 'User saved lesson plan data');
-    }
-    
-    // Collect all form and table data
+    // Collect all form and table data (excluding chatgptExplanation)
     function collectAllData() {
       const formData = {};
       const formElements = document.querySelectorAll('input[type="text"], textarea');
       
       formElements.forEach(element => {
-        if (element.id) {
+        if (element.id && element.id !== 'chatgptExplanation') { // Exclude chatgptExplanation field
           formData[element.id] = element.value;
         }
       });
       
       return formData;
+    }
+    
+    // Manual save function
+    function saveAllData() {
+      const planData = collectAllData();
+      localStorage.setItem('lessonPlanData', JSON.stringify(planData));
+      alert('✅ All data saved successfully! The ChatGPT explanation was not saved.');
+      trackEvent('action', 'save_data', 'User saved lesson plan data (without ChatGPT explanation)');
     }
     
     // Generate PDF function
