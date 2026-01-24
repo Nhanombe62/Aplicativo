@@ -1,7 +1,6 @@
 const CACHE_NAME = 'plano-aula-v3.3.0';
 const urlsToCache = [
   '/',
-  '/index.html',
   '/sobre.html',
   '/.well-known/assetlinks.json',
   '/termos.html',
