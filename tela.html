@@ -88,6 +88,7 @@
       text-decoration: none;
       color: #333;
       border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
     }
     .sidebar-item:hover { background: #f8f9fa; }
     .sidebar-footer { margin-top: auto; padding: 15px; text-align: center; font-size: 0.8rem; color: #777; }
@@ -277,6 +278,11 @@
         <span style="position:absolute; top:2px; left:2px; width:16px; height:16px; background:white; border-radius:50%; transition:0.3s;"></span>
       </label>
     </div>
+    <!-- NOVO ITEM DE PARTILHA -->
+    <a href="#" class="sidebar-item" id="btnPartilha">
+      <i class="fas fa-share-alt"></i> Partilhar App
+    </a>
+    <!-- FIM DO NOVO ITEM -->
     <a href="termos.html" class="sidebar-item">
       <i class="fas fa-shield-alt"></i> Termos e Políticas
     </a>
@@ -291,9 +297,11 @@
   <div class="overlay" id="overlay"></div>
 
   <div class="botoes-principais">
-    <button class="btn btn-vip" onclick="window.location.href='planovip.html'">
+    <!-- BOTÃO VIP MODIFICADO -->
+    <button class="btn btn-vip" onclick="mostrarEscolhaVip()">
       <i class="fas fa-crown"></i> Plano VIP
     </button>
+    <!-- FIM DO BOTÃO VIP MODIFICADO -->
     <button class="btn btn-gratis" onclick="window.location.href='planogratis.html'">
       <i class="fas fa-ad"></i> Plano Gratuito
     </button>
@@ -388,6 +396,75 @@
     </div>
   </div>
 
+  <!-- NOVO MODAL: ESCOLHA DO VIP -->
+  <div class="modal" id="modalEscolhaVip">
+    <div class="modal-content">
+      <h3>Plano VIP (Disciplinas Gerais)</h3>
+      <p style="text-align:center; margin-bottom:20px;">Escolha o tipo de plano VIP:</p>
+      <div style="display:flex; flex-direction:column; gap:15px;">
+        <button onclick="window.location.href='inteligente.html'" style="
+          background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+          color: white;
+          border: none;
+          padding: 16px;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: bold;
+          font-size: 0.95rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          box-shadow: var(--sombra);
+        ">
+          <i class="fas fa-robot"></i> Plano Integrado com I.A
+        </button>
+        <button onclick="window.location.href='planovip.html'" style="
+          background: #3498db;
+          color: white;
+          border: none;
+          padding: 16px;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: bold;
+          font-size: 0.95rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          box-shadow: var(--sombra);
+        ">
+          <i class="fas fa-user-edit"></i> Plano sem I.A
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOVO MODAL: PARTILHA -->
+  <div class="modal" id="modalPartilha">
+    <div class="modal-content">
+      <h3>📤 Partilhar Aplicativo</h3>
+      <p>Partilhe o link do app com colegas:</p>
+      <div style="margin:12px 0; background:#f8f9fa; padding:10px; border-radius:8px; word-break:break-all;">
+        <code id="linkApp">https://nhanomb3.github.io/Planodeaula-/</code>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-top:15px;">
+        <button id="whatsappShare" style="background:#25D366; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </button>
+        <button id="facebookShare" style="background:#1877F2; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fab fa-facebook"></i> Facebook
+        </button>
+        <button id="emailShare" style="background:#EA4335; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fas fa-envelope"></i> Email
+        </button>
+        <button id="copyLink" style="background:#95a5a6; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fas fa-copy"></i> Copiar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ✅ Histórico simples por usuário
     function getUsuarioID() {
@@ -419,6 +496,19 @@
     function mostrarEstatisticas() { 
       fecharSidebar(); // Fecha sidebar se aberta
       abrirModal('modalEstatisticas');
+    }
+
+    // NOVA FUNÇÃO: Mostrar escolha do VIP
+    function mostrarEscolhaVip() { 
+      fecharSidebar(); // Fecha sidebar se aberta
+      abrirModal('modalEscolhaVip');
+    }
+
+    // NOVA FUNÇÃO: Mostrar partilha
+    function mostrarPartilha() { 
+      console.log('Mostrar partilha chamada');
+      fecharSidebar(); // Fecha sidebar se aberta
+      abrirModal('modalPartilha');
     }
     
     function abrirModal(id) {
@@ -541,6 +631,40 @@
       }
     }
 
+    // ✅ NOVAS FUNÇÕES DE PARTILHA
+    function partilharWhatsApp() {
+      const texto = `Baixe o app Plano de Aula MZ: https://nhanomb3.github.io/Planodeaula-/`;
+      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      window.open(url, '_blank');
+    }
+
+    function partilharFacebook() {
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://nhanomb3.github.io/Planodeaula-/')}`;
+      window.open(url, '_blank');
+    }
+
+    function partilharEmail() {
+      const assunto = 'Plano de Aula MZ - Aplicativo para Professores';
+      const corpo = `Olá, recomendo este aplicativo para planos de aula:\n\nhttps://nhanomb3.github.io/Planodeaula-/`;
+      window.location.href = `mailto:?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+    }
+
+    function copiarLink() {
+      const link = 'https://nhanomb3.github.io/Planodeaula-/';
+      navigator.clipboard.writeText(link).then(() => {
+        alert('✅ Link copiado para a área de transferência!');
+      }).catch(() => {
+        // Fallback para navegadores antigos
+        const input = document.createElement('input');
+        input.value = link;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('✅ Link copiado para a área de transferência!');
+      });
+    }
+
     // ✅ Dark Mode
     document.getElementById('toggleDarkMode').addEventListener('change', function() {
       document.body.classList.toggle('dark', this.checked);
@@ -552,12 +676,33 @@
       document.getElementById('toggleDarkMode').checked = true;
     }
 
-    // ✅ Menu Lateral
+    // ✅ Menu Lateral - Corrigido para funcionar corretamente
     document.getElementById('menuToggle').addEventListener('click', abrirSidebar);
+    
+    // Adicionar event listener para o botão de partilha no menu
+    document.getElementById('btnPartilha').addEventListener('click', function(e) {
+      e.preventDefault();
+      mostrarPartilha();
+    });
     
     document.getElementById('overlay').addEventListener('click', () => {
       fecharSidebar();
       fecharModal();
+    });
+
+    // ✅ Adicionar event listeners para os botões de partilha no modal
+    document.addEventListener('DOMContentLoaded', function() {
+      // Botão WhatsApp
+      document.getElementById('whatsappShare').addEventListener('click', partilharWhatsApp);
+      
+      // Botão Facebook
+      document.getElementById('facebookShare').addEventListener('click', partilharFacebook);
+      
+      // Botão Email
+      document.getElementById('emailShare').addEventListener('click', partilharEmail);
+      
+      // Botão Copiar Link
+      document.getElementById('copyLink').addEventListener('click', copiarLink);
     });
 
     // ✅ Fechar modais ao clicar fora
@@ -902,4 +1047,3 @@ setTimeout(addUpdateButtonToMenu, 1000);
   </script>
 </body>
 </html>
-

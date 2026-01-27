@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Aula Moçambicano Inteligente</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+      background: #eef2f5;
+      padding: 15px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    
+    h1, h2, h3 {
+      text-align: center;
+      color: #2b5dab;
+      margin-bottom: 10px; /* Reduzido de 15px */
+    }
+    
+    h1 {
+      font-size: 20px;
+    }
+    
+    h2 {
+      font-size: 18px;
+    }
+    
+    h3 {
+      font-size: 16px;
+      color: #444;
+    }
+    
+    label {
+      font-weight: 700;
+      margin-top: 8px; /* Reduzido de 10px */
+      display: block;
+      font-size: 14px;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 10px; /* Reduzido de 12px */
+      margin-top: 3px; /* Reduzido de 5px */
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: "Times New Roman", Times, serif;
+    }
+    
+    button {
+      margin-top: 12px; /* Reduzido de 15px */
+      padding: 10px 16px; /* Reduzido de 12px 20px */
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px; /* Reduzido de 16px */
+      width: 100%;
+      font-weight: bold;
+    }
+    
+    .btn-azul {
+      background: #2b5dab;
+      color: #fff;
+    }
+    
+    .btn-cinza {
+      background: #6c757d;
+      color: #fff;
+    }
+    
+    .btn-violeta {
+      background: #7b1fa2;
+      color: #fff;
+    }
+    
+    .botoes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px; /* Reduzido de 10px */
+      margin-top: 15px; /* Reduzido de 20px */
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px; /* Reduzido de 20px */
+      font-size: 11px; /* Reduzido de 12px */
+      font-family: "Times New Roman", Times, serif;
+    }
+    
+    th, td {
+      border: 2px solid #000 !important;
+      padding: 4px; /* Reduzido de 6px */
+      vertical-align: top;
+      font-family: "Times New Roman", Times, serif;
+    }
+    
+    th {
+      background: #e0e7ff;
+      text-align: center;
+      font-size: 11px; /* Reduzido de 12px */
+      font-weight: bold;
+      border: 2px solid #000 !important;
+    }
+    
+    .quadro-moral {
+      background: #fff;
+      padding: 12px; /* Reduzido de 15px */
+      border: 1px dashed #bba100;
+      border-radius: 8px;
+      margin-top: 15px; /* Reduzido de 20px */
+    }
+    
+    .rodape {
+      text-align: center;
+      font-style: italic;
+      margin-top: 20px; /* Reduzido de 30px */
+      color: #555;
+      font-size: 11px; /* Reduzido de 12px */
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 180px; /* Reduzido de 200px */
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+      margin-top: 8px; /* Reduzido de 10px */
+      padding: 8px; /* Reduzido de 10px */
+      border: 1px solid #a0c4ff;
+      border-radius: 6px;
+      resize: vertical;
+    }
+    
+    .dados-gerais {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px; /* Reduzido de 10px */
+      margin-top: 12px; /* Reduzido de 15px */
+    }
+    
+    .fluxo {
+      display: none;
+    }
+    
+    .fluxo.ativo {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .acao-destacada {
+      background: linear-gradient(135deg, #1a4a8a, #2b5dab);
+      color: white;
+      font-size: 14px; /* Reduzido de 16px */
+      font-weight: bold;
+      padding: 14px; /* Reduzido de 16px */
+      margin: 15px 0; /* Reduzido de 20px 0 */
+      box-shadow: 0 4px 8px rgba(43, 93, 171, 0.3);
+      border: none;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px; /* Reduzido de 10px */
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .acao-destacada::after {
+      content: "→";
+      font-size: 18px; /* Reduzido de 20px */
+    }
+    
+    .instrucoes-chat {
+      background: #e3f2fd;
+      border-left: 4px solid #2b5dab;
+      padding: 10px; /* Reduzido de 12px */
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0; /* Reduzido de 15px 0 */
+      font-size: 12px; /* Reduzido de 13px */
+    }
+    
+    .quadro-visualizacao {
+      min-height: 120px; /* Reduzido de 150px */
+      max-height: 350px; /* Reduzido de 400px */
+      overflow-y: auto;
+      border: 1px solid #a0c4ff;
+      border-radius: 8px;
+      padding: 12px; /* Reduzido de 15px */
+      margin: 15px 0; /* Reduzido de 20px 0 */
+      background: white;
+      font-family: "Times New Roman", serif;
+      font-size: 11px; /* Reduzido de 12px */
+      line-height: 1.3; /* Reduzido de 1.4 */
+      text-align: justify;
+      display: none;
+    }
+    
+    .plano-completo {
+      margin-top: 15px; /* Reduzido de 20px */
+      padding: 12px; /* Reduzido de 15px */
+      border: 1px dashed #9fa8da;
+      border-radius: 8px;
+      background: #f5f9ff;
+      display: none;
+      position: relative;
+    }
+    
+    .marca-dagua {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      font-size: 18px; /* Reduzido de 20px */
+      font-weight: bold;
+      color: rgba(220, 53, 69, 0.2);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 1;
+    }
+    
+    .botao-preencher {
+      background: linear-gradient(135deg, #7b1fa2, #9c27b0);
+      color: white;
+      padding: 12px; /* Reduzido de 14px */
+      font-size: 14px; /* Reduzido de 16px */
+      margin: 12px 0; /* Reduzido de 15px 0 */
+    }
+    
+    .botao-gerar-pdf {
+      background: linear-gradient(135deg, #283593, #3949ab);
+      color: white;
+      padding: 14px; /* Reduzido de 16px */
+      font-size: 16px; /* Reduzido de 18px */
+      margin: 15px 0; /* Reduzido de 20px 0 */
+    }
+    
+    .campo-objetivo {
+      width: 100%;
+      padding: 8px; /* Reduzido de 10px */
+      margin-top: 3px; /* Reduzido de 5px */
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: "Times New Roman", Times, serif;
+      min-height: 50px; /* Reduzido de 60px */
+      resize: vertical;
+    }
+    
+    .textarea-tabela {
+      width: 100%;
+      border: none;
+      background: transparent;
+      resize: vertical;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11px; /* Reduzido de 12px */
+      padding: 2px;
+      min-height: 70px; /* Reduzido de 80px */
+    }
+    
+    .input-tabela {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11px; /* Reduzido de 12px */
+      text-align: center;
+      padding: 2px;
+    }
+    
+    .botao-visualizar {
+      background: linear-gradient(135deg, #ff9800, #ff5722);
+      color: white;
+      padding: 10px; /* Reduzido de 12px */
+      font-size: 13px; /* Reduzido de 14px */
+      margin: 8px 0; /* Reduzido de 10px 0 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px; /* Reduzido de 8px */
+    }
+    
+    .botao-olho {
+      background: transparent;
+      border: none;
+      color: #2b5dab;
+      font-size: 18px; /* Reduzido de 20px */
+      cursor: pointer;
+      padding: 4px; /* Reduzido de 5px */
+      margin-left: 8px; /* Reduzido de 10px */
+    }
+    
+    .objetivos-container {
+      margin-top: 15px; /* Reduzido de 20px */
+      padding: 12px; /* Reduzido de 15px */
+      border: 1px solid #e0e7ff;
+      border-radius: 8px;
+      background: #f8faff;
+    }
+    
+    .tabela-container {
+      overflow-x: auto;
+      margin-top: 15px; /* Reduzido de 20px */
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px; /* Reduzido de 10px */
+    }
+    
+    /* Overlay de carregamento */
+    .overlay-carregamento {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .conteudo-carregamento {
+      background: white;
+      padding: 25px; /* Reduzido de 30px */
+      border-radius: 15px;
+      text-align: center;
+      max-width: 350px; /* Reduzido de 400px */
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .roda-carregamento {
+      width: 70px; /* Reduzido de 80px */
+      height: 70px; /* Reduzido de 80px */
+      border: 6px solid #f3f3f3; /* Reduzido de 8px */
+      border-top: 6px solid #2b5dab; /* Reduzido de 8px */
+      border-radius: 50%;
+      animation: girar 1s linear infinite;
+      margin: 0 auto 15px; /* Reduzido de 20px */
+    }
+    
+    @keyframes girar {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .porcentagem-carregamento {
+      font-size: 24px; /* Reduzido de 28px */
+      font-weight: bold;
+      color: #2b5dab;
+      margin: 10px 0; /* Reduzido de 15px 0 */
+      font-family: "Times New Roman", Times, serif;
+    }
+    
+    .texto-carregamento {
+      font-size: 14px; /* Reduzido de 16px */
+      color: #555;
+      margin-top: 8px; /* Reduzido de 10px */
+      font-family: "Times New Roman", Times, serif;
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        max-width: 800px;
+        padding: 20px; /* Reduzido de 25px */
+      }
+      
+      .dados-gerais {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px; /* Reduzido de 10px */
+        margin-top: 10px; /* Reduzido de 15px */
+      }
+      
+      .botoes {
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 15px; /* Reduzido de 20px */
+      }
+      
+      button {
+        width: auto;
+        padding: 10px 15px; /* Reduzido de 12px 20px */
+        font-size: 14px; /* Reduzido de 16px */
+      }
+      
+      table {
+        font-size: 11px; /* Reduzido de 12px */
+        margin-top: 15px; /* Reduzido de 20px */
+      }
+      
+      th, td {
+        padding: 5px; /* Reduzido de 8px */
+      }
+      
+      .textarea-tabela {
+        min-height: 80px; /* Reduzido de 100px */
+        font-size: 11px; /* Reduzido */
+      }
+      
+      .tabela-container {
+        overflow-x: visible;
+        margin-top: 15px; /* Reduzido de 20px */
+        padding: 8px; /* Reduzido de 10px */
+      }
+      
+      /* Cabeçalhos menores em desktop */
+      h1 {
+        font-size: 18px; /* Reduzido de 20px */
+        margin-bottom: 8px; /* Reduzido de 15px */
+      }
+      
+      h2 {
+        font-size: 16px; /* Reduzido de 18px */
+        margin-bottom: 8px; /* Reduzido de 15px */
+      }
+      
+      h3 {
+        font-size: 14px; /* Reduzido de 16px */
+        margin-bottom: 8px; /* Reduzido de 15px */
+      }
+      
+      .quadro-moral {
+        padding: 12px; /* Reduzido de 15px */
+        margin-top: 15px; /* Reduzido de 20px */
+      }
+      
+      .rodape {
+        margin-top: 20px; /* Reduzido de 30px */
+        font-size: 11px; /* Reduzido de 12px */
+      }
+      
+      .acao-destacada {
+        padding: 12px; /* Reduzido de 16px */
+        font-size: 14px; /* Reduzido de 16px */
+        margin: 12px 0; /* Reduzido de 20px 0 */
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .tabela-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      table {
+        min-width: 800px;
+      }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <!-- Overlay de carregamento -->
+  <div id="overlayCarregamento" class="overlay-carregamento">
+    <div class="conteudo-carregamento">
+      <div class="roda-carregamento"></div>
+      <div id="porcentagemCarregamento" class="porcentagem-carregamento">0%</div>
+      <div class="texto-carregamento">Processando resposta do ChatGPT...</div>
+      <div class="texto-carregamento" style="font-size: 13px; margin-top: 12px;">
+        Por favor, aguarde enquanto preenchemos automaticamente a grelha e os objetivos.
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <!-- 🔹 FLUXO 1A: Primeira parte dos dados -->
+    <div id="fluxo1a" class="fluxo ativo">
+      <h1>Plano de Aula Moçambicano</h1>
+      <h3>Por Edmilson Bartolomeu Nhanombe</h3>
+
+      <label>Nome da Escola:</label>
+      <input type="text" id="escola" placeholder="Somente letras" maxlength="60" />
+
+      <label>Data:</label>
+      <input type="text" id="data" placeholder="ddmmaaaa" maxlength="20"/>
+
+      <label>Nome do Professor:</label>
+      <input type="text" id="professor" placeholder="Somente letras" maxlength="60" />
+
+      <label>Disciplina:</label>
+      <input type="text" id="disciplina" placeholder="Somente letras" maxlength="60" />
+
+      <label>Classe:</label>
+      <input type="text" id="classe" placeholder="Máx 2 números" maxlength="2" />
+
+      <div class="botoes">
+        <button class="btn-azul" onclick="irParaFluxo1b()">Próximo</button>
+        <button class="btn-cinza" onclick="alert('Em caso de dificuldades contacte: 876393961 ou 834890828')">📞 Suporte</button>
+      </div>
+
+      <div class="rodape">
+        Graduado no IFP de Morrumbala <br/>
+        🔗 <a href="https://whatsapp.com/channel/0029VbBdJD0BFLgNjJGmUO2O" target="_blank" style="color:#2b5dab; font-weight:bold; text-decoration:none;">
+          Canal WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- 🔹 FLUXO 1B: Segunda parte dos dados -->
+    <div id="fluxo1b" class="fluxo">
+      <h1>Plano de Aula Moçambicano</h1>
+      <h3>Por Edmilson Bartolomeu Nhanombe</h3>
+
+      <label>Unidade Temática:</label>
+      <input type="text" id="unidade" placeholder="Letras e números" maxlength="80" />
+
+      <label>Tema da Aula:</label>
+      <input type="text" id="tema" placeholder="Letras e símbolos matemáticos" maxlength="120" />
+
+      <div class="dados-gerais">
+        <div>
+          <label>Turma:</label>
+          <input type="text" id="turma" placeholder="1 letra" maxlength="1" />
+        </div>
+        <div>
+          <label>Nº de Alunos:</label>
+          <input type="text" id="numAlunos" placeholder="Somente números" maxlength="4" />
+        </div>
+        <div>
+          <label>Período:</label>
+          <input type="text" id="periodo" placeholder="Somente letras" maxlength="30" />
+        </div>
+        <div>
+          <label>Nº de Lição:</label>
+          <input type="text" id="numLicao" placeholder="Somente números" maxlength="4" />
+        </div>
+        <div>
+          <label>Tipo de Aula:</label>
+          <input type="text" id="tipoAula" placeholder="Somente letras" maxlength="40" />
+        </div>
+        <div>
+          <label>Duração:</label>
+          <input type="text" id="duracao" value="45 minutos" readonly />
+        </div>
+      </div>
+
+      <div class="botoes">
+        <button class="btn-azul" onclick="irParaFluxo2()">📘 Gerar Plano</button>
+        <button class="btn-cinza" onclick="voltarParaFluxo1a()">↩️ Voltar</button>
+      </div>
+
+      <div class="rodape">
+        Graduado no IFP de Morrumbala <br/>
+        🔗 <a href="https://nhanomb3.github.io/Planodeaula-/" target="_blank" style="color:#2b5dab; font-weight:bold; text-decoration:none;">
+          Grupo WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- 🔹 FLUXO 2: Quadro Moral Inteligente -->
+    <div id="fluxo2" class="fluxo">
+      <h1>Plano de Aula Moçambicano</h1>
+      <h3>Por Edmilson Bartolomeu Nhanombe</h3>
+
+      <!-- 🔹 Tabela do Plano com rolagem horizontal -->
+      <h3 style="margin-top: 20px;">Estrutura da Aula</h3> <!-- Reduzido de 30px -->
+      <div class="tabela-container">
+        <table id="tabelaPlano" border="1" cellspacing="0" cellpadding="3">
+          <thead>
+            <tr>
+              <th>TEMPO</th>
+              <th>FUNÇÃO DIDÁCTICA</th>
+              <th>CONTEÚDOS</th>
+              <th>ACTIVIDADES DO PROFESSOR</th>
+              <th>ACTIVIDADES DO ALUNO</th>
+              <th>MÉTODOS DE ENSINO</th>
+              <th>MEIOS DE ENSINO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" class="input-tabela" id="tempo1" value="00–05 min" readonly></td>
+              <td><input type="text" class="input-tabela" id="funcao1" value="Introdução e motivação" readonly></td>
+              <td><textarea class="textarea-tabela" id="conteudo1" placeholder="Conteúdo..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="prof1" placeholder="Atividade do professor..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="aluno1" placeholder="Atividade do aluno..."></textarea></td>
+              <td><input type="text" class="input-tabela" id="metodo1" value="Elaboração conjunta" readonly></td>
+              <td><textarea class="textarea-tabela" id="meio1" placeholder="Meio..."></textarea></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="input-tabela" id="tempo2" value="05–20 min" readonly></td>
+              <td><input type="text" class="input-tabela" id="funcao2" value="Mediação e assimilação" readonly></td>
+              <td><textarea class="textarea-tabela" id="conteudo2" placeholder="Conteúdo..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="prof2" placeholder="Atividade do professor..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="aluno2" placeholder="Atividade do aluno..."></textarea></td>
+              <td><input type="text" class="input-tabela" id="metodo2" value="Expositivo" readonly></td>
+              <td><textarea class="textarea-tabela" id="meio2" placeholder="Meio..."></textarea></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="input-tabela" id="tempo3" value="20–35 min" readonly></td>
+              <td><input type="text" class="input-tabela" id="funcao3" value="Domínio e consolidação" readonly></td>
+              <td><textarea class="textarea-tabela" id="conteudo3" placeholder="Conteúdo..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="prof3" placeholder="Atividade do professor..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="aluno3" placeholder="Atividade do aluno..."></textarea></td>
+              <td><input type="text" class="input-tabela" id="metodo3" value="Trabalho independente" readonly></td>
+              <td><textarea class="textarea-tabela" id="meio3" placeholder="Meio..."></textarea></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="input-tabela" id="tempo4" value="35–45 min" readonly></td>
+              <td><input type="text" class="input-tabela" id="funcao4" value="Controlo e avaliação" readonly></td>
+              <td><textarea class="textarea-tabela" id="conteudo4" placeholder="Conteúdo..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="prof4" placeholder="Atividade do professor..."></textarea></td>
+              <td><textarea class="textarea-tabela" id="aluno4" placeholder="Atividade do aluno..."></textarea></td>
+              <td><input type="text" class="input-tabela" id="metodo4" value="Trabalho independente e elaboração conjunta" readonly></td>
+              <td><textarea class="textarea-tabela" id="meio4" placeholder="Meio..."></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 🔹 Objetivos com botão de olho -->
+      <h3 style="margin-top: 20px;"> <!-- Reduzido de 30px -->
+        Objetivos da Aula 
+        <button class="botao-olho" onclick="mostrarOcultarObjetivos()">👁️</button>
+      </h3>
+      
+      <div class="objetivos-container" id="objetivosContainer" style="display: none;">
+        <div style="margin: 12px 0;"> <!-- Reduzido de 15px 0 -->
+          <label>Objetivo Geral (infinitivo):</label>
+          <textarea id="objGeral" class="campo-objetivo" placeholder="Ex: Compreender o conceito de..."></textarea>
+          
+          <div class="dados-gerais" style="margin-top: 12px;"> <!-- Reduzido de 15px -->
+            <div>
+              <label>Objetivo Cognitivo (verbo de ação):</label>
+              <textarea id="objCog" class="campo-objetivo" placeholder="Ex: Identificar, descrever, analisar..."></textarea>
+            </div>
+            <div>
+              <label>Objetivo Psicomotor (verbo de ação):</label>
+              <textarea id="objPsi" class="campo-objetivo" placeholder="Ex: Resolver, construir, demonstrar..."></textarea>
+            </div>
+            <div>
+              <label>Objetivo Afetivo (verbo de ação):</label>
+              <textarea id="objAfet" class="campo-objetivo" placeholder="Ex: Valorizar, cooperar, respeitar..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔹 Quadro Moral -->
+      <div class="quadro-moral">
+        <h2>QUADRO MORAL INTELIGENTE</h2>
+        
+        <button class="acao-destacada" onclick="buscarExplicacaoCompleta()" id="botaoChatGPT">
+          🤖 BUSCAR EXPLICAÇÃO COMPLETA NO CHATGPT
+        </button>
+        
+        <div class="instrucoes-chat">
+          <strong>Instruções:</strong><br>
+          1. Clique no botão acima para abrir o ChatGPT<br>
+          2. O ChatGPT vai gerar automaticamente:<br>
+          &nbsp;&nbsp;- Tema completo<br>
+          &nbsp;&nbsp;- Momentos da aula<br>
+          &nbsp;&nbsp;- Atividades do professor e alunos<br>
+          &nbsp;&nbsp;- Conteúdos e métodos<br>
+          &nbsp;&nbsp;- Objetivos geral e específicos<br>
+          &nbsp;&nbsp;- Explicação com 3 exercícios<br>
+          &nbsp;&nbsp;- TPC com 2 perguntas<br>
+          3. Copie TUDO e cole abaixo
+        </div>
+        
+        <textarea id="campoChatGPT" placeholder="Cole aqui a resposta COMPLETA do ChatGPT..." 
+          style="min-height: 220px;"></textarea> <!-- Reduzido de 250px -->
+        
+        <div class="botoes">
+          <button class="botao-preencher" onclick="iniciarProcessamentoComCarregamento()">
+            ⚡ PREENCHER GRELHA E OBJETIVOS
+          </button>
+          <button class="btn-cinza" onclick="limparCampos()">🗑️ Limpar Tudo</button>
+        </div>
+        
+        <h3 style="margin-top: 20px;"> <!-- Reduzido de 30px -->
+          Visualização do Quadro Moral 
+          <button class="botao-visualizar" onclick="visualizarQuadroMoral()">
+            👁️ Mostrar Quadro Moral
+          </button>
+        </h3>
+        <div class="quadro-visualizacao" id="quadroExplicacao">
+          <p style="color:#666; text-align:center; margin-top:40px;"> <!-- Reduzido de 50px -->
+            A explicação do tema com exercícios aparecerá aqui após processamento
+          </p>
+        </div>
+      </div>
+      <button class="botao-gerar-pdf" onclick="gerarPDFCorrigido()">
+        📥 GERAR PDF COMPLETO (GRATUITO)
+      </button>
+
+      <div class="botoes">
+        <button class="btn-azul" onclick="voltarParaFluxo1b()">↩️ Voltar e Editar Dados</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+    let dadosPlano = {};
+    let explicacaoTema = "";
+
+    // =========== VALIDAÇÕES ===========
+    function apenasDigitos(el) {
+      el.value = el.value.replace(/\D/g, '');
+    }
+
+    function apenasLetras(el) {
+      el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, '');
+    }
+
+    function letrasENumeros(el) {
+      el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s]/g, '');
+    }
+
+    function temaPermitido(el) {
+      el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s+\-\*\=\/\^_\(\)\{\}\[\]×÷±√%.,:;'"<>]/g, '');
+    }
+
+    // =========== FUNÇÃO DE FORMATAÇÃO COM HÍFENS ===========
+    function formatarComHifens(texto) {
+      if (!texto) return texto;
+      
+      // Se já tiver formatação, manter
+      if (texto.includes('- ') || texto.includes('\n- ')) return texto;
+      
+      // Substituir ; ou , por quebras de linha com hífen
+      let formatado = texto
+        .split(/[;,]/) // Divide por ponto e vírgula OU vírgula
+        .map(item => item.trim()) // Remove espaços extras
+        .filter(item => item.length > 0) // Remove itens vazios
+        .map(item => `- ${item}`) // Adiciona hífen no início
+        .join('\n'); // Junta com quebras de linha
+      
+      return formatado || texto;
+    }
+
+    // =========== NAVEGAÇÃO ===========
+    function irParaFluxo1b() {
+      try {
+        const get = id => document.getElementById(id)?.value?.trim() || '';
+        
+        // Validar campos obrigatórios
+        const camposObrigatorios = [
+          {id: 'escola', nome: 'Nome da Escola'},
+          {id: 'data', nome: 'Data'},
+          {id: 'professor', nome: 'Nome do Professor'},
+          {id: 'disciplina', nome: 'Disciplina'},
+          {id: 'classe', nome: 'Classe'}
+        ];
+        
+        for (const campo of camposObrigatorios) {
+          if (!get(campo.id)) {
+            alert(`Por favor, preencha o campo "${campo.nome}".`);
+            document.getElementById(campo.id).focus();
+            return;
+          }
+        }
+        
+        // Salvar dados da primeira parte
+        dadosPlano = {
+          escola: get("escola"),
+          data: get("data"),
+          professor: get("professor"),
+          disciplina: get("disciplina"),
+          classe: get("classe")
+        };
+
+        // Navegar
+        document.getElementById("fluxo1a").classList.remove("ativo");
+        document.getElementById("fluxo1b").classList.add("ativo");
+        
+      } catch (error) {
+        alert("Erro: " + error.message);
+        console.error(error);
+      }
+    }
+
+    function irParaFluxo2() {
+      try {
+        const get = id => document.getElementById(id)?.value?.trim() || '';
+        const tema = get("tema");
+        
+        if (!tema) {
+          alert("Por favor, preencha o 'Tema da Aula'.");
+          document.getElementById("tema").focus();
+          return;
+        }
+
+        // Completar dados básicos
+        dadosPlano = {
+          ...dadosPlano,
+          tema: tema,
+          unidade: get("unidade"),
+          turma: get("turma"),
+          numAlunos: get("numAlunos"),
+          periodo: get("periodo"),
+          numLicao: get("numLicao"),
+          tipoAula: get("tipoAula")
+        };
+
+        sessionStorage.setItem("dadosPlano", JSON.stringify(dadosPlano));
+        
+        // Limpar campos
+        for(let i = 1; i <= 4; i++) {
+          document.getElementById(`conteudo${i}`).value = "";
+          document.getElementById(`prof${i}`).value = "";
+          document.getElementById(`aluno${i}`).value = "";
+          document.getElementById(`meio${i}`).value = "";
+        }
+        
+        document.getElementById("objGeral").value = "";
+        document.getElementById("objCog").value = "";
+        document.getElementById("objPsi").value = "";
+        document.getElementById("objAfet").value = "";
+        
+        document.getElementById("campoChatGPT").value = "";
+        document.getElementById("quadroExplicacao").innerHTML = 
+          '<p style="color:#666; text-align:center; margin-top:40px;">A explicação do tema com exercícios aparecerá aqui após processamento</p>';
+        document.getElementById("quadroExplicacao").style.display = "none";
+
+        document.getElementById("objetivosContainer").style.display = "none";
+
+        // Navegar
+        document.getElementById("fluxo1b").classList.remove("ativo");
+        document.getElementById("fluxo2").classList.add("ativo");
+        
+        document.getElementById("botaoChatGPT").innerHTML = "🤖 BUSCAR EXPLICAÇÃO COMPLETA NO CHATGPT";
+        document.getElementById("botaoChatGPT").style.background = "linear-gradient(135deg, #1a4a8a, #2b5dab)";
+        
+      } catch (error) {
+        alert("Erro ao gerar plano: " + error.message);
+        console.error(error);
+      }
+    }
+
+    function voltarParaFluxo1a() {
+      document.getElementById("fluxo1b").classList.remove("ativo");
+      document.getElementById("fluxo1a").classList.add("ativo");
+    }
+
+    function voltarParaFluxo1b() {
+      document.getElementById("fluxo2").classList.remove("ativo");
+      document.getElementById("fluxo1b").classList.add("ativo");
+    }
+
+    function mostrarOcultarObjetivos() {
+      const container = document.getElementById("objetivosContainer");
+      container.style.display = container.style.display === "none" ? "block" : "none";
+    }
+
+    function visualizarQuadroMoral() {
+      const quadro = document.getElementById("quadroExplicacao");
+      quadro.style.display = quadro.style.display === "block" ? "none" : "block";
+      
+      if (quadro.style.display === "block") {
+        const botao = document.querySelector('.botao-visualizar');
+        botao.innerHTML = "👁️ Ocultar Quadro Moral";
+      } else {
+        const botao = document.querySelector('.botao-visualizar');
+        botao.innerHTML = "👁️ Mostrar Quadro Moral";
+      }
+    }
+
+    // =========== FUNÇÃO COM RODA DE CARREGAMENTO ===========
+    function iniciarProcessamentoComCarregamento() {
+      const texto = document.getElementById("campoChatGPT").value.trim();
+      if (!texto) {
+        alert("Por favor, cole a resposta do ChatGPT primeiro.");
+        return;
+      }
+      
+      // Mostrar overlay de carregamento
+      const overlay = document.getElementById("overlayCarregamento");
+      const porcentagemEl = document.getElementById("porcentagemCarregamento");
+      overlay.style.display = "flex";
+      
+      let porcentagem = 0;
+      const intervalo = 150; // 150ms por 1% (15 segundos no total)
+      const totalPassos = 100;
+      
+      const timer = setInterval(() => {
+        porcentagem += 1;
+        porcentagemEl.textContent = `${porcentagem}%`;
+        
+        if (porcentagem >= totalPassos) {
+          clearInterval(timer);
+          
+          // Esconder overlay
+          setTimeout(() => {
+            overlay.style.display = "none";
+            
+            // Executar o processamento real
+            processarRespostaChatGPT();
+          }, 300);
+        }
+      }, intervalo);
+    }
+
+    // =========== CHATGPT INTELIGENTE - ESTRUTURA OTIMIZADA ===========
+    function buscarExplicacaoCompleta() {
+      const tema = dadosPlano.tema || document.getElementById("tema").value.trim();
+      const classe = dadosPlano.classe || document.getElementById("classe").value.trim();
+      
+      if (!tema) {
+        alert("Por favor, preencha o Tema da Aula primeiro.");
+        return;
+      }
+
+      // Query OTIMIZADA para melhor extração
+      const query = `Como professor em Moçambique, gere um plano de aula sobre "${tema}" para ${classe}ª classe.
+
+FORMATO OBRIGATÓRIO:
+
+[OBJETIVOS]
+OBJETIVO GERAL: [verbo infinitivo]
+Cognitivo: [verbo ação]
+Psicomotor: [verbo ação]
+Afetivo: [verbo ação]
+
+[MOMENTO 1: INTRODUÇÃO]
+CONTEÚDO: Saudação e organização
+ATIVIDADE PROFESSOR: Saúda turma, verifica ambiente, marca presença, orienta recapitulação, apresenta tema
+ATIVIDADE ALUNO: Responde saudação, responde presença, recapitula aula anterior, copia tema
+MEIO: [especificar]
+
+[MOMENTO 2: MEDIAÇÃO]
+CONTEÚDO: Exploração do tema
+ATIVIDADE PROFESSOR: Faz perguntas, explica com exemplos, relaciona com quotidiano
+ATIVIDADE ALUNO: Participa, presta atenção, relaciona, regista exemplos
+MEIO: [especificar]
+
+[MOMENTO 3: DOMÍNIO]
+CONTEÚDO: Exercícios práticos
+ATIVIDADE PROFESSOR: Coloca exercícios no quadro, circula pela sala, esclarece dúvidas
+ATIVIDADE ALUNO: Resolve exercícios, apresenta dúvidas
+MEIO: [especificar]
+
+[MOMENTO 4: CONTROLO]
+CONTEÚDO: Avaliação e TPC
+ATIVIDADE PROFESSOR: Aplica avaliação, recolhe respostas, marca TPC, despede-se
+ATIVIDADE ALUNO: Apresenta resolução, copia TPC, despede-se
+MEIO: [especificar]
+
+[EXPLICAÇÃO]
+[Explicação detalha do tema ${tema} em 200-300 palavras]
+
+[EXERCÍCIOS]
+1. [Pergunta 1]
+RESPOSTA: [Resposta 1]
+
+2. [Pergunta 2]
+RESPOSTA: [Resposta 2]
+
+3. [Pergunta 3]
+RESPOSTA: [Resposta 3]
+
+[TPC]
+1. [Exercício 1 sem resposta]
+2. [Exercício 2 sem resposta]
+
+IMPORTANTE: Use este formato como exemplo, não pode ser fixo. Adapte ao tema: "${tema}" para ${classe}ª classe.`;
+
+      const url = `https://chat.openai.com/?q=${encodeURIComponent(query)}`;
+      window.open(url, "_blank", "width=800,height=800");
+      
+      const botao = document.getElementById("botaoChatGPT");
+      botao.innerHTML = "✅ CHATGPT ABERTO - COLE A RESPOSTA";
+      botao.style.background = "linear-gradient(135deg, #2e7d32, #43a047)";
+      
+      setTimeout(() => {
+        document.getElementById("campoChatGPT").focus();
+      }, 1000);
+    }
+
+    // =========== PROCESSAMENTO ALTAMENTE OTIMIZADO ===========
+    function processarRespostaChatGPT() {
+      const texto = document.getElementById("campoChatGPT").value.trim();
+      if (!texto) {
+        alert("Por favor, cole a resposta do ChatGPT primeiro.");
+        return;
+      }
+
+      // Reiniciar variável de explicação
+      explicacaoTema = "";
+      
+      // Método SIMPLES mas EFICAZ: procurar padrões específicos
+      const linhas = texto.split('\n');
+      
+      // Objetivos
+      let objetivoGeral = "";
+      let objetivoCognitivo = "";
+      let objetivoPsicomotor = "";
+      let objetivoAfetivo = "";
+      
+      // Momentos
+      const momentos = [
+        { conteudo: "", prof: "", aluno: "", meio: "" },
+        { conteudo: "", prof: "", aluno: "", meio: "" },
+        { conteudo: "", prof: "", aluno: "", meio: "" },
+        { conteudo: "", prof: "", aluno: "", meio: "" }
+      ];
+      
+      let explicacao = "";
+      let exercicios = [];
+      let tpc = [];
+      
+      let secoes = {
+        objetivos: false,
+        momento1: false,
+        momento2: false,
+        momento3: false,
+        momento4: false,
+        explicacao: false,
+        exercicios: false,
+        tpc: false
+      };
+      
+      let momentoAtual = -1;
+      
+      for (let i = 0; i < linhas.length; i++) {
+        let linha = linhas[i].trim();
+        
+        // Detectar seções
+        if (linha.includes('[OBJETIVOS]')) {
+          secoes.objetivos = true;
+          secoes.momento1 = false;
+          secoes.explicacao = false;
+          continue;
+        }
+        
+        if (linha.includes('[MOMENTO 1:') || linha.includes('INTRODUÇÃO')) {
+          secoes.objetivos = false;
+          secoes.momento1 = true;
+          momentoAtual = 0;
+          continue;
+        }
+        
+        if (linha.includes('[MOMENTO 2:') || linha.includes('MEDIAÇÃO')) {
+          secoes.momento1 = false;
+          secoes.momento2 = true;
+          momentoAtual = 1;
+          continue;
+        }
+        
+        if (linha.includes('[MOMENTO 3:') || linha.includes('DOMÍNIO')) {
+          secoes.momento2 = false;
+          secoes.momento3 = true;
+          momentoAtual = 2;
+          continue;
+        }
+        
+        if (linha.includes('[MOMENTO 4:') || linha.includes('CONTROLO') || linha.includes('AVALIAÇÃO')) {
+          secoes.momento3 = false;
+          secoes.momento4 = true;
+          momentoAtual = 3;
+          continue;
+        }
+        
+        if (linha.includes('[EXPLICAÇÃO]')) {
+          secoes.momento4 = false;
+          secoes.explicacao = true;
+          secoes.exercicios = false;
+          continue;
+        }
+        
+        if (linha.includes('[EXERCÍCIOS]')) {
+          secoes.explicacao = false;
+          secoes.exercicios = true;
+          continue;
+        }
+        
+        if (linha.includes('[TPC]')) {
+          secoes.exercicios = false;
+          secoes.tpc = true;
+          continue;
+        }
+        
+        // Extrair OBJETIVOS
+        if (secoes.objetivos) {
+          if (linha.includes('OBJETIVO GERAL:') || linha.includes('OBJETIVO GERAL')) {
+            objetivoGeral = linha.replace(/OBJETIVO GERAL:?/i, '').trim();
+          }
+          if (linha.includes('Cognitivo:')) {
+            objetivoCognitivo = linha.replace('Cognitivo:', '').trim();
+          }
+          if (linha.includes('Psicomotor:')) {
+            objetivoPsicomotor = linha.replace('Psicomotor:', '').trim();
+          }
+          if (linha.includes('Afetivo:')) {
+            objetivoAfetivo = linha.replace('Afetivo:', '').trim();
+          }
+        }
+        
+        // Extrair MOMENTOS
+        if (momentoAtual >= 0 && (secoes.momento1 || secoes.momento2 || secoes.momento3 || secoes.momento4)) {
+          if (linha.includes('CONTEÚDO:')) {
+            let conteudo = linha.replace('CONTEÚDO:', '').trim();
+            // Adicionar linhas seguintes se não começarem com outra seção
+            for (let j = i + 1; j < Math.min(i + 3, linhas.length); j++) {
+              const proxLinha = linhas[j].trim();
+              if (proxLinha && !proxLinha.includes(':') && !proxLinha.includes('[')) {
+                conteudo += '\n' + proxLinha;
+              } else {
+                break;
+              }
+            }
+            momentos[momentoAtual].conteudo = conteudo;
+          }
+          
+          if (linha.includes('ATIVIDADE PROFESSOR:') || linha.includes('ATIVIDADE DO PROFESSOR:')) {
+            let prof = linha.replace(/ATIVIDADE (PROFESSOR:|DO PROFESSOR:)/i, '').trim();
+            for (let j = i + 1; j < Math.min(i + 4, linhas.length); j++) {
+              const proxLinha = linhas[j].trim();
+              if (proxLinha && !proxLinha.includes(':') && !proxLinha.includes('[')) {
+                prof += '\n' + proxLinha;
+              } else {
+                break;
+              }
+            }
+            momentos[momentoAtual].prof = prof;
+          }
+          
+          if (linha.includes('ATIVIDADE ALUNO:') || linha.includes('ATIVIDADE DO ALUNO:')) {
+            let aluno = linha.replace(/ATIVIDADE (ALUNO:|DO ALUNO:)/i, '').trim();
+            for (let j = i + 1; j < Math.min(i + 4, linhas.length); j++) {
+              const proxLinha = linhas[j].trim();
+              if (proxLinha && !proxLinha.includes(':') && !proxLinha.includes('[')) {
+                aluno += '\n' + proxLinha;
+              } else {
+                break;
+              }
+            }
+            momentos[momentoAtual].aluno = aluno;
+          }
+          
+          if (linha.includes('MEIO:')) {
+            momentos[momentoAtual].meio = linha.replace('MEIO:', '').trim();
+          }
+        }
+        
+        // Extrair EXPLICAÇÃO
+        if (secoes.explicacao && linha && !linha.includes('[')) {
+          explicacao += linha + '\n';
+        }
+        
+        // Extrair EXERCÍCIOS
+        if (secoes.exercicios && linha.match(/^\d+\./) && !linha.includes('RESPOSTA')) {
+          let pergunta = linha.replace(/^\d+\.\s*/, '').trim();
+          let resposta = '';
+          
+          // Verificar próxima linha para resposta
+          if (i + 1 < linhas.length && linhas[i + 1].includes('RESPOSTA:')) {
+            resposta = linhas[i + 1].replace('RESPOSTA:', '').trim();
+          }
+          
+          exercicios.push({ pergunta, resposta });
+        }
+        
+        // Extrair TPC
+        if (secoes.tpc && linha.match(/^\d+\./)) {
+          tpc.push(linha.replace(/^\d+\.\s*/, '').trim());
+        }
+      }
+      
+      // PREENCHER OS CAMPOS
+      
+      // 1. Objetivos
+      if (objetivoGeral) {
+        document.getElementById("objGeral").value = objetivoGeral;
+      }
+      if (objetivoCognitivo) {
+        document.getElementById("objCog").value = objetivoCognitivo;
+      }
+      if (objetivoPsicomotor) {
+        document.getElementById("objPsi").value = objetivoPsicomotor;
+      }
+      if (objetivoAfetivo) {
+        document.getElementById("objAfet").value = objetivoAfetivo;
+      }
+      
+      // 2. Momentos COM FORMATAÇÃO AUTOMÁTICA
+      momentos.forEach((momento, index) => {
+        const i = index + 1;
+        if (momento.conteudo) {
+          document.getElementById(`conteudo${i}`).value = formatarComHifens(momento.conteudo);
+        }
+        if (momento.prof) {
+          document.getElementById(`prof${i}`).value = formatarComHifens(momento.prof);
+        }
+        if (momento.aluno) {
+          document.getElementById(`aluno${i}`).value = formatarComHifens(momento.aluno);
+        }
+        if (momento.meio) {
+          document.getElementById(`meio${i}`).value = formatarComHifens(momento.meio);
+        }
+      });
+      
+      // 3. Construir explicação para PDF
+      if (explicacao.trim()) {
+        explicacaoTema = "EXPLICAÇÃO DO TEMA:\n\n" + explicacao.trim() + "\n\n";
+      }
+      
+      if (exercicios.length > 0) {
+        explicacaoTema += "EXERCÍCIOS PRÁTICOS:\n\n";
+        exercicios.forEach((ex, idx) => {
+          if (ex.pergunta) {
+            explicacaoTema += `${idx + 1}. ${ex.pergunta}\n`;
+            if (ex.resposta) {
+              explicacaoTema += `Resposta: ${ex.resposta}\n\n`;
+            } else {
+              explicacaoTema += "\n";
+            }
+          }
+        });
+      }
+      
+      if (tpc.length > 0) {
+        explicacaoTema += "\nTPC:\n\n";
+        tpc.forEach((item, idx) => {
+          explicacaoTema += `${idx + 1}. ${item}\n`;
+        });
+      }
+      
+      // 4. Atualizar quadro moral
+      if (explicacaoTema) {
+        const quadro = document.getElementById("quadroExplicacao");
+        quadro.innerHTML = `<div style="white-space: pre-wrap; line-height: 1.3; font-size: 11px; text-align: justify; font-family: 'Times New Roman', serif;">${explicacaoTema.replace(/\n/g, '<br>')}</div>`;
+      }
+      
+      // 5. Mostrar objetivos
+      document.getElementById("objetivosContainer").style.display = "block";
+      
+      alert("✅ Dados preenchidos com sucesso!");
+      document.getElementById("botaoChatGPT").innerHTML = "🤖 DADOS PROCESSADOS";
+      document.getElementById("botaoChatGPT").style.background = "linear-gradient(135deg, #2e7d32, #43a047)";
+    }
+
+    // =========== GERAÇÃO DE PDF CORRIGIDA COM CABEÇALHO COMPACTO ===========
+    function gerarPDFCorrigido() {
+      try {
+        const getVal = id => document.getElementById(id)?.value || '';
+        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+        
+        // Configurar fonte Times New Roman tamanho 12 para todo o documento
+        doc.setFont("times", "normal");
+        doc.setFontSize(12);
+        
+        // PÁGINA 1: Cabeçalho COMPACTO
+        // Cabeçalho MAIS ALTO
+        doc.setFontSize(12);
+        doc.text("PLANO DE AULA", 148, 8, { align: "center" }); // Subido para 8mm do topo
+        
+        // Linha separadora MAIS ALTA
+        doc.setLineWidth(0.5);
+        doc.line(20, 11, 276, 11); // Subido para 11mm do topo
+        
+        // Dados da aula - Layout COMPACTO em 3 colunas
+        doc.setFontSize(11); // Fonte menor
+        let y = 16; // Posição inicial subida
+        
+        // Coluna 1 (esquerda) - ESPAÇAMENTO REDUZIDO
+        doc.text(`Escola: ${dadosPlano.escola || ''}`, 20, y);
+        doc.text(`Data: ${dadosPlano.data || ''}`, 20, y + 3.5); // Reduzido espaçamento
+        doc.text(`Professor: ${dadosPlano.professor || ''}`, 20, y + 7); // Reduzido espaçamento
+        doc.text(`Disciplina: ${dadosPlano.disciplina || ''}`, 20, y + 10.5); // Reduzido espaçamento
+        
+        // Coluna 2 (centro)
+        doc.text(`Classe: ${dadosPlano.classe || ''}`, 100, y);
+        doc.text(`Turma: ${dadosPlano.turma || ''}`, 100, y + 3.5);
+        doc.text(`Alunos: ${dadosPlano.numAlunos || ''}`, 100, y + 7);
+        doc.text(`Lição: ${dadosPlano.numLicao || ''}`, 100, y + 10.5);
+        
+        // Coluna 3 (direita)
+        doc.text(`Duração: 45 min`, 180, y);
+        doc.text(`Período: ${dadosPlano.periodo || ''}`, 180, y + 3.5);
+        doc.text(`Tipo: ${dadosPlano.tipoAula || ''}`, 180, y + 7);
+        doc.text(`Tema: ${dadosPlano.tema || ''}`, 180, y + 10.5);
+        
+        y = 32; // Posição para objetivos (subida)
+        
+        // Objetivos - Formato COMPACTO
+        const objGeral = getVal('objGeral');
+        const objCog = getVal('objCog');
+        const objPsi = getVal('objPsi');
+        const objAfet = getVal('objAfet');
+        
+        if (objGeral || objCog || objPsi || objAfet) {
+          doc.setFontSize(11);
+          doc.text("OBJETIVOS DA AULA", 148, y, { align: "center" });
+          y += 4; // Espaçamento reduzido
+          
+          doc.setFontSize(11); // Fonte menor
+          
+          // Objetivo Geral COMPACTO
+          if (objGeral) {
+            doc.text("Geral:", 20, y);
+            const geralLines = doc.splitTextToSize(objGeral, 230);
+            doc.text(geralLines, 40, y);
+            y += geralLines.length * 3 + 2; // Reduzido espaçamento
+          }
+          
+          // Objetivos Específicos - COMPACTO
+          if (objCog || objPsi || objAfet) {
+            doc.text("Específicos:", 20, y);
+            y += 2.5; // Reduzido
+            
+            if (objCog) {
+              doc.text("• Cognitivo:", 25, y);
+              const cogLines = doc.splitTextToSize(objCog, 210);
+              doc.text(cogLines, 45, y);
+              y += cogLines.length * 3 + 1.5; // Reduzido
+            }
+            
+            if (objPsi) {
+              doc.text("• Psicomotor:", 25, y);
+              const psiLines = doc.splitTextToSize(objPsi, 210);
+              doc.text(psiLines, 45, y);
+              y += psiLines.length * 3 + 1.5; // Reduzido
+            }
+            
+            if (objAfet) {
+              doc.text("• Afetivo:", 25, y);
+              const afetLines = doc.splitTextToSize(objAfet, 210);
+              doc.text(afetLines, 45, y);
+              y += afetLines.length * 3 + 2.5; // Reduzido
+            }
+          }
+        }
+        
+        // Ajustar posição para tabela - COMEÇAR MAIS ALTO
+        y = Math.max(y, 50); // Reduzido significativamente
+        
+        // Tabela COM FONTE PEQUENA para caber melhor
+        const tableData = [];
+        for(let i = 1; i <= 4; i++) {
+          tableData.push([
+            getVal(`tempo${i}`),
+            getVal(`funcao${i}`),
+            formatarComHifens(getVal(`conteudo${i}`)),
+            formatarComHifens(getVal(`prof${i}`)),
+            formatarComHifens(getVal(`aluno${i}`)),
+            getVal(`metodo${i}`),
+            formatarComHifens(getVal(`meio${i}`))
+          ]);
+        }
+        
+        // Configuração da tabela COMPACTA
+        doc.autoTable({
+          startY: y,
+          head: [['TEMPO', 'FUNÇÃO DIDÁCTICA', 'CONTEÚDOS', 'ACTIVIDADES DO PROFESSOR', 'ACTIVIDADES DO ALUNO', 'MÉTODOS', 'MEIOS']],
+          body: tableData,
+          styles: { 
+            font: "times",
+            fontSize: 11, // Fonte reduzida
+            cellPadding: 1.2, // Padding reduzido
+            lineColor: [0, 0, 0],
+            lineWidth: 0.2, // Linha mais fina
+            textColor: [0, 0, 0],
+          },
+          headStyles: { 
+            fillColor: [224, 231, 255],
+            textColor: [0, 0, 0],
+            fontStyle: 'bold',
+            fontSize: 11, // Fonte reduzida
+            cellPadding: 1.5 // Padding reduzido
+          },
+          margin: { left: 15, right: 20 },
+          tableWidth: 262,
+          pageBreak: 'avoid',
+          theme: 'grid',
+          didParseCell: function(data) {
+            if (data.section === 'body') {
+              data.cell.styles.valign = 'top';
+              data.cell.styles.minCellHeight = 10; // Altura reduzida
+            }
+          }
+        });
+        
+        // PÁGINA 2: Quadro Moral (se houver)
+        if (explicacaoTema && explicacaoTema.trim().length > 50) {
+          doc.addPage({ orientation: "landscape", unit: "mm", format: "a4" });
+          doc.setFontSize(12);
+          doc.text("QUADRO MORAL", 148, 15, { align: "center" }); // Posição mais alta
+          
+          // Definir fonte Times New Roman tamanho 12
+          doc.setFont("times", "normal");
+          doc.setFontSize(12); // Fonte ligeiramente menor
+          
+          const lines = doc.splitTextToSize(explicacaoTema, 250);
+          
+          let currentY = 25; // Começar mais alto
+          const lineHeight = 5.5; // Espaçamento reduzido
+          
+          for (let i = 0; i < lines.length; i++) {
+            if (currentY > 190) {
+              doc.addPage({ orientation: "landscape", unit: "mm", format: "a4" });
+              currentY = 20;
+              doc.setFontSize(11);
+            }
+            doc.text(lines[i], 20, currentY);
+            currentY += lineHeight;
+          }
+        }
+        
+        // Salvar PDF
+        const data = dadosPlano.data ? dadosPlano.data.replace(/\//g, '-') : 'sem-data';
+        const temaAbreviado = dadosPlano.tema ? 
+          dadosPlano.tema.substring(0, 20).replace(/[^\w\s]/gi, '').replace(/\s+/g, '_') : 
+          'sem-tema';
+        doc.save(`Plano_Aula_${data}_${temaAbreviado}.pdf`);
+        
+        alert("✅ PDF gerado com sucesso! A tabela agora cabe na primeira página.");
+      } catch (error) {
+        alert("❌ Erro ao gerar PDF: " + error.message);
+        console.error(error);
+      }
+    }
+
+    // =========== FUNÇÃO AUXILIAR PARA LIMPAR CAMPOS ===========
+    function limparCampos() {
+      if (!confirm("Tem certeza que deseja limpar todos os campos?")) return;
+      
+      document.getElementById("campoChatGPT").value = "";
+      
+      // Limpar tabela
+      for(let i = 1; i <= 4; i++) {
+        document.getElementById(`conteudo${i}`).value = "";
+        document.getElementById(`prof${i}`).value = "";
+        document.getElementById(`aluno${i}`).value = "";
+        document.getElementById(`meio${i}`).value = "";
+      }
+      
+      // Limpar objetivos
+      document.getElementById("objGeral").value = "";
+      document.getElementById("objCog").value = "";
+      document.getElementById("objPsi").value = "";
+      document.getElementById("objAfet").value = "";
+      
+      // Ocultar objetivos
+      document.getElementById("objetivosContainer").style.display = "none";
+      
+      // Limpar quadro moral
+      explicacaoTema = "";
+      document.getElementById("quadroExplicacao").innerHTML = 
+        '<p style="color:#666; text-align:center; margin-top:40px;">A explicação do tema com exercícios aparecerá aqui após processamento</p>';
+      document.getElementById("quadroExplicacao").style.display = "none";
+      
+      // Resetar botão
+      const botaoChatGPT = document.getElementById("botaoChatGPT");
+      if (botaoChatGPT) {
+        botaoChatGPT.innerHTML = "🤖 BUSCAR EXPLICAÇÃO COMPLETA NO CHATGPT";
+        botaoChatGPT.style.background = "linear-gradient(135deg, #1a4a8a, #2b5dab)";
+      }
+    }
+
+    // =========== INICIALIZAÇÃO ===========
+    document.addEventListener('DOMContentLoaded', () => {
+      // Configurar validações
+      const configs = [
+        { id: 'classe', fn: apenasDigitos },
+        { id: 'numAlunos', fn: apenasDigitos },
+        { id: 'numLicao', fn: apenasDigitos },
+        { id: 'escola', fn: apenasLetras },
+        { id: 'professor', fn: apenasLetras },
+        { id: 'periodo', fn: apenasLetras },
+        { id: 'tipoAula', fn: apenasLetras },
+        { id: 'disciplina', fn: apenasLetras },
+        { id: 'unidade', fn: letrasENumeros },
+        { id: 'tema', fn: temaPermitido },
+        { id: 'turma', fn: (e) => e.value = e.value.replace(/[^A-Za-z]/g, '').slice(0,1) }
+      ];
+      
+      configs.forEach(cfg => {
+        const el = document.getElementById(cfg.id);
+        if (el) {
+          el.addEventListener('input', () => cfg.fn(el));
+          el.addEventListener('blur', () => cfg.fn(el));
+        }
+      });
+      
+      // Carregar dados salvos
+      const saved = sessionStorage.getItem("dadosPlano");
+      if (saved) {
+        dadosPlano = JSON.parse(saved);
+        Object.keys(dadosPlano).forEach(key => {
+          const el = document.getElementById(key);
+          if (el) el.value = dadosPlano[key];
+        });
+      }
+      
+      // Inicializar explicacaoTema
+      if (!explicacaoTema) {
+        explicacaoTema = "";
+      }
+      
+      // Formatação automática com hífens
+      const camposFormatar = ['conteudo1', 'conteudo2', 'conteudo3', 'conteudo4',
+                             'prof1', 'prof2', 'prof3', 'prof4',
+                             'aluno1', 'aluno2', 'aluno3', 'aluno4',
+                             'meio1', 'meio2', 'meio3', 'meio4'];
+      
+      camposFormatar.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) {
+          campo.addEventListener('blur', function() {
+            if ((this.value.includes(';') || this.value.includes(',')) && !this.value.includes('\n- ')) {
+              this.value = formatarComHifens(this.value);
+            }
+          });
+        }
+      });
+    });
+
+    // Bloqueio de captura de tela
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "PrintScreen") {
+        alert("Captura de ecrã bloqueada nesta aplicação.");
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
