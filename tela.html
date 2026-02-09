@@ -30,6 +30,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--cor-fundo);
       color: var(--cor-texto);
+      transition: background-color 0.3s, color 0.3s;
     }
 
     .navbar {
@@ -136,6 +137,7 @@
     .btn-quinzenal{ background: #3498db; }
     .btn-doacoes  { background: #e74c3c; }
     .btn-historico{ background: #2ecc71; }
+    .btn-bloco    { background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%); }
     .btn-sorte-link{ 
       background: #9b59b6; 
       grid-column: span 2;
@@ -219,6 +221,29 @@
     }
     .stats p { margin: 6px 0; }
 
+    /* Interruptor Modo Escuro */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+      background: #ccc;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
     body.dark {
       --cor-fundo: #121212;
       --cor-texto: #e0e0e0;
@@ -233,6 +258,12 @@
     body.dark ul.historico-lista li { 
       border-color: #444; 
       background: #2d2d2d;
+    }
+    body.dark .switch {
+      background: #4CAF50;
+    }
+    body.dark .slider {
+      transform: translateX(20px);
     }
 
     @media (min-width: 768px) {
@@ -269,20 +300,23 @@
     <a href="#" class="sidebar-item" onclick="mostrarEstatisticas()">
       <i class="fas fa-cog"></i> Definições
     </a>
-    <div class="sidebar-item" style="display:flex; align-items:center; justify-content:space-between;">
-      <span style="display:flex; align-items:center; gap:8px;">
-        <i class="fas fa-moon"></i> Modo Escuro
-      </span>
-      <label style="position:relative; display:inline-block; width:40px; height:20px; background:#ccc; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="toggleDarkMode" style="opacity:0; width:0; height:0;">
-        <span style="position:absolute; top:2px; left:2px; width:16px; height:16px; background:white; border-radius:50%; transition:0.3s;"></span>
-      </label>
+    <div class="sidebar-item" onclick="toggleDarkMode()" style="cursor: pointer;">
+      <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+        <span style="display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-moon"></i> Modo Escuro
+        </span>
+        <label class="switch">
+          <input type="checkbox" id="toggleDarkMode" style="display: none;">
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
-    <!-- NOVO ITEM DE PARTILHA -->
+    <a href="biografia.html" class="sidebar-item">
+      <i class="fas fa-user-circle"></i> Biografia do Criador
+    </a>
     <a href="#" class="sidebar-item" id="btnPartilha">
       <i class="fas fa-share-alt"></i> Partilhar App
     </a>
-    <!-- FIM DO NOVO ITEM -->
     <a href="termos.html" class="sidebar-item">
       <i class="fas fa-shield-alt"></i> Termos e Políticas
     </a>
@@ -297,11 +331,9 @@
   <div class="overlay" id="overlay"></div>
 
   <div class="botoes-principais">
-    <!-- BOTÃO VIP MODIFICADO -->
     <button class="btn btn-vip" onclick="mostrarEscolhaVip()">
       <i class="fas fa-crown"></i> Plano VIP
     </button>
-    <!-- FIM DO BOTÃO VIP MODIFICADO -->
     <button class="btn btn-gratis" onclick="window.location.href='planogratis.html'">
       <i class="fas fa-ad"></i> Plano Gratuito
     </button>
@@ -316,6 +348,9 @@
     </button>
     <button class="btn btn-historico" onclick="mostrarHistorico()">
       <i class="fas fa-history"></i> Histórico
+    </button>
+    <button class="btn btn-bloco" onclick="window.location.href='bloco.html'">
+      <i class="fas fa-calendar-check"></i> Bloco de Planificação
     </button>
     <a href="abano.html" class="btn-sorte-link">
       <i class="fas fa-dice"></i> Abano da Sorte
@@ -665,15 +700,30 @@
       });
     }
 
-    // ✅ Dark Mode
-    document.getElementById('toggleDarkMode').addEventListener('change', function() {
-      document.body.classList.toggle('dark', this.checked);
-      localStorage.setItem('temaEscuro', this.checked);
-    });
-    
-    if (localStorage.getItem('temaEscuro') === 'true') {
-      document.body.classList.add('dark');
-      document.getElementById('toggleDarkMode').checked = true;
+    // ✅ Dark Mode - Função corrigida
+    function toggleDarkMode() {
+      const toggle = document.getElementById('toggleDarkMode');
+      toggle.checked = !toggle.checked;
+      
+      document.body.classList.toggle('dark', toggle.checked);
+      localStorage.setItem('temaEscuro', toggle.checked);
+      
+      // Adiciona uma pequena animação ao slider
+      const slider = document.querySelector('.slider');
+      slider.style.transform = toggle.checked ? 'translateX(20px)' : 'translateX(2px)';
+    }
+
+    // ✅ Verifica e aplica o tema ao carregar
+    function aplicarTemaInicial() {
+      const temaEscuro = localStorage.getItem('temaEscuro') === 'true';
+      document.body.classList.toggle('dark', temaEscuro);
+      document.getElementById('toggleDarkMode').checked = temaEscuro;
+      
+      // Posiciona o slider corretamente
+      const slider = document.querySelector('.slider');
+      if (slider) {
+        slider.style.transform = temaEscuro ? 'translateX(20px)' : 'translateX(2px)';
+      }
     }
 
     // ✅ Menu Lateral - Corrigido para funcionar corretamente
@@ -692,6 +742,9 @@
 
     // ✅ Adicionar event listeners para os botões de partilha no modal
     document.addEventListener('DOMContentLoaded', function() {
+      // Aplicar tema inicial
+      aplicarTemaInicial();
+      
       // Botão WhatsApp
       document.getElementById('whatsappShare').addEventListener('click', partilharWhatsApp);
       
@@ -774,276 +827,277 @@
     // ✅ Inicialização
     window.addEventListener('load', () => {
       limparHistoricoAntigo();
+      aplicarTemaInicial();
     });
     
     // =============================================
-// CONTROLE DO SERVICE WORKER E ATUALIZAÇÕES
-// =============================================
+    // CONTROLE DO SERVICE WORKER E ATUALIZAÇÕES
+    // =============================================
 
-// Versão do app (deve corresponder ao service worker)
-const APP_VERSION = 'v2.3.0';
-let newServiceWorker = null;
-let updateNotificationShown = false;
+    // Versão do app (deve corresponder ao service worker)
+    const APP_VERSION = 'v2.3.0';
+    let newServiceWorker = null;
+    let updateNotificationShown = false;
 
-// Registra e gerencia o Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    // Salva versão atual
-    localStorage.setItem('app_version', APP_VERSION);
-    
-    // Registra Service Worker
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(function(registration) {
-        console.log('✅ Service Worker registrado:', registration.scope);
+    // Registra e gerencia o Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        // Salva versão atual
+        localStorage.setItem('app_version', APP_VERSION);
         
-        // Verifica versão salva
-        const savedVersion = localStorage.getItem('app_version');
-        if (savedVersion !== APP_VERSION) {
-          console.log('🔄 Nova versão detectada!');
-          setTimeout(() => showUpdateNotification(), 2000);
+        // Registra Service Worker
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(function(registration) {
+            console.log('✅ Service Worker registrado:', registration.scope);
+            
+            // Verifica versão salva
+            const savedVersion = localStorage.getItem('app_version');
+            if (savedVersion !== APP_VERSION) {
+              console.log('🔄 Nova versão detectada!');
+              setTimeout(() => showUpdateNotification(), 2000);
+            }
+            
+            // Verifica atualizações a cada 30 minutos
+            setInterval(() => {
+              registration.update();
+              console.log('🔄 Verificando atualizações...');
+            }, 30 * 60 * 1000);
+            
+            // Detecta nova versão disponível
+            registration.addEventListener('updatefound', () => {
+              console.log('🔄 Nova versão do Service Worker encontrada!');
+              newServiceWorker = registration.installing;
+              
+              newServiceWorker.addEventListener('statechange', () => {
+                if (newServiceWorker.state === 'installed') {
+                  if (navigator.serviceWorker.controller) {
+                    // Nova versão instalada
+                    console.log('🆕 Nova versão pronta!');
+                    showUpdateNotification();
+                  }
+                }
+              });
+            });
+          })
+          .catch(function(error) {
+            console.log('❌ Falha no registro do Service Worker:', error);
+          });
+        
+        // Escuta mensagens do Service Worker
+        navigator.serviceWorker.addEventListener('message', function(event) {
+          if (event.data.type === 'SW_UPDATED') {
+            console.log('📢 Service Worker atualizado:', event.data.version);
+            showUpdateNotification();
+          }
+        });
+      });
+    }
+
+    // ==================== NOTIFICAÇÃO DE ATUALIZAÇÃO ====================
+    function showUpdateNotification() {
+      if (updateNotificationShown) return;
+      
+      // Verifica se já tem a notificação
+      let updateDiv = document.getElementById('update-notification');
+      
+      if (!updateDiv) {
+        // Cria a notificação
+        updateDiv = document.createElement('div');
+        updateDiv.id = 'update-notification';
+        updateDiv.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #4CAF50, #2E7D32);
+          color: white;
+          padding: 15px 20px;
+          border-radius: 12px;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+          z-index: 9999;
+          display: none;
+          max-width: 320px;
+          animation: slideIn 0.3s ease;
+          border-left: 5px solid #FFC107;
+        `;
+        
+        updateDiv.innerHTML = `
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-sync-alt" style="font-size: 1.2rem;"></i>
+            </div>
+            <div style="flex: 1;">
+              <h4 style="margin: 0 0 5px 0; font-size: 1rem; font-weight: bold;">Atualização Disponível!</h4>
+              <p style="margin: 0 0 10px 0; font-size: 0.85rem; opacity: 0.9;">Uma nova versão do aplicativo está pronta.</p>
+              <div style="display: flex; gap: 8px;">
+                <button id="update-now-btn" style="
+                  background: #FFC107;
+                  color: #333;
+                  border: none;
+                  padding: 8px 16px;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  font-weight: bold;
+                  font-size: 0.85rem;
+                  flex: 1;
+                ">Atualizar Agora</button>
+                <button id="update-later-btn" style="
+                  background: rgba(255,255,255,0.2);
+                  color: white;
+                  border: 1px solid rgba(255,255,255,0.3);
+                  padding: 8px 16px;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  font-size: 0.85rem;
+                ">Depois</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(updateDiv);
+        
+        // Estilo de animação
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+          }
+          #update-notification {
+            animation: slideIn 0.3s ease, pulse 2s infinite;
+          }
+        `;
+        document.head.appendChild(style);
+        
+        // Event listeners
+        document.getElementById('update-now-btn').addEventListener('click', function() {
+          forceUpdate();
+          updateDiv.style.display = 'none';
+        });
+        
+        document.getElementById('update-later-btn').addEventListener('click', function() {
+          updateDiv.style.display = 'none';
+          updateNotificationShown = false;
+        });
+      }
+      
+      // Mostra a notificação
+      updateDiv.style.display = 'block';
+      updateNotificationShown = true;
+      
+      // Auto-esconde após 30 segundos
+      setTimeout(() => {
+        if (updateDiv.style.display === 'block') {
+          updateDiv.style.display = 'none';
+          updateNotificationShown = false;
+        }
+      }, 30000);
+    }
+
+    // ==================== ATUALIZAÇÃO FORÇADA ====================
+    function forceUpdate() {
+      console.log('🔄 Forçando atualização...');
+      
+      if ('serviceWorker' in navigator) {
+        // Envia comando para pular espera
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage('SKIP_WAITING');
         }
         
-        // Verifica atualizações a cada 30 minutos
-        setInterval(() => {
-          registration.update();
-          console.log('🔄 Verificando atualizações...');
-        }, 30 * 60 * 1000);
-        
-        // Detecta nova versão disponível
-        registration.addEventListener('updatefound', () => {
-          console.log('🔄 Nova versão do Service Worker encontrada!');
-          newServiceWorker = registration.installing;
-          
-          newServiceWorker.addEventListener('statechange', () => {
-            if (newServiceWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // Nova versão instalada
-                console.log('🆕 Nova versão pronta!');
-                showUpdateNotification();
-              }
-            }
+        // Limpa caches
+        if ('caches' in window) {
+          caches.keys().then(function(cacheNames) {
+            cacheNames.forEach(function(cacheName) {
+              caches.delete(cacheName);
+              console.log('🗑️ Cache removido:', cacheName);
+            });
           });
-        });
-      })
-      .catch(function(error) {
-        console.log('❌ Falha no registro do Service Worker:', error);
-      });
-    
-    // Escuta mensagens do Service Worker
-    navigator.serviceWorker.addEventListener('message', function(event) {
-      if (event.data.type === 'SW_UPDATED') {
-        console.log('📢 Service Worker atualizado:', event.data.version);
-        showUpdateNotification();
+        }
+        
+        // Atualiza versão no localStorage
+        localStorage.setItem('app_version', APP_VERSION);
+        
+        // Recarrega a página após um curto delay
+        setTimeout(function() {
+          console.log('🔄 Recarregando página...');
+          window.location.reload(true);
+          
+          // Fallback se não recarregar
+          setTimeout(function() {
+            window.location.href = window.location.href + '?v=' + Date.now();
+          }, 1000);
+        }, 800);
+      } else {
+        // Fallback simples
+        window.location.reload(true);
       }
-    });
-  });
-}
+    }
 
-// ==================== NOTIFICAÇÃO DE ATUALIZAÇÃO ====================
-function showUpdateNotification() {
-  if (updateNotificationShown) return;
-  
-  // Verifica se já tem a notificação
-  let updateDiv = document.getElementById('update-notification');
-  
-  if (!updateDiv) {
-    // Cria a notificação
-    updateDiv = document.createElement('div');
-    updateDiv.id = 'update-notification';
-    updateDiv.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #4CAF50, #2E7D32);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-      z-index: 9999;
-      display: none;
-      max-width: 320px;
-      animation: slideIn 0.3s ease;
-      border-left: 5px solid #FFC107;
-    `;
-    
-    updateDiv.innerHTML = `
-      <div style="display: flex; align-items: flex-start; gap: 12px;">
-        <div style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-          <i class="fas fa-sync-alt" style="font-size: 1.2rem;"></i>
-        </div>
-        <div style="flex: 1;">
-          <h4 style="margin: 0 0 5px 0; font-size: 1rem; font-weight: bold;">Atualização Disponível!</h4>
-          <p style="margin: 0 0 10px 0; font-size: 0.85rem; opacity: 0.9;">Uma nova versão do aplicativo está pronta.</p>
-          <div style="display: flex; gap: 8px;">
-            <button id="update-now-btn" style="
-              background: #FFC107;
-              color: #333;
-              border: none;
-              padding: 8px 16px;
-              border-radius: 6px;
-              cursor: pointer;
-              font-weight: bold;
-              font-size: 0.85rem;
-              flex: 1;
-            ">Atualizar Agora</button>
-            <button id="update-later-btn" style="
-              background: rgba(255,255,255,0.2);
-              color: white;
-              border: 1px solid rgba(255,255,255,0.3);
-              padding: 8px 16px;
-              border-radius: 6px;
-              cursor: pointer;
-              font-size: 0.85rem;
-            ">Depois</button>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(updateDiv);
-    
-    // Estilo de animação
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-        70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-      }
-      #update-notification {
-        animation: slideIn 0.3s ease, pulse 2s infinite;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Event listeners
-    document.getElementById('update-now-btn').addEventListener('click', function() {
-      forceUpdate();
-      updateDiv.style.display = 'none';
-    });
-    
-    document.getElementById('update-later-btn').addEventListener('click', function() {
-      updateDiv.style.display = 'none';
-      updateNotificationShown = false;
-    });
-  }
-  
-  // Mostra a notificação
-  updateDiv.style.display = 'block';
-  updateNotificationShown = true;
-  
-  // Auto-esconde após 30 segundos
-  setTimeout(() => {
-    if (updateDiv.style.display === 'block') {
-      updateDiv.style.display = 'none';
-      updateNotificationShown = false;
-    }
-  }, 30000);
-}
-
-// ==================== ATUALIZAÇÃO FORÇADA ====================
-function forceUpdate() {
-  console.log('🔄 Forçando atualização...');
-  
-  if ('serviceWorker' in navigator) {
-    // Envia comando para pular espera
-    if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage('SKIP_WAITING');
-    }
-    
-    // Limpa caches
-    if ('caches' in window) {
-      caches.keys().then(function(cacheNames) {
-        cacheNames.forEach(function(cacheName) {
-          caches.delete(cacheName);
-          console.log('🗑️ Cache removido:', cacheName);
+    // ==================== VERIFICAÇÃO INICIAL ====================
+    // Verifica se há nova versão ao carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      // Verifica se o Service Worker está registrado
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(function(registration) {
+          if (registration) {
+            registration.update();
+          }
         });
-      });
-    }
-    
-    // Atualiza versão no localStorage
-    localStorage.setItem('app_version', APP_VERSION);
-    
-    // Recarrega a página após um curto delay
-    setTimeout(function() {
-      console.log('🔄 Recarregando página...');
-      window.location.reload(true);
+      }
       
-      // Fallback se não recarregar
+      // Verifica versão salva
       setTimeout(function() {
-        window.location.href = window.location.href + '?v=' + Date.now();
+        const savedVersion = localStorage.getItem('app_version');
+        if (savedVersion && savedVersion !== APP_VERSION) {
+          console.log('🔄 Versão anterior detectada:', savedVersion, '-> Nova:', APP_VERSION);
+          setTimeout(() => showUpdateNotification(), 3000);
+        }
       }, 1000);
-    }, 800);
-  } else {
-    // Fallback simples
-    window.location.reload(true);
-  }
-}
-
-// ==================== VERIFICAÇÃO INICIAL ====================
-// Verifica se há nova versão ao carregar
-document.addEventListener('DOMContentLoaded', function() {
-  // Verifica se o Service Worker está registrado
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then(function(registration) {
-      if (registration) {
-        registration.update();
-      }
     });
-  }
-  
-  // Verifica versão salva
-  setTimeout(function() {
-    const savedVersion = localStorage.getItem('app_version');
-    if (savedVersion && savedVersion !== APP_VERSION) {
-      console.log('🔄 Versão anterior detectada:', savedVersion, '-> Nova:', APP_VERSION);
-      setTimeout(() => showUpdateNotification(), 3000);
+
+    // ==================== BOTÃO MANUAL DE ATUALIZAÇÃO ====================
+    // Adiciona botão no menu lateral (opcional)
+    function addUpdateButtonToMenu() {
+      const sidebar = document.getElementById('sidebar');
+      const updateItem = document.createElement('a');
+      updateItem.href = '#';
+      updateItem.className = 'sidebar-item';
+      updateItem.innerHTML = '<i class="fas fa-sync-alt"></i> Verificar Atualizações';
+      updateItem.onclick = function(e) {
+        e.preventDefault();
+        checkForUpdates();
+        fecharSidebar();
+      };
+      
+      // Insere após o item de configurações
+      const settingsItem = document.querySelector('.sidebar-item');
+      if (settingsItem) {
+        settingsItem.parentNode.insertBefore(updateItem, settingsItem.nextSibling);
+      }
     }
-  }, 1000);
-});
 
-// ==================== BOTÃO MANUAL DE ATUALIZAÇÃO ====================
-// Adiciona botão no menu lateral (opcional)
-function addUpdateButtonToMenu() {
-  const sidebar = document.getElementById('sidebar');
-  const updateItem = document.createElement('a');
-  updateItem.href = '#';
-  updateItem.className = 'sidebar-item';
-  updateItem.innerHTML = '<i class="fas fa-sync-alt"></i> Verificar Atualizações';
-  updateItem.onclick = function(e) {
-    e.preventDefault();
-    checkForUpdates();
-    fecharSidebar();
-  };
-  
-  // Insere após o item de configurações
-  const settingsItem = document.querySelector('.sidebar-item');
-  if (settingsItem) {
-    settingsItem.parentNode.insertBefore(updateItem, settingsItem.nextSibling);
-  }
-}
-
-function checkForUpdates() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then(function(registration) {
-      if (registration) {
-        registration.update().then(function() {
-          alert('✅ Verificação de atualizações concluída!');
-          showUpdateNotification();
+    function checkForUpdates() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(function(registration) {
+          if (registration) {
+            registration.update().then(function() {
+              alert('✅ Verificação de atualizações concluída!');
+              showUpdateNotification();
+            });
+          }
         });
+      } else {
+        alert('⚠️ Service Worker não suportado neste navegador.');
       }
-    });
-  } else {
-    alert('⚠️ Service Worker não suportado neste navegador.');
-  }
-}
+    }
 
-// Adiciona o botão ao menu (opcional)
-setTimeout(addUpdateButtonToMenu, 1000);
+    // Adiciona o botão ao menu (opcional)
+    setTimeout(addUpdateButtonToMenu, 1000);
   </script>
 </body>
 </html>
