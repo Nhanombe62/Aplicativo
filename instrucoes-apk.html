@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+  <meta name="theme-color" content="#2b5dab">
+  <title>Instruções – Plano de Aula MZ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --cor-primaria: #2b5dab;
+      --cor-fundo: #f8f9fa;
+      --cor-texto: #333;
+      --sombra: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--cor-fundo);
+      color: var(--cor-texto);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--cor-primaria);
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: var(--sombra);
+    }
+    .navbar h1 { font-size: 1.2rem; font-weight: 600; }
+    .btn-voltar {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .botoes-principais {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .btn {
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: var(--sombra);
+      text-align: center;
+      min-height: 80px;
+      transition: transform 0.2s;
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-instalar     { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+    .btn-usar         { background: linear-gradient(135deg, #2196F3, #1976D2); }
+    .btn-videos       { background: linear-gradient(135deg, #FF9800, #F57C00); }
+    .btn-pagina-whats { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+    .btn-voltar-menu  { background: linear-gradient(135deg, #607D8B, #455A64); }
+    
+    /* Cores diferentes para cada botão do submenu */
+    .btn-vip          { background: linear-gradient(135deg, #FFD700, #B8860B); }
+    .btn-bloco        { background: linear-gradient(135deg, #00BCD4, #006064); }
+    .btn-gratis       { background: linear-gradient(135deg, #8BC34A, #558B2F); }
+    .btn-abano        { background: linear-gradient(135deg, #FF5722, #BF360C); }
+    .btn-linguas      { background: linear-gradient(135deg, #E91E63, #880E4F); }
+    .btn-quinzenal    { background: linear-gradient(135deg, #3F51B5, #1A237E); }
+
+    .submenu {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* Modal de Instalação */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 600px;
+      padding: 25px;
+      border-radius: 20px;
+      text-align: left;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .modal-content h2 {
+      color: var(--cor-primaria);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      text-align: center;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .modal-content h3 {
+      color: #2b5dab;
+      margin: 20px 0 10px 0;
+      font-size: 1.2rem;
+    }
+    
+    .modal-content .passo {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--cor-primaria);
+    }
+    
+    .modal-content .link-box {
+      background: #e8f0fe;
+      padding: 15px;
+      border-radius: 10px;
+      font-family: monospace;
+      word-break: break-all;
+      margin: 15px 0;
+      border: 1px solid #2b5dab;
+      font-size: 0.9rem;
+    }
+    
+    .modal-content .link-clicavel {
+      display: inline-block;
+      background: var(--cor-primaria);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 10px 0;
+      word-break: break-all;
+    }
+    
+    .modal-content .btn-copiar {
+      background: var(--cor-primaria);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+    
+    .modal-content .btn-baixar-destaque {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .modal-content .imagem-link {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin: 15px 0;
+      border: 2px solid #ddd;
+      cursor: pointer;
+    }
+    
+    .modal-content .fechar {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #999;
+    }
+    
+    .modal-content .fechar:hover {
+      color: #333;
+    }
+    
+    .aviso {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    
+    .info-imagem {
+      background: #e3f2fd;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-style: italic;
+    }
+    
+    @media (min-width: 600px) {
+      .botoes-principais,
+      .submenu {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <button class="btn-voltar" onclick="window.history.back()" title="Voltar">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1>Instruções do APK</h1>
+    <button class="btn-voltar" onclick="mostrarPaginaWhatsApp()" title="Página e WhatsApp">
+      <i class="fas fa-info-circle"></i>
+    </button>
+  </nav>
+
+  <!-- Botões principais -->
+  <div class="botoes-principais" id="botoesPrincipais">
+    <button class="btn btn-instalar" onclick="mostrarGuiaInstalacao()">
+      <i class="fas fa-download"></i> Como Instalar o Aplicativo
+    </button>
+    <button class="btn btn-usar" onclick="mostrarSubmenuComoUsar()">
+      <i class="fas fa-mobile-alt"></i> Como Usar o Aplicativo
+    </button>
+    <button class="btn btn-videos" onclick="mostrarSubmenuVideos()">
+      <i class="fas fa-video"></i> Vídeos sobre Uso
+    </button>
+    <button class="btn btn-pagina-whats" onclick="mostrarPaginaWhatsApp()">
+      <i class="fas fa-bullhorn"></i> Página e WhatsApp
+    </button>
+  </div>
+
+  <!-- Submenu de Como Usar -->
+  <div class="botoes-principais submenu" id="submenuComoUsar">
+    <button class="btn btn-vip" onclick="abrirVideo('vip')">
+      <i class="fas fa-crown"></i> Plano VIP
+    </button>
+    <button class="btn btn-bloco" onclick="abrirVideo('bloco')">
+      <i class="fas fa-sticky-note"></i> Bloco de Planificação
+    </button>
+    <button class="btn btn-gratis" onclick="abrirVideo('gratis')">
+      <i class="fas fa-ad"></i> Plano Gratuito
+    </button>
+    <button class="btn btn-abano" onclick="abrirVideo('abano')">
+      <i class="fas fa-dice"></i> Abano da Sorte
+    </button>
+    <button class="btn btn-linguas" onclick="abrirVideo('linguas')">
+      <i class="fas fa-language"></i> Plano de Línguas
+    </button>
+    <button class="btn btn-quinzenal" onclick="abrirVideo('quinzenal')">
+      <i class="fas fa-calendar-alt"></i> Plano Quinzenal
+    </button>
+    <button class="btn btn-voltar-menu" onclick="voltarMenuPrincipal()">
+      <i class="fas fa-arrow-left"></i> Voltar ao Menu Principal
+    </button>
+  </div>
+
+  <!-- Submenu de Vídeos - CORRIGIDO: botão Como Instalar agora abre VÍDEO -->
+  <div class="botoes-principais submenu" id="submenuVideos">
+    <button class="btn btn-instalar" onclick="abrirVideo('instalar')">
+      <i class="fas fa-download"></i> Como Instalar
+    </button>
+    <button class="btn btn-vip" onclick="abrirVideo('vip')">
+      <i class="fas fa-crown"></i> Plano VIP
+    </button>
+    <button class="btn btn-gratis" onclick="abrirVideo('gratis')">
+      <i class="fas fa-ad"></i> Plano Gratuito
+    </button>
+    <button class="btn btn-linguas" onclick="abrirVideo('linguas')">
+      <i class="fas fa-language"></i> Plano de Línguas
+    </button>
+    <button class="btn btn-bloco" onclick="abrirVideo('bloco')">
+      <i class="fas fa-sticky-note"></i> Bloco de Notas
+    </button>
+    <button class="btn btn-abano" onclick="abrirVideo('abano')">
+      <i class="fas fa-dice"></i> Abano da Sorte
+    </button>
+    <button class="btn btn-quinzenal" onclick="abrirVideo('quinzenal')">
+      <i class="fas fa-calendar-alt"></i> Plano Quinzenal
+    </button>
+    <button class="btn btn-voltar-menu" onclick="voltarMenuPrincipal()">
+      <i class="fas fa-arrow-left"></i> Voltar ao Menu Principal
+    </button>
+  </div>
+
+  <!-- Modal: Guia de Instalação -->
+  <div class="modal" id="modalInstalacao">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModalInstalacao()">&times;</span>
+      <h2>📲 GUIA DE INSTALAÇÃO - PLANO DE AULA MZ</h2>
+      
+      <div class="passo">
+        <strong>1. ACESSAR A PÁGINA DE DOWNLOAD</strong>
+        <p>Clique no link abaixo para abrir a página:</p>
+        <a href="https://nhanomb3.github.io/Planodeaula-/" target="_blank" class="link-clicavel">
+          <i class="fas fa-external-link-alt"></i> https://nhanomb3.github.io/Planodeaula-/
+        </a>
+        <button class="btn-copiar" onclick="copiarLink('https://nhanomb3.github.io/Planodeaula-/')">
+          <i class="fas fa-copy"></i> Copiar link
+        </button>
+      </div>
+      
+      <div class="passo">
+        <strong>2. NA PÁGINA, VEJA A IMAGEM ABAIXO:</strong>
+        <p>A imagem mostra exatamente onde clicar. Siga o exemplo:</p>
+        
+        <div class="info-imagem">
+          <i class="fas fa-info-circle"></i> Clique na imagem para ampliar
+        </div>
+        
+        <img src="https://raw.githubusercontent.com/Nhanombe62/Plano-de-aula/2a6ec3fc1eb6803dcf7f8bf64d7e55ddfd67b7da/Screenshot_20260216_110022_Chrome.jpg" 
+             alt="Pré-visualização - Clique no botão Baixar" 
+             class="imagem-link"
+             onclick="window.open(this.src, '_blank')"
+             onerror="this.style.display='none'; document.getElementById('erroImagem').style.display='block';">
+        
+        <div id="erroImagem" style="display:none; color: #f00; text-align: center; padding: 20px; background: #fee; border-radius: 10px;">
+          ⚠️ Imagem não disponível no momento
+        </div>
+        
+        <button class="btn-baixar-destaque" onclick="simularCliqueBaixar()">
+          <i class="fas fa-download"></i> CLICAR NO BOTÃO "BAIXAR"
+        </button>
+        <p style="text-align: center; color: #666; font-size: 0.9rem;">↑ Clique neste botão na página ↑</p>
+      </div>
+      
+      <div class="passo">
+        <strong>3. APÓS CLICAR EM "BAIXAR"</strong>
+        <p>⏱️ O download é rápido — não demora mais de 5 segundos.</p>
+        <p>Você verá uma notificação de "Download concluído" no topo do ecrã.</p>
+      </div>
+      
+      <div class="passo">
+        <strong>4. LOCALIZAR O FICHEIRO TRANSFERIDO</strong>
+        <p>Toque na notificação "Download concluído" para avançar para a instalação.</p>
+      </div>
+      
+      <div class="passo">
+        <strong>5. PERMITIR A INSTALAÇÃO (se necessário)</strong>
+        <p>Em alguns telemóveis, poderá ser necessário autorizar a instalação de aplicações de fontes externas:</p>
+        <ul style="margin-left: 20px;">
+          <li>Se aparecer um aviso, clique em "Definições"</li>
+          <li>Active a opção "Permitir instalação de apps de fontes desconhecidas"</li>
+          <li>Volte atrás e clique em "Instalar"</li>
+        </ul>
+      </div>
+      
+      <div class="passo">
+        <strong>6. INSTALAÇÃO MANUAL (alternativa)</strong>
+        <p>Se a notificação não aparecer ou não conseguir instalar automaticamente:</p>
+        <ul style="margin-left: 20px;">
+          <li>Abra o Gestor de Ficheiros do seu telemóvel (pode chamar-se "Files", "Os meus ficheiros" ou "Meus documentos")</li>
+          <li>Navegue até à pasta "Transferências" ou "Downloads"</li>
+          <li>Localize o ficheiro "Plano de Aula Mz"</li>
+          <li>Toque uma vez no ficheiro e depois clique em "Instalar"</li>
+          <li>Aguarde até aparecer a mensagem "Aplicação instalada com sucesso"</li>
+        </ul>
+      </div>
+      
+      <div class="passo">
+        <strong>7. ABRIR A APLICAÇÃO</strong>
+        <p>Volte ao menu principal do seu telemóvel, procure pelo ícone do Plano de Aula MZ e toque para abrir.</p>
+      </div>
+      
+      <div class="aviso">
+        ✅ <strong>Tudo pronto!</strong> A aplicação está instalada e pronta a usar.
+      </div>
+      
+      <button class="btn" style="background: var(--cor-primaria); width: 100%; margin-top: 10px;" onclick="fecharModalInstalacao()">
+        <i class="fas fa-check"></i> Entendi, fechar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal: Página e WhatsApp -->
+  <div class="modal" id="modalContato">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModalContato()">&times;</span>
+      <h3>📱 Página e WhatsApp</h3>
+      <button class="btn" style="background: #1877F2;" onclick="window.open('https://www.facebook.com/profile.php?id=61584540906521', '_blank')">
+        <i class="fab fa-facebook"></i> Seguir Página do Facebook
+      </button>
+      <button class="btn" style="background: #25D366;" onclick="window.open('https://chat.whatsapp.com/CD6USSJ0IPf8Z0X7cxFLvX', '_blank')">
+        <i class="fab fa-whatsapp"></i> Entrar no Grupo do WhatsApp
+      </button>
+      <button class="btn" style="background: #757575; margin-top: 12px;" onclick="fecharModalContato()">
+        Fechar
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function mostrarSubmenuComoUsar() {
+      document.getElementById('botoesPrincipais').style.display = 'none';
+      document.getElementById('submenuVideos').style.display = 'none';
+      document.getElementById('submenuComoUsar').style.display = 'grid';
+    }
+
+    function mostrarSubmenuVideos() {
+      document.getElementById('botoesPrincipais').style.display = 'none';
+      document.getElementById('submenuComoUsar').style.display = 'none';
+      document.getElementById('submenuVideos').style.display = 'grid';
+    }
+
+    function voltarMenuPrincipal() {
+      document.getElementById('submenuComoUsar').style.display = 'none';
+      document.getElementById('submenuVideos').style.display = 'none';
+      document.getElementById('botoesPrincipais').style.display = 'grid';
+    }
+
+    function mostrarGuiaInstalacao() {
+      document.getElementById('modalInstalacao').style.display = 'flex';
+    }
+
+    function fecharModalInstalacao() {
+      document.getElementById('modalInstalacao').style.display = 'none';
+    }
+
+    function copiarLink(link) {
+      navigator.clipboard.writeText(link).then(function() {
+        alert('Link copiado para a área de transferência!');
+      }, function() {
+        alert('Erro ao copiar. Copie manualmente.');
+      });
+    }
+
+    function simularCliqueBaixar() {
+      window.open('https://nhanomb3.github.io/Planodeaula-/', '_blank');
+      alert('✅ Página aberta!\n\nAgora clique no botão "Baixar" que aparece na página.');
+    }
+
+    function abrirVideo(tipo) {
+      let titulo = '';
+      let videoId = '';
+
+      switch(tipo) {
+        case 'instalar':
+          titulo = 'Como Instalar o Aplicativo';
+          videoId = 'SEU_VIDEO_ID_INSTALAR'; // Aqui vai o ID do vídeo de instalação
+          break;
+        case 'vip':
+          titulo = 'Como Usar o Plano VIP';
+          videoId = 'SEU_VIDEO_ID_VIP';
+          break;
+        case 'gratis':
+          titulo = 'Plano Gratuito – Passo a Passo';
+          videoId = 'SEU_VIDEO_ID_GRATIS';
+          break;
+        case 'linguas':
+          titulo = 'Plano de Línguas (Inglês e Francês)';
+          videoId = 'SEU_VIDEO_ID_LINGUAS';
+          break;
+        case 'bloco':
+          titulo = 'Bloco de Planificação';
+          videoId = 'SEU_VIDEO_ID_BLOCO';
+          break;
+        case 'abano':
+          titulo = 'Como Jogar o Abano da Sorte';
+          videoId = 'SEU_VIDEO_ID_ABANO';
+          break;
+        case 'quinzenal':
+          titulo = 'Plano Quinzenal';
+          videoId = 'SEU_VIDEO_ID_QUINZENAL';
+          break;
+        default:
+          alert('Vídeo não disponível.');
+          return;
+      }
+
+      if (videoId.startsWith('SEU_VIDEO_ID')) {
+        alert(`⚠️ Vídeo "${titulo}" ainda não foi configurado.\n\nVocê pode substituir os IDs no código HTML.`);
+        return;
+      }
+
+      window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+    }
+
+    function mostrarPaginaWhatsApp() {
+      document.getElementById('modalContato').style.display = 'flex';
+    }
+
+    function fecharModalContato() {
+      document.getElementById('modalContato').style.display = 'none';
+    }
+
+    // Fechar modais ao clicar fora
+    document.getElementById('modalInstalacao').addEventListener('click', function(e) {
+      if (e.target === this) fecharModalInstalacao();
+    });
+    
+    document.getElementById('modalContato').addEventListener('click', function(e) {
+      if (e.target === this) fecharModalContato();
+    });
+  </script>
+</body>
+</html>

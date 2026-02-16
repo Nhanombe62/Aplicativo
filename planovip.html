@@ -2,57 +2,128 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>Plano de Aula Moçambicano</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: "Times New Roman", Times, serif;
-      font-size: 12px;
+      font-size: 14px;
       background: #eef2f5;
-      padding: 20px;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
+      margin: 0;
+      padding: 10px;
     }
     html, body {
       -webkit-touch-callout: none;
       -webkit-user-drag: none;
     }
     .container {
-      max-width: 1200px;
-      margin: auto;
+      max-width: 100%;
+      margin: 0 auto;
       background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    h1, h2, h3 {
+    
+    /* Indicador de fases */
+    .fases-indicador {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px 0;
+      border-bottom: 2px solid #e0e7ff;
+    }
+    
+    .fase-item {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-weight: bold;
+      color: #888;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .fase-item.ativo {
+      color: #2b5dab;
+      border-bottom-color: #2b5dab;
+    }
+    
+    .fase-numero {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      border-radius: 50%;
+      background: #e0e7ff;
+      color: #2b5dab;
+      margin-right: 8px;
+      font-size: 14px;
+    }
+    
+    .fase-item.ativo .fase-numero {
+      background: #2b5dab;
+      color: white;
+    }
+    
+    h1 {
+      font-size: 22px;
       text-align: center;
       color: #2b5dab;
+      margin: 5px 0 0;
+    }
+    h3 {
+      font-size: 16px;
+      text-align: center;
+      color: #444;
+      margin: 0 0 20px;
     }
     label {
       font-weight: 700;
       margin-top: 12px;
       display: block;
+      font-size: 14px;
+      color: #333;
     }
-    input[type="text"], input[type="password"] {
+    input[type="text"], input[type="date"], input[type="password"], textarea {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 12px;
+      padding: 14px;
+      margin-top: 4px;
+      border: 2px solid #e0e7ff;
+      border-radius: 12px;
+      font-size: 15px;
       font-family: "Times New Roman", Times, serif;
+      -webkit-appearance: none;
+      transition: border-color 0.2s;
+    }
+    input[type="date"] {
+      padding: 12px 14px;
+    }
+    input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+      border-color: #2b5dab;
+      outline: none;
+    }
+    textarea {
+      min-height: 150px;
+      resize: vertical;
     }
     button {
-      margin-top: 15px;
-      padding: 10px 18px;
+      margin-top: 20px;
+      padding: 16px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
     }
     .btn-azul {
       background: #2b5dab;
@@ -66,80 +137,250 @@
       background: #6c757d;
       color: #fff;
     }
-    .botoes {
-      text-align: center;
-    }
-    .pagamento-section {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      background: #e6f0ff;
-      border: 1px solid #a0c4ff;
-      border-radius: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #333;
-      padding: 4px;
-      vertical-align: top;
-    }
-    th {
-      background: #e0e7ff;
-      text-align: center;
-    }
-    .align-right {
-      text-align: right;
-    }
-    .quadro-moral {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 12pt;
-      background: #fff;
-      padding: 15px;
-      border: 1px dashed #bba100;
-      border-radius: 8px;
-      margin-top: 30px;
-      page-break-before: always;
-    }
-    .rodape {
-      text-align: center;
-      font-style: italic;
-      margin-top: 30px;
-      color: #555;
-    }
-    textarea {
-      width: 100%;
-      min-height: 150px;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 12px;
-      margin-top: 10px;
-      padding: 10px;
-    }
-    .preliminares {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .loading {
-      display: none;
-      text-align: center;
-      margin: 15px 0;
-      font-weight: 700;
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #2b5dab;
       color: #2b5dab;
     }
-    .loading::after {
-      content: " ⏳";
-      animation: spin 1s linear infinite;
+    .botoes-duplo {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .botoes-duplo button {
+      margin-top: 0;
+      flex: 1;
     }
-
-    /* Progresso */
+    
+    /* Fases */
+    .fase {
+      display: none;
+    }
+    .fase.ativo {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Parte 1 e 2 da Fase 1 */
+    #parte1, #parte2 {
+      transition: all 0.3s ease;
+    }
+    
+    /* Fase 1 - Dados em duas colunas */
+    .dados-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .dados-coluna {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .dados-coluna label {
+      margin-top: 0;
+      font-size: 14px;
+    }
+    
+    .dados-coluna input {
+      padding: 14px;
+      font-size: 15px;
+    }
+    
+    /* Fase 2 - Explicação */
+    .explicacao-container {
+      background: #f9fbfd;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #d0e3ff;
+      margin: 20px 0;
+    }
+    
+    .acao-destacada {
+      background: linear-gradient(135deg, #1a4a8a, #2b5dab);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 18px 14px;
+      margin: 15px 0;
+      border-radius: 14px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(43, 93, 171, 0.3);
+    }
+    
+    .acao-destacada::after {
+      content: "→";
+      font-size: 20px;
+    }
+    
+    .instrucoes-chat {
+      background: #e3f2fd;
+      border-left: 4px solid #2b5dab;
+      padding: 15px;
+      border-radius: 0 12px 12px 0;
+      margin: 15px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .botoes-quadro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .botoes-quadro button {
+      margin: 0;
+      padding: 16px 6px;
+      font-size: 15px;
+    }
+    
+    .btn-imagem {
+      background: linear-gradient(135deg, #7b1fa2, #9c27b0);
+      color: white;
+    }
+    
+    .preview-imagem {
+      max-width: 100%;
+      max-height: 180px;
+      display: block;
+      margin: 15px auto;
+      border-radius: 12px;
+      border: 2px solid #ddd;
+    }
+    
+    /* Fase 3 - PDF */
+    .pagamento-section {
+      background: #e6f0ff;
+      border: 2px solid #a0c4ff;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .codigo-destaque {
+      background: linear-gradient(135deg, #2b5dab, #1a4a8a);
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      font-family: monospace;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 15px 0;
+      letter-spacing: 4px;
+      border: 2px solid #ffd700;
+      text-align: center;
+    }
+    
+    .plano-completo {
+      margin: 20px 0;
+      padding: 20px;
+      border: 2px dashed #9fa8da;
+      border-radius: 16px;
+      background: #f5f9ff;
+      position: relative;
+      font-size: 13px;
+      overflow: hidden;
+    }
+    
+    .marca-dagua {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    .marca-dagua span {
+      font-size: 60px;
+      font-weight: bold;
+      color: rgba(220, 53, 69, 0.15);
+      white-space: nowrap;
+      transform: rotate(-30deg);
+      text-transform: uppercase;
+      border: 3px solid rgba(220, 53, 69, 0.2);
+      padding: 20px 40px;
+      border-radius: 20px;
+    }
+    
+    /* Tabela com scroll - AJUSTADA PARA MARGEM DIREITA */
+    .tabela-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 15px 0;
+      position: relative;
+      z-index: 5;
+    }
+    
+    table {
+      min-width: 1500px;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      background: white;
+      margin-left: auto;
+      margin-right: 0;
+    }
+    
+    th, td {
+      border: 1px solid #000;
+      padding: 6px 4px;
+      vertical-align: top;
+    }
+    
+    th {
+      background: #e0e0e0;
+      color: #000;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    
+    td {
+      color: #000;
+    }
+    
+    /* TODAS as células da tabela e objetivos são editáveis */
+    td[contenteditable="true"], p[contenteditable="true"] {
+      background-color: #fff9e6;
+      cursor: text;
+      border-radius: 4px;
+      padding: 4px 6px;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+    
+    td[contenteditable="true"]:focus, p[contenteditable="true"]:focus {
+      outline: 2px solid #2b5dab;
+      background-color: #fff3cd;
+    }
+    
+    /* Garantir que elementos não editáveis não interfiram */
+    td[contenteditable="true"] * {
+      pointer-events: none;
+    }
+    
     .progress-container {
       width: 100%;
       background-color: #f0f0f0;
@@ -152,450 +393,391 @@
       width: 0%;
       height: 30px;
       background: linear-gradient(90deg, #2b5dab, #4a7fd4);
-      border-radius: 10px;
-      transition: width 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: bold;
-      position: relative;
-    }
-    .progress-spinner {
-      position: absolute;
-      right: 10px;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top: 2px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    .progress-text {
-      z-index: 1;
-    }
-
-    /* Fluxos */
-    .fluxo {
-      display: none;
-    }
-    .fluxo.ativo {
-      display: block;
-      animation: fadeIn 0.5s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Novo estilo para o Fluxo 2 simplificado */
-    .quadro-container {
-      background: #f9fbfd;
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin: 25px 0;
-      position: relative;
-      border: 1px solid #d0e3ff;
     }
     
-    .quadro-container::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #2b5dab, #4a7fd4);
-      border-radius: 5px 5px 0 0;
-    }
-    
-    .acao-destacada {
-      background: linear-gradient(135deg, #1a4a8a, #2b5dab);
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 14px 20px;
-      margin: 20px 0;
-      box-shadow: 0 4px 8px rgba(43, 93, 171, 0.3);
-      border: none;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s ease;
-      width: 100%;
-      justify-content: center;
-    }
-    
-    .acao-destacada:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(43, 93, 171, 0.4);
-    }
-    
-    .acao-destacada::after {
-      content: "→";
-      font-size: 20px;
-    }
-    
-    .instrucoes-chat {
-      background: #e3f2fd;
-      border-left: 4px solid #2b5dab;
-      padding: 15px;
-      border-radius: 0 8px 8px 0;
-      margin: 15px 0;
+    .rodape {
+      text-align: center;
+      font-style: italic;
+      margin-top: 30px;
+      color: #555;
       font-size: 13px;
     }
     
-    .visualizar-plano {
-      text-align: center;
-      margin: 20px 0;
-    }
-    
-    .visualizar-plano button {
-      background: #e0e7ff;
-      color: #2b5dab;
-      border: 1px solid #a5b4fc;
-    }
-    
-    .visualizar-plano button:hover {
-      background: #c7d2fe;
-    }
-    
-    .plano-completo {
-      margin-top: 30px;
-      padding: 20px;
-      border: 1px dashed #9fa8da;
-      border-radius: 8px;
-      background: #f5f9ff;
-      display: none;
-      position: relative;
-    }
-    
-    /* Marca d'água para plano não pago */
-    .marca-dagua {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-45deg);
-      font-size: 24px;
-      font-weight: bold;
-      color: rgba(220, 53, 69, 0.2);
-      pointer-events: none;
-      white-space: nowrap;
-      z-index: 1;
-    }
-    
-    /* Quadro Moral com scroll */
-    .quadro-visualizacao {
-      min-height: 200px;
-      max-height: 400px;
-      overflow-y: auto;
-      border: 1px solid #a0c4ff;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 20px 0;
-      background: white;
-      font-family: "Times New Roman", serif;
-      font-size: 12pt;
-      line-height: 1.5;
-    }
-    
-    .quadro-visualizacao::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .quadro-visualizacao::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 4px;
-    }
-    
-    .quadro-visualizacao::-webkit-scrollbar-thumb {
-      background: #2b5dab;
-      border-radius: 4px;
-    }
-    
-    .quadro-visualizacao::-webkit-scrollbar-thumb:hover {
-      background: #1a4a8a;
-    }
-    
-    .botao-gerar-pdf {
-      background: linear-gradient(135deg, #283593, #3949ab);
-      color: white;
-      padding: 16px 32px;
-      font-size: 18px;
-      font-weight: bold;
-      margin: 25px 0 15px;
-      box-shadow: 0 6px 15px rgba(43, 93, 171, 0.4);
-      border: none;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-    }
-    
-    .botao-gerar-pdf:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(43, 93, 171, 0.5);
-    }
-    
-    .botao-gerar-pdf:active {
-      transform: translateY(1px);
-    }
-    
-    .botao-gerar-pdf::after {
-      content: " ↓";
-      font-size: 20px;
-    }
-    
-    /* Botões do Quadro Moral */
-    .botoes-quadro {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin: 15px 0 20px;
-    }
-    
-    .btn-imagem {
-      background: linear-gradient(135deg, #7b1fa2, #9c27b0);
-      color: white;
-      padding: 10px 15px;
+    #mensagemCodigo {
       font-size: 14px;
-      border-radius: 6px;
+      word-break: break-word;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    /* Estilo para a explicação dentro do plano (só aparece ao clicar) */
+    .explicacao-plano {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #2b5dab;
+      position: relative;
+      z-index: 5;
+      background: white;
     }
     
-    .btn-imagem:hover {
-      background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+    .explicacao-plano h4 {
+      color: #2b5dab;
+      margin-bottom: 10px;
     }
     
-    .preview-imagem {
-      max-width: 100%;
-      max-height: 200px;
-      display: block;
-      margin: 10px auto;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    
-    @media (max-width: 768px) {
-      .preliminares {
-        grid-template-columns: 1fr;
-      }
-      .botao-gerar-pdf {
-        width: 100%;
-      }
-      .quadro-visualizacao {
-        max-height: 300px;
-      }
-      .botoes-quadro {
-        flex-direction: column;
-      }
-      button {
-        width: 100%;
-      }
+    @media (max-width: 480px) {
+      h1 { font-size: 20px; }
+      .fase-numero { margin-right: 4px; }
+      .dados-grid { grid-template-columns: 1fr; gap: 5px; }
+      .botoes-quadro { grid-template-columns: 1fr; }
+      .botoes-duplo { flex-direction: column; }
+      .marca-dagua span { font-size: 40px; }
     }
   </style>
 </head>
-<body oncontextmenu="return false">
+<body oncontextmenu="return false" oncopy="return false" oncut="return false" onpaste="return false" onkeydown="return disableKeys(event)">
   <div class="container">
-    <!-- 🔹 FLUXO 1: Entrada de Dados -->
-    <div id="fluxo1" class="fluxo ativo">
-      <h1>Plano de Aula Moçambicano</h1>
-      <h3 style="margin-top:-10px;color:#444;">Por Edmilson Bartolomeu Nhanombe</h3>
-
-      <label>Nome da Escola:</label>
-      <input type="text" id="escola" placeholder="Somente letras" maxlength="60" />
-
-      <label>Data:</label>
-      <input type="text" id="data" placeholder="ddmmaaaa (apenas letras e números)" maxlength="20"/>
-
-      <label>Nome do Professor:</label>
-      <input type="text" id="professor" placeholder="Somente letras" maxlength="60" />
-
-      <label>Disciplina:</label>
-      <input type="text" id="disciplina" placeholder="Somente letras" maxlength="60" />
-
-      <label>Classe:</label>
-      <input type="text" id="classe" placeholder="Máx 2 números" maxlength="2" />
-
-      <label>Unidade Temática:</label>
-      <input type="text" id="unidade" placeholder="Letras e números" maxlength="80" />
-
-      <label>Tema da Aula:</label>
-      <input type="text" id="tema" placeholder="Letras e símbolos matemáticos" maxlength="120" />
-
-      <div class="preliminares">
-        <div>
-          <label>Turma:</label>
-          <input type="text" id="turma" placeholder="1 letra" maxlength="1" />
-        </div>
-        <div>
-          <label>Nº de Alunos:</label>
-          <input type="text" id="numAlunos" class="align-right" placeholder="Somente números" maxlength="4" />
-        </div>
-        <div>
-          <label>Período:</label>
-          <input type="text" id="periodo" placeholder="Somente letras" maxlength="30" />
-        </div>
-        <div>
-          <label>Nº de Lição:</label>
-          <input type="text" id="numLicao" placeholder="Somente números" maxlength="4" />
-        </div>
-        <div>
-          <label>Tipo de Aula:</label>
-          <input type="text" id="tipoAula" placeholder="Somente letras" maxlength="40" />
-        </div>
-        <div>
-          <label>Duração:</label>
-          <input type="text" id="duracao" value="45 minutos" readonly />
-        </div>
+    <!-- Indicador de fases -->
+    <div class="fases-indicador">
+      <div class="fase-item ativo" id="indicadorFase1">
+        <span class="fase-numero">1</span> Dados
       </div>
-
-      <div class="botoes">
-        <button class="btn-azul" onclick="irParaFluxo2()">📘 Gerar Plano</button>
+      <div class="fase-item" id="indicadorFase2">
+        <span class="fase-numero">2</span> Explicação
       </div>
-
-      <div class="rodape">
-        Graduado no IFP de Morrumbala <br/>
-        <button class="btn-azul" onclick="alert('Em caso de dificuldades contacte: 876393961 ou 834890828')">Contactar Suporte</button>
-        <br/><br/>
-        🔗 <a href="https://whatsapp.com/channel/0029VbBdJD0BFLgNjJGmUO2O" target="_blank" style="color:#2b5dab; font-weight:bold; text-decoration:none;">
-          Canal de WhatsApp para mais informações
-        </a>
+      <div class="fase-item" id="indicadorFase3">
+        <span class="fase-numero">3</span> PDF
       </div>
     </div>
 
-    <!-- 🔹 FLUXO 2: Quadro Moral (SIMPLIFICADO) -->
-    <div id="fluxo2" class="fluxo">
-      <h1>Plano de Aula Moçambicano</h1>
-      <h3 style="margin-top:-10px;color:#444;">Por Edmilson Bartolomeu Nhanombe</h3>
+    <!-- FASE 1: DADOS (dividida em duas partes) -->
+    <div id="fase1" class="fase ativo">
+      <h1>Plano de Aula MZ</h1>
+      <h3>Edmilson Nhanombe Nhanombe</h3>
 
-      <div class="quadro-container">
-        <h2 style="text-align:center; color:#2b5dab; margin-bottom:20px;">QUADRO MORAL</h2>
+      <!-- PARTE 1: Escola até Unidade Temática -->
+      <div id="parte1">
+        <div class="dados-grid">
+          <div class="dados-coluna">
+            <label>Escola:</label>
+            <input type="text" id="escola" placeholder="Digite o nome da escola" maxlength="60" />
+            
+            <label>Data (opcional):</label>
+            <input type="date" id="data" />
+            
+            <label>Professor:</label>
+            <input type="text" id="professor" placeholder="Nome completo" maxlength="60" />
+          </div>
+          <div class="dados-coluna">
+            <label>Disciplina:</label>
+            <input type="text" id="disciplina" placeholder="Ex: Matemática" maxlength="60" />
+            
+            <label>Classe:</label>
+            <input type="text" id="classe" placeholder="Ex: 8" maxlength="2" />
+            
+            <label>Unidade Temática:</label>
+            <input type="text" id="unidade" placeholder="Ex: Geometria" maxlength="80" />
+          </div>
+        </div>
+        <button class="btn-azul" onclick="mostrarParte2()">PRÓXIMO →</button>
+      </div>
+      
+      <!-- PARTE 2: Tema, Turma, Alunos, Período, Lição, Tipo de Aula -->
+      <div id="parte2" style="display:none;">
+        <div class="dados-grid">
+          <div class="dados-coluna">
+            <label>Tema da Aula:</label>
+            <input type="text" id="tema" placeholder="Ex: Triângulos" maxlength="120" />
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label>Turma:</label>
+                <input type="text" id="turma" placeholder="Ex: A" maxlength="1" />
+              </div>
+              <div>
+                <label>Alunos:</label>
+                <input type="text" id="numAlunos" placeholder="Ex: 35" maxlength="4" />
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label>Período:</label>
+                <input type="text" id="periodo" placeholder="Ex: Manhã" maxlength="30" />
+              </div>
+              <div>
+                <label>Lição nº:</label>
+                <input type="text" id="numLicao" placeholder="Ex: 12" maxlength="4" />
+              </div>
+            </div>
+          </div>
+          <div class="dados-coluna">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label>Tipo de Aula:</label>
+                <input type="text" id="tipoAula" placeholder="Ex: Expositiva" maxlength="40" />
+              </div>
+              <div>
+                <label>Duração:</label>
+                <input type="text" id="duracao" value="45 minutos" readonly style="background:#f0f0f0;" />
+              </div>
+            </div>
+          </div>
+        </div>
         
-        <!-- Botão DESTACADO para Buscar Explicação -->
+        <div class="botoes-duplo">
+          <button class="btn-outline" onclick="voltarParte1()">← VOLTAR</button>
+          <button class="btn-azul" onclick="irParaFase2()">EXPLICAÇÃO DO TEMA →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2: EXPLICAÇÃO (Quadro Mural) -->
+    <div id="fase2" class="fase">
+      <h1>Plano de Aula MZ</h1>
+      <h3>Edmilson Nhanombe Nhanombe</h3>
+
+      <div class="explicacao-container">
+        <h2 style="text-align:center; color:#2b5dab; margin-bottom:20px;">QUADRO MURAL</h2>
+        
         <button class="acao-destacada" onclick="buscarExplicacao()" id="botaoExplicacao">
-          🔍 BUSCAR EXPLICAÇÃO PARA O TEMA NO CHATGPT
+          🔍 BUSCAR EXPLICAÇÃO NO CHATGPT
         </button>
         
         <div class="instrucoes-chat">
-          <strong>Instruções:</strong><br>
-          1. Clique no botão acima para abrir o ChatGPT com o tema pré-preenchido<br>
-          2. Copie toda a explicação gerada<br>
-          3. Cole na área abaixo<br>
-          4. Clique em "💾 SALVAR COMO QUADRO MORAL" ou "📷 CARREGAR FOTO"
+          <strong>📌 Instruções:</strong><br>
+          1. Clique no botão acima para abrir o ChatGPT<br>
+          2. Copie a explicação gerada (máximo 1 página, inclua 3 exercícios com respostas)<br>
+          3. Cole no campo abaixo e clique em SALVAR<br>
+          4. Depois clique em "VISUALIZAR PLANO NÃO PAGO" para ver a explicação por baixo da tabela
         </div>
         
-        <textarea id="campoEdicaoQuadro" placeholder="Cole aqui a explicação completa do ChatGPT (sem emojis nem símbolos)" 
-          style="width:100%; min-height:200px; font-family:'Times New Roman',serif; font-size:12px; padding:10px; margin:15px 0; border:1px solid #a0c4ff; border-radius:6px; resize:vertical;"></textarea>
+        <textarea id="campoEdicaoQuadro" placeholder="Cole aqui a explicação completa do ChatGPT (inclua 3 exercícios com respostas)"></textarea>
         
-        <!-- Botões do Quadro Moral -->
         <div class="botoes-quadro">
-          <button class="btn-azul" onclick="salvarQuadroMoral()" style="padding:12px 25px; font-size:14px;">
-            💾 SALVAR TEXTO
-          </button>
-          <button class="btn-imagem" onclick="document.getElementById('inputFotoLivro').click()">
-            📷 CARREGAR FOTO
-          </button>
+          <button class="btn-azul" onclick="salvarExplicacao()">💾 SALVAR TEXTO</button>
+          <button class="btn-imagem" onclick="document.getElementById('inputFotoLivro').click()">📷 CARREGAR FOTO</button>
           <input type="file" id="inputFotoLivro" accept="image/*" style="display:none;" onchange="exibirFotoLivro(event)">
-          <button class="btn-cinza" onclick="apagarExplicacao()" style="padding:12px 25px; font-size:14px;">
-            🗑️ LIMPAR
-          </button>
+          <button class="btn-cinza" onclick="apagarExplicacao()">🗑️ LIMPAR</button>
         </div>
         
-        <div id="previewFotoLivro" style="text-align:center; margin:10px 0;"></div>
-        
-        <!-- Área de visualização com scroll -->
-        <div class="quadro-visualizacao" id="quadroVisualizacao">
-          <p style="color:#666; text-align:center; margin-top:50px;">O conteúdo aparecerá aqui após salvar</p>
-        </div>
-        
-        <div class="visualizar-plano">
-          <button onclick="togglePlanoCompleto()">👁️ VISUALIZAR PLANO NÃO PAGO</button>
-        </div>
-        
-        <div id="planoCompletoSection" class="plano-completo">
-          <div class="marca-dagua">PLANO NÃO PAGO</div>
-          <div id="planoPDF"></div>
-        </div>
+        <div id="previewFotoLivro" style="text-align:center;"></div>
       </div>
 
-      <!-- Botão GERAR PDF destacado -->
-      <button class="botao-gerar-pdf" onclick="irParaFluxo3()">
-        📥 GERAR PDF COMPLETO (PAGO)
-      </button>
+      <!-- Botão visualizar plano não pago - A explicação aparece aqui por baixo da tabela -->
+      <button class="btn-outline" onclick="togglePlanoNaoPago()">👁️ VISUALIZAR PLANO NÃO PAGO</button>
+      
+      <div id="planoNaoPagoSection" style="display:none;" class="plano-completo">
+        <div class="marca-dagua"><span>NÃO PAGO</span></div>
+        <div id="planoPDF"></div>
+        <!-- A explicação aparece aqui por baixo da tabela -->
+        <div id="explicacaoNoPlano" class="explicacao-plano" style="display:none;"></div>
+        <div id="imagemNoPlano" class="explicacao-plano" style="display:none;"></div>
+      </div>
 
-      <div class="botoes" style="margin-top:10px;">
-        <button class="btn-azul" style="background:#666;" onclick="voltarParaFluxo1()">
-          ↩️ VOLTAR E EDITAR DADOS
-        </button>
+      <div class="botoes-duplo" style="margin-top:20px;">
+        <button class="btn-outline" onclick="voltarParaFase1()">← VOLTAR</button>
+        <button class="btn-verde" onclick="irParaFase3()">📥 GERAR PDF</button>
       </div>
     </div>
 
-    <!-- 🔹 FLUXO 3: Geração de PDF -->
-    <div id="fluxo3" class="fluxo">
-      <h1>Plano de Aula Moçambicano</h1>
-      <h3 style="margin-top:-10px;color:#444;">Por Edmilson Bartolomeu Nhanombe</h3>
+    <!-- FASE 3: PDF (com código) -->
+    <div id="fase3" class="fase">
+      <h1>Plano de Aula MZ</h1>
+      <h3>Edmilson Nhanombe Nhanombe</h3>
 
-      <div class="pagamento-section" id="pagamentoOpcao" style="display:block;">
-        <p><strong>Escolha o tipo de pagamento:</strong></p>
-        <button class="btn-azul" onclick="escolherPagamento('diario')">Pagamento Diário (15 MZN) - E-mola: 876393961</button>
-        <button class="btn-azul" onclick="escolherPagamento('mensal')">Pagamento Mensal (150 MZN) - E-mola: 876393961</button>
-        <p style="margin-top:15px;"><strong>Introduza o código de acesso:</strong></p>
-        <input type="password" id="codigoAcesso" placeholder="Digite o código enviado (A-Z e números)" maxlength="20" />
-        <div id="mensagemCodigo" style="margin-top:8px; font-weight:bold; color:#b00;"></div>
-        <div class="loading" id="loading"></div>
-        <button class="btn-azul" onclick="validarCodigo()">✅ Confirmar Código e Gerar PDF</button>
-        <p style="margin-top: 15px; font-weight:bold;">Em caso de dificuldades contacte: 876393961 ou 834890828</p>
+      <!-- Área de código (sem rascunho) -->
+      <div class="pagamento-section" id="codigoSection">
+        <p style="font-weight:bold; text-align:center; margin-bottom:15px;">🔐 INSIRA O CÓDIGO DE ACESSO</p>
+        
+        <!-- Código gerado aleatoriamente -->
+        <div class="codigo-destaque" id="codigoAtual">---</div>
+        
+        <p style="text-align:center; margin:10px 0;">Digite o código acima para gerar o PDF</p>
+        
+        <input type="text" id="codigoAcesso" class="input-codigo" placeholder="Digite o código" maxlength="8" style="text-align:center; font-size:22px; letter-spacing:3px; font-weight:bold; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+        
+        <div id="mensagemCodigo" style="color:#b00; text-align:center;"></div>
+        <div class="loading" id="loading" style="display:none; text-align:center;">⏳ Validando...</div>
+        
+        <button class="btn-verde" onclick="validarCodigo()" style="margin-top:15px;">✅ CONFIRMAR CÓDIGO</button>
       </div>
 
       <div class="progress-container" id="progressContainer">
         <div class="progress-bar" id="progressBar">
           <span class="progress-text" id="progressText">0%</span>
-          <div class="progress-spinner"></div>
         </div>
       </div>
 
-      <div class="rodape">
-        Graduado no IFP de Morrumbala <br/>
-        <button class="btn-azul" onclick="alert('Em caso de dificuldades contacte: 876393961 ou 834890828')">Contactar Suporte</button>
-        <br/><br/>
-        🔗 <a href="https://whatsapp.com/channel/0029VbBdJD0BFLgNjJGmUO2O" target="_blank" style="color:#2b5dab; font-weight:bold; text-decoration:none;">
-          Canal de WhatsApp para mais informações
-        </a>
+      <div class="botoes-duplo">
+        <button class="btn-outline" onclick="voltarParaFase2()">← VOLTAR</button>
       </div>
     </div>
   </div>
 
   <script>
+    // Bloqueio total de teclas de atalho e cópia - MAS PERMITE EDIÇÃO
+    function disableKeys(e) {
+      // Permitir teclas normais de edição (letras, números, backspace, delete, setas, etc)
+      const key = e.key || e.keyCode;
+      
+      // Lista de teclas que devem ser permitidas para edição
+      const allowedKeys = [
+        'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+        'Home', 'End', 'Tab', 'Enter', 'Shift'
+      ];
+      
+      // Permitir teclas de edição normais
+      if (allowedKeys.includes(e.key)) {
+        return true;
+      }
+      
+      // Permitir letras, números e caracteres comuns (para digitação)
+      if (e.key.length === 1) {
+        return true;
+      }
+      
+      // Bloquear apenas teclas de função e combinações perigosas
+      
+      // F2 (113)
+      if (key === 113 || key === 'F2') {
+        e.preventDefault();
+        return false;
+      }
+      
+      // F5 (116)
+      if (key === 116 || key === 'F5') {
+        e.preventDefault();
+        return false;
+      }
+      
+      // F11 (122)
+      if (key === 122 || key === 'F11') {
+        e.preventDefault();
+        return false;
+      }
+      
+      // F12 (123)
+      if (key === 123 || key === 'F12') {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+Shift+I (Desenvolvedor)
+      if (e.ctrlKey && e.shiftKey && (key === 73 || key === 'I')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+Shift+J (Console)
+      if (e.ctrlKey && e.shiftKey && (key === 74 || key === 'J')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+U (Ver código fonte)
+      if (e.ctrlKey && (key === 85 || key === 'U')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+S (Salvar)
+      if (e.ctrlKey && (key === 83 || key === 'S')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+P (Imprimir)
+      if (e.ctrlKey && (key === 80 || key === 'P')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+C (Copiar) - BLOQUEAR
+      if (e.ctrlKey && (key === 67 || key === 'C')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+X (Cortar) - BLOQUEAR
+      if (e.ctrlKey && (key === 88 || key === 'X')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+V (Colar) - BLOQUEAR
+      if (e.ctrlKey && (key === 86 || key === 'V')) {
+        e.preventDefault();
+        return false;
+      }
+      
+      return true;
+    }
+
+    // Bloqueio adicional de eventos - MAS PERMITE EDIÇÃO
+    document.addEventListener('keydown', disableKeys);
+    
+    // Bloquear menu de contexto (clique direito)
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
+    
+    // Bloquear arrastar
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+      return false;
+    });
+    
+    // Bloquear PrintScreen
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText('').catch(() => {});
+        alert('❌ Captura de ecrã bloqueada!');
+        e.preventDefault();
+        return false;
+      }
+    });
+    
+    // Bloquear combinações de teclas com Alt (mas permitir AltGr para caracteres especiais)
+    document.addEventListener('keydown', function(e) {
+      if (e.altKey && !e.ctrlKey && e.key !== 'Alt' && e.key !== 'Control') {
+        // Permitir AltGr (que é Ctrl+Alt em algumas configurações)
+        if (e.ctrlKey && e.altKey) {
+          return true;
+        }
+        e.preventDefault();
+        return false;
+      }
+    });
+
     const { jsPDF } = window.jspdf;
     let tipoPagamentoSelecionado = null;
-    let imagemQuadroMoral = null;
+    let imagemQuadroMural = null;
+    let explicacaoTexto = "";
+    let codigoAtual = "";
 
-    // ---------- Validação / Normalização de campos ----------
+    // Validações de input
     function apenasDigitosMax(el, maxLen) {
       el.value = el.value.replace(/\D/g, '').slice(0, maxLen || el.maxLength || 9999);
     }
-
     function apenasLetraUnica(el) {
       el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g, '').slice(0, 1);
     }
-
     function apenasLetras(el) {
       el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, '');
     }
-
     function letrasENumeros(el) {
       el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s]/g, '');
     }
-
     function temaPermitido(el) {
       el.value = el.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s+\-\*\=\/\^_\(\)\{\}\[\]×÷±√%.,:;'"<>]/g, '');
     }
-
-    function codigoConfirmacaoOnInput(el) {
-      el.value = el.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    }
-
     function sanitizarQuadroInputRaw(str) {
       if (!str) return '';
       str = str.replace(/[\u{1F600}-\u{1F64F}]/gu, '')
@@ -603,81 +785,140 @@
                .replace(/[\u{1F680}-\u{1F6FF}]/gu, '')
                .replace(/[\u{2600}-\u{26FF}]/gu, '')
                .replace(/[\u{2700}-\u{27BF}]/gu, '');
-      str = str.replace(/[^\wÀ-ÖØ-öø-ÿ\s0-9\.\,\;\:\?\!\-\–\—\(\)\'\"%\/\n\r]/g, '');
-      return str;
+      return str.replace(/[^\wÀ-ÖØ-öø-ÿ\s0-9\.\,\;\:\?\!\-\–\—\(\)\'\"%\/\n\r]/g, '');
     }
 
-    // ---------- Funções de Navegação ----------
-    function irParaFluxo2() {
-      const get = id => document.getElementById(id)?.value?.trim() || '';
-      const escola = get("escola"), data = get("data"), professor = get("professor"),
-            disciplina = get("disciplina"), classe = get("classe"), tema = get("tema"), unidade = get("unidade"),
-            turma = get("turma"), numAlunos = get("numAlunos"), periodo = get("periodo"),
-            numLicao = get("numLicao"), tipoAula = get("tipoAula");
+    // Função para formatar data do formato ISO para dd/mm/aaaa
+    function formatarData(dataISO) {
+      if (!dataISO) return '';
+      const partes = dataISO.split('-');
+      if (partes.length === 3) {
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+      return dataISO;
+    }
 
-      if (!tema) { alert("Por favor, preencha o 'Tema da Aula'."); return; }
+    // Função para gerar código aleatório
+    function gerarCodigoAleatorio() {
+      const prefixos = ['MZ', 'PL', 'AU', 'AL', 'UN', 'ZA', 'ES', 'PR', 'MO', 'CM'];
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+      let codigo = prefixo;
+      for (let i = 0; i < 4; i++) {
+        codigo += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return codigo;
+    }
 
-      const planoData = { escola, data, professor, disciplina, classe, tema, unidade, turma, numAlunos, periodo, numLicao, tipoAula };
+    // Navegação entre fases
+    function mostrarParte2() {
+      const escola = document.getElementById('escola').value.trim();
+      const professor = document.getElementById('professor').value.trim();
+      const disciplina = document.getElementById('disciplina').value.trim();
+      const classe = document.getElementById('classe').value.trim();
+      const unidade = document.getElementById('unidade').value.trim();
+      
+      if (!escola || !professor || !disciplina || !classe || !unidade) {
+        alert('Preencha todos os campos obrigatórios (data é opcional)');
+        return;
+      }
+      
+      document.getElementById('parte1').style.display = 'none';
+      document.getElementById('parte2').style.display = 'block';
+    }
+
+    function voltarParte1() {
+      document.getElementById('parte1').style.display = 'block';
+      document.getElementById('parte2').style.display = 'none';
+    }
+
+    function irParaFase2() {
+      const tema = document.getElementById('tema').value.trim();
+      const turma = document.getElementById('turma').value.trim();
+      const numAlunos = document.getElementById('numAlunos').value.trim();
+      const periodo = document.getElementById('periodo').value.trim();
+      const numLicao = document.getElementById('numLicao').value.trim();
+      const tipoAula = document.getElementById('tipoAula').value.trim();
+      
+      if (!tema || !turma || !numAlunos || !periodo || !numLicao || !tipoAula) {
+        alert('Preencha todos os campos');
+        return;
+      }
+      
+      // Formatar data se existir
+      const dataRaw = document.getElementById('data').value;
+      const dataFormatada = formatarData(dataRaw);
+      
+      const planoData = {
+        escola: document.getElementById('escola').value,
+        data: dataFormatada,
+        professor: document.getElementById('professor').value,
+        disciplina: document.getElementById('disciplina').value,
+        classe: document.getElementById('classe').value,
+        tema: tema,
+        unidade: document.getElementById('unidade').value,
+        turma: turma,
+        numAlunos: numAlunos,
+        periodo: periodo,
+        numLicao: numLicao,
+        tipoAula: tipoAula
+      };
       sessionStorage.setItem("planoData", JSON.stringify(planoData));
-
+      
       gerarPlanoHTML(planoData);
       
-      document.getElementById("fluxo1").classList.remove("ativo");
-      document.getElementById("fluxo2").classList.add("ativo");
-      
-      // Rolar até o botão destacado
-      setTimeout(() => {
-        const botao = document.querySelector('.acao-destacada');
-        if (botao) botao.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
+      document.getElementById("fase1").classList.remove("ativo");
+      document.getElementById("fase2").classList.add("ativo");
+      document.getElementById("indicadorFase1").classList.remove("ativo");
+      document.getElementById("indicadorFase2").classList.add("ativo");
     }
 
-    function irParaFluxo3() {
-      // Verificar se o quadro moral foi preenchido
-      const quadroTexto = document.getElementById("campoEdicaoQuadro").value.trim() || 
-                         document.getElementById("quadroVisualizacao").innerText.trim().replace("O conteúdo aparecerá aqui após salvar", "").trim();
+    function voltarParaFase1() {
+      document.getElementById("fase2").classList.remove("ativo");
+      document.getElementById("fase1").classList.add("ativo");
+      document.getElementById("indicadorFase2").classList.remove("ativo");
+      document.getElementById("indicadorFase1").classList.add("ativo");
+      document.getElementById('parte1').style.display = 'block';
+      document.getElementById('parte2').style.display = 'none';
+    }
+
+    function irParaFase3() {
+      const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
       
-      if (!quadroTexto && !imagemQuadroMoral) {
-        if (!confirm("⚠️ O Quadro Moral está vazio. Deseja continuar mesmo assim?")) {
-          return;
+      document.getElementById("fase2").classList.remove("ativo");
+      document.getElementById("fase3").classList.add("ativo");
+      document.getElementById("indicadorFase2").classList.remove("ativo");
+      document.getElementById("indicadorFase3").classList.add("ativo");
+      
+      codigoAtual = gerarCodigoAleatorio();
+      document.getElementById('codigoAtual').textContent = codigoAtual;
+      document.getElementById('codigoAcesso').value = '';
+      document.getElementById('mensagemCodigo').innerHTML = '';
+    }
+
+    function voltarParaFase2() {
+      document.getElementById("fase3").classList.remove("ativo");
+      document.getElementById("fase2").classList.add("ativo");
+      document.getElementById("indicadorFase3").classList.remove("ativo");
+      document.getElementById("indicadorFase2").classList.add("ativo");
+    }
+
+    function togglePlanoNaoPago() {
+      const el = document.getElementById("planoNaoPagoSection");
+      if (el.style.display === "none") {
+        // Atualizar a explicação antes de mostrar
+        if (explicacaoTexto) {
+          document.getElementById("explicacaoNoPlano").style.display = "block";
+          document.getElementById("imagemNoPlano").style.display = "none";
+        } else if (imagemQuadroMural) {
+          document.getElementById("imagemNoPlano").style.display = "block";
+          document.getElementById("explicacaoNoPlano").style.display = "none";
         }
       }
-      
-      document.getElementById("fluxo2").classList.remove("ativo");
-      document.getElementById("fluxo3").classList.add("ativo");
-      
-      // Rolar até a seção de pagamento
-      setTimeout(() => {
-        document.getElementById("pagamentoOpcao").scrollIntoView({ behavior: 'smooth' });
-      }, 300);
+      el.style.display = el.style.display === "none" ? "block" : "none";
     }
 
-    function voltarParaFluxo1() {
-      const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
-      if (Object.keys(planoData).length > 0) {
-        Object.entries(planoData).forEach(([id, value]) => {
-          const el = document.getElementById(id);
-          if (el) el.value = value;
-        });
-      }
-      document.getElementById("fluxo2").classList.remove("ativo");
-      document.getElementById("fluxo1").classList.add("ativo");
-    }
-
-    function togglePlanoCompleto() {
-      const planoSection = document.getElementById("planoCompletoSection");
-      const botao = event.target;
-      
-      if (planoSection.style.display === "block") {
-        planoSection.style.display = "none";
-        botao.innerHTML = "👁️ VISUALIZAR PLANO NÃO PAGO";
-      } else {
-        planoSection.style.display = "block";
-        botao.innerHTML = "👁️ OCULTAR PLANO";
-      }
-    }
-
-    // ---------- Geração do Plano ----------
+    // Gerar HTML do plano - TODOS os objetivos e TODAS as células da tabela são editáveis
     function gerarPlanoHTML(planoData) {
       const { escola, data, professor, disciplina, classe, tema, unidade, turma, numAlunos, periodo, numLicao, tipoAula } = planoData;
 
@@ -686,19 +927,21 @@
       const objPsi = `Aplicar os conhecimentos sobre "${tema}".`;
       const objAfet = `Valorizar a importância de "${tema}" no dia a dia.`;
 
+      // TABELA COM FORMATO CORRETO - TODAS AS CÉLULAS EDITÁVEIS
       const conteudoPadraoTabela = [
         ["00–05 min", "Introdução e motivação", "Saudação e organização", 
-         `Saúda os alunos;\nVerifica ambiente;\nApresenta o tema: ${tema}`, 
-         "Responde à saudação;\nAnota o tema", "Expositivo", "Quadro e giz"],
+         "- Saúda os alunos;\n- Verifica ambiente;\n- Marca presença;\n- Orientar breve recapitulação da aula anterior;\n- Apresenta o tema: " + tema, 
+         "- Responde à saudação;\n- Responde à presença;\n- Indicado ou voluntário faz recapitulação;\n- Anota o tema", 
+         "Expositivo", "Quadro e giz"],
         ["05–20 min", "Mediação e assimilação", "Exploração do tema: " + tema, 
-         "Faz perguntas;\nExplica com exemplos visuais;\nRelaciona com o quotidiano", 
-         "Participa;\nRelaciona o tema;\nRegista exemplos", "Elaboração conjunta", "Quadro e livro"],
+         "- Faz perguntas em prol do tema;\n- Explica o tema;\n- Usa exemplos do quotidiano;\n- Relaciona com o dia a dia", 
+         "- Participa;\n- Relaciona o tema;\n- Regista exemplos", "Elaboração conjunta", "Quadro e livro"],
         ["20–35 min", "Domínio e consolidação", "Exercícios práticos", 
-         "Propõe exercícios;\nCircula pela sala", 
-         "Resolve os exercícios;\nSolicita ajuda", "Trabalho independente", "Caderno"],
-        ["35–45 min", "Controlo e avaliação", "Avaliação", 
-         "Aplica avaliação;\nRecolhe respostas", 
-         "Responde individualmente", "Trabalho independente", "Folha/caderno"]
+         "- Propõe exercícios;\n- Circula pela sala;\n- Esclarece dúvidas", 
+         "- Resolve os exercícios;\n- Solicita ajuda", "Trabalho independente", "Caderno"],
+        ["35–45 min", "Controlo e avaliação", "Avaliação e TPC", 
+         "- Recolhe respostas;\n- Marca o TPC;\n- Faz resumo do tema e despede-se", 
+         "- Apresenta respostas;\n- Copia o TPC;\n- Despede-se", "Trabalho independente", "Folha/caderno"]
       ];
 
       let tabelaHTML = '';
@@ -715,494 +958,498 @@
           </tr>`;
       });
 
-      document.getElementById("planoPDF").innerHTML = `
-        <h2 style="text-align:center;">Plano de Aula</h2>
-        <div style="display: flex; justify-content: space-between; font-family:'Times New Roman'; font-size:12px;">
+      const planoHTML = `
+        <h2 style="text-align:center; margin:0 0 10px;">PLANO DE AULA</h2>
+        <div style="display: flex; justify-content: space-between; font-size:12px; margin-bottom:5px;">
           <div>
-            <p><strong>Escola:</strong> ${escola}</p>
-            <p><strong>Data:</strong> ${data}</p>
-            <p><strong>Professor:</strong> ${professor}</p>
-            <p><strong>Disciplina:</strong> ${disciplina}</p>
-            <p><strong>Unidade Temática:</strong> ${unidade}</p>
-            <p><strong>Tema:</strong> ${tema}</p>
-            <p><strong>Tipo de Aula:</strong> ${tipoAula}</p>
+            <p><strong>Escola:</strong> <span>${escola}</span></p>
+            <p><strong>Data:</strong> <span>${data || ''}</span></p>
+            <p><strong>Professor:</strong> <span>${professor}</span></p>
+            <p><strong>Disciplina:</strong> <span>${disciplina}</span></p>
+            <p><strong>Unidade Temática:</strong> <span>${unidade}</span></p>
           </div>
-          <div style="text-align: right; min-width: 300px;">
-            <p><strong>Classe:</strong> ${classe}</p>
-            <p><strong>Turma:</strong> ${turma}</p>
-            <p><strong>Nº de Alunos:</strong> ${numAlunos}</p>
-            <p><strong>Lição nº:</strong> ${numLicao}</p>
+          <div style="text-align: right;">
+            <p><strong>Classe:</strong> <span>${classe}</span></p>
+            <p><strong>Turma:</strong> <span>${turma}</span></p>
+            <p><strong>Nº de Alunos:</strong> <span>${numAlunos}</span></p>
+            <p><strong>Lição nº:</strong> <span>${numLicao}</span></p>
             <p><strong>Duração:</strong> 45 minutos</p>
-            <p><strong>Período:</strong> ${periodo}</p>
+            <p><strong>Período:</strong> <span>${periodo}</span></p>
+            <p><strong>Tipo de Aula:</strong> <span>${tipoAula}</span></p>
           </div>
         </div>
+        <p style="margin:5px 0;"><strong>Tema:</strong> <span>${tema}</span></p>
 
-        <p contenteditable="true"><strong>Objetivo Geral:</strong> ${objGeral}</p>
+        <p contenteditable="true" style="margin:5px 0;"><strong>Objetivo Geral:</strong> ${objGeral}</p>
         <p><strong>Objetivos Específicos:</strong></p>
-        <p contenteditable="true"><strong>Cognitivo:</strong> ${objCog}</p>
-        <p contenteditable="true"><strong>Psicomotor:</strong> ${objPsi}</p>
-        <p contenteditable="true"><strong>Afetivo:</strong> ${objAfet}</p>
+        <p contenteditable="true" style="margin:2px 0;"><strong>Cognitivo:</strong> ${objCog}</p>
+        <p contenteditable="true" style="margin:2px 0;"><strong>Psicomotor:</strong> ${objPsi}</p>
+        <p contenteditable="true" style="margin:2px 0;"><strong>Afetivo:</strong> ${objAfet}</p>
 
-        <table id="tabelaPlano" border="1" cellspacing="0" cellpadding="5" style="width:100%; border-collapse:collapse; margin-top:10px;">
-          <thead>
-            <tr>
-              <th>TEMPO</th>
-              <th>FUNÇÕES DIDÁCTICAS</th>
-              <th>CONTEÚDOS</th>
-              <th>ACTIVIDADES DO PROFESSOR</th>
-              <th>ACTIVIDADES DOS ALUNOS</th>
-              <th>MÉTODOS DE ENSINO</th>
-              <th>MEIOS DE ENSINO</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${tabelaHTML}
-          </tbody>
-        </table>`;
+        <div class="tabela-wrapper">
+          <table id="tabelaPlano" border="1" cellspacing="0" cellpadding="5" style="width:100%; border-collapse:collapse; margin-top:5px;">
+            <thead>
+              <tr>
+                <th>TEMPO</th>
+                <th>FUNÇÃO DIDÁCTICA</th>
+                <th>CONTEÚDOS</th>
+                <th>ACTIVIDADES DO PROFESSOR</th>
+                <th>ACTIVIDADES DOS ALUNOS</th>
+                <th>MÉTODOS</th>
+                <th>MEIOS</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tabelaHTML}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      document.getElementById("planoPDF").innerHTML = planoHTML;
+      
+      // Preparar explicação no plano não pago
+      if (explicacaoTexto) {
+        document.getElementById("explicacaoNoPlano").innerHTML = `
+          <h4 style="color:#2b5dab;">EXPLICAÇÃO DO TEMA</h4>
+          <div style="white-space:pre-wrap;">${explicacaoTexto.replace(/\n/g, '<br>')}</div>
+        `;
+      } else if (imagemQuadroMural) {
+        document.getElementById("imagemNoPlano").innerHTML = `
+          <h4 style="color:#2b5dab;">IMAGEM DO LIVRO</h4>
+          <img src="${imagemQuadroMural}" style="max-width:100%; max-height:300px;">
+        `;
+      }
     }
 
-    // ---------- Quadro Moral ----------
+    // Funções da Fase 2
     function buscarExplicacao() {
       const botao = document.getElementById("botaoExplicacao");
       const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
       const tema = planoData.tema || "";
       
-      if (!tema) {
-        alert("⚠️ Tema não encontrado. Por favor, volte e preencha o tema da aula.");
-        return;
-      }
+      if (!tema) { alert("⚠️ Tema não encontrado."); return; }
 
-      // Feedback visual imediato
       botao.innerHTML = "⏳ ABRINDO CHATGPT...";
       botao.disabled = true;
-      botao.style.background = "linear-gradient(135deg, #546e7a, #78909c)";
 
-      // Criar query específica para contexto moçambicano
-      const query = `Explica o tema "${tema}" para alunos da 8ª classe de Moçambique. Inclui:
-1. Definição clara e simples
-2. 3 exemplos práticos do quotidiano moçambicano
-3. 2 exercícios resolvidos
-4. Uma aplicação prática no contexto local
-5. Linguagem acessível para adolescentes
-NÃO USE emojis, marcadores como ✓ ou •, nem formatação complexa. Use apenas texto limpo com parágrafos curtos.`;
-
+      const query = `Explique o tema "${tema}" para alunos moçambicanos. Máx 1 página. Inclua 3 exercícios com respostas.`;
       const url = `https://chat.openai.com/?q=${encodeURIComponent(query)}`;
       
-      // Abrir em nova janela com foco
       setTimeout(() => {
-        const janelaChat = window.open(url, "_blank", "width=800,height=800");
-        
+        const janelaChat = window.open(url, "_blank");
         if (janelaChat) {
           janelaChat.focus();
-          // Restaurar botão após 3 segundos
+          botao.innerHTML = "✅ ABERTO! COLE O RESULTADO";
           setTimeout(() => {
-            botao.innerHTML = "✅ CHATGPT ABERTO! AGORA COLE O RESULTADO";
-            botao.style.background = "linear-gradient(135deg, #2e7d32, #43a047)";
-            
-            // Voltar ao estado normal após 5 segundos
-            setTimeout(() => {
-              botao.innerHTML = "🔁 BUSCAR NOVAMENTE NO CHATGPT";
-              botao.style.background = "linear-gradient(135deg, #5c6bc0, #7986cb)";
-              botao.disabled = false;
-            }, 5000);
-          }, 1000);
-        } else {
-          botao.innerHTML = "❌ ERRO AO ABRIR CHATGPT";
-          botao.style.background = "linear-gradient(135deg, #d32f2f, #f44336)";
-          setTimeout(() => {
-            botao.innerHTML = "🔄 TENTAR NOVAMENTE";
-            botao.style.background = "linear-gradient(135deg, #1a4a8a, #2b5dab)";
+            botao.innerHTML = "🔍 BUSCAR NOVAMENTE";
             botao.disabled = false;
-          }, 3000);
-          alert("❌ Não foi possível abrir o ChatGPT. Verifique se o pop-up está bloqueado.");
+          }, 4000);
+        } else {
+          botao.innerHTML = "❌ ERRO (pop-up bloqueado)";
+          setTimeout(() => { botao.innerHTML = "🔁 TENTAR NOVAMENTE"; botao.disabled = false; }, 2000);
         }
       }, 500);
     }
 
-    function salvarQuadroMoral() {
+    function salvarExplicacao() {
       const texto = document.getElementById("campoEdicaoQuadro").value.trim();
-      if (!texto) {
-        alert("⚠️ Por favor, cole a explicação do ChatGPT primeiro.");
-        return;
+      if (!texto) { alert("⚠️ Cole a explicação primeiro."); return; }
+
+      let textoSanitizado = sanitizarQuadroInputRaw(texto);
+      const palavras = textoSanitizado.split(/\s+/);
+      if (palavras.length > 450) {
+        textoSanitizado = palavras.slice(0, 450).join(' ') + '...';
       }
-
-      const textoSanitizado = sanitizarQuadroInputRaw(texto);
-
-      imagemQuadroMoral = null;
       
-      // Mostrar no quadro com scroll
-      document.getElementById("quadroVisualizacao").innerHTML = `
-        <div style="text-align:center; margin-bottom:15px;">
-          <strong style="color:#2b5dab; font-size:14pt;">EXPLICAÇÃO DO TEMA</strong>
-        </div>
-        <div style="text-align:left; line-height:1.6; white-space:pre-wrap;">
-          ${textoSanitizado.replace(/\n/g, '<br>')}
-        </div>`;
+      explicacaoTexto = textoSanitizado;
+      imagemQuadroMural = null;
       
-      // Feedback visual
-      const botaoSalvar = event.target;
-      botaoSalvar.innerHTML = "✅ TEXTO SALVO!";
-      botaoSalvar.style.background = "#2e7d32";
+      const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
+      gerarPlanoHTML(planoData);
       
-      setTimeout(() => {
-        botaoSalvar.innerHTML = "💾 SALVAR TEXTO";
-        botaoSalvar.style.background = "";
-      }, 2000);
+      const botao = event.target;
+      botao.innerHTML = "✅ SALVO!";
+      setTimeout(() => { botao.innerHTML = "💾 SALVAR TEXTO"; }, 1500);
+      document.getElementById("campoEdicaoQuadro").value = "";
+      document.getElementById("previewFotoLivro").innerHTML = "";
       
-      // Rolar até o quadro salvo
-      document.getElementById("quadroVisualizacao").scrollIntoView({ behavior: 'smooth' });
+      alert("Explicação salva! Clique em 'VISUALIZAR PLANO NÃO PAGO' para ver o resultado.");
     }
 
     function exibirFotoLivro(event) {
       const file = event.target.files[0];
-      if (!file) return;
-      
-      // Validar tipo de arquivo
-      if (!file.type.match('image.*')) {
-        alert("⚠️ Por favor, selecione apenas arquivos de imagem.");
-        return;
-      }
-      
-      // Validar tamanho (máximo 5MB)
-      if (file.size > 5242880) {
-        alert("⚠️ A imagem é muito grande. Selecione uma imagem menor que 5MB.");
+      if (!file || !file.type.match('image.*') || file.size > 5242880) {
+        alert("Imagem inválida ou muito grande (máx 5MB)");
         return;
       }
 
       const reader = new FileReader();
       reader.onload = function(e) {
         const imgData = e.target.result;
-        imagemQuadroMoral = imgData;
+        imagemQuadroMural = imgData;
+        explicacaoTexto = "";
         
-        // Mostrar pré-visualização
-        const preview = document.getElementById("previewFotoLivro");
-        preview.innerHTML = `
-          <img src="${imgData}" class="preview-imagem" alt="Pré-visualização da foto">
-          <button class="btn-cinza" onclick="removerFoto()" style="margin-top:10px; padding:5px 10px;">
-            🗑️ Remover Foto
-          </button>`;
+        document.getElementById("previewFotoLivro").innerHTML = `
+          <img src="${imgData}" class="preview-imagem" alt="Foto">
+          <button class="btn-cinza" onclick="removerFoto()" style="padding:10px; width:auto;">🗑️ Remover</button>`;
         
-        // Mostrar no quadro de visualização
-        document.getElementById("quadroVisualizacao").innerHTML = `
-          <div style="text-align:center; margin-bottom:15px;">
-            <strong style="color:#2b5dab; font-size:14pt;">IMAGEM DO LIVRO</strong>
-          </div>
-          <div style="display:flex; justify-content:center; align-items:center; min-height:150px;">
-            <img src="${imgData}" style="max-width:100%; max-height:300px; border:1px solid #ddd; border-radius:4px;">
-          </div>`;
-        
-        // Limpar área de texto
+        const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
+        gerarPlanoHTML(planoData);
         document.getElementById("campoEdicaoQuadro").value = "";
         
-        // Rolar até a visualização
-        document.getElementById("quadroVisualizacao").scrollIntoView({ behavior: 'smooth' });
+        alert("Imagem carregada! Clique em 'VISUALIZAR PLANO NÃO PAGO' para ver.");
       };
       reader.readAsDataURL(file);
     }
 
     function removerFoto() {
-      imagemQuadroMoral = null;
+      imagemQuadroMural = null;
       document.getElementById("previewFotoLivro").innerHTML = "";
-      document.getElementById("quadroVisualizacao").innerHTML = `
-        <p style="color:#666; text-align:center; margin-top:50px;">O conteúdo aparecerá aqui após salvar</p>`;
-      document.getElementById("inputFotoLivro").value = "";
+      const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
+      gerarPlanoHTML(planoData);
     }
 
     function apagarExplicacao() {
       document.getElementById("campoEdicaoQuadro").value = "";
-      document.getElementById("quadroVisualizacao").innerHTML = `
-        <p style="color:#666; text-align:center; margin-top:50px;">O conteúdo aparecerá aqui após salvar</p>`;
+      imagemQuadroMural = null;
+      explicacaoTexto = "";
       document.getElementById("previewFotoLivro").innerHTML = "";
-      imagemQuadroMoral = null;
-      
-      // Feedback visual
-      alert("🗑️ Conteúdo limpo com sucesso!");
+      const planoData = JSON.parse(sessionStorage.getItem("planoData") || "{}");
+      gerarPlanoHTML(planoData);
     }
 
-    // ---------- Geração de PDF ----------
-    function escolherPagamento(tipo) {
-      tipoPagamentoSelecionado = tipo;
-      
-      // Destacar botão selecionado
-      document.querySelectorAll('.btn-azul').forEach(btn => {
-        btn.style.background = "#2b5dab";
-      });
-      
-      event.target.style.background = "#1a4a8a";
-    }
-
+    // Funções da Fase 3
     function simularProgresso() {
-      const progressContainer = document.getElementById("progressContainer");
-      const progressBar = document.getElementById("progressBar");
-      const progressText = document.getElementById("progressText");
-      
-      progressContainer.style.display = "block";
-      let progress = 0;
-      
-      const interval = setInterval(() => {
-        progress += 1;
-        progressBar.style.width = progress + "%";
-        progressText.textContent = progress + "%";
-        
-        if (progress >= 100) {
-          clearInterval(interval);
-        }
+      const pc = document.getElementById("progressContainer");
+      const pb = document.getElementById("progressBar");
+      const pt = document.getElementById("progressText");
+      pc.style.display = "block";
+      let p = 0;
+      const i = setInterval(() => {
+        p += 2;
+        pb.style.width = p + "%";
+        pt.textContent = p + "%";
+        if (p >= 100) clearInterval(i);
       }, 30);
     }
 
     function validarCodigo() {
-      const codigoInput = document.getElementById("codigoAcesso");
-      codigoConfirmacaoOnInput(codigoInput);
-      const codigo = codigoInput.value.trim();
+      const codigo = document.getElementById("codigoAcesso").value.trim().toUpperCase();
       const msg = document.getElementById("mensagemCodigo");
       const loading = document.getElementById("loading");
-      msg.innerText = "";
       
-      if (!codigo) {
-        msg.innerText = "⚠️ Digite o código de acesso.";
-        return;
-      }
-      
-      if (!tipoPagamentoSelecionado) {
-        msg.innerText = "⚠️ Escolha primeiro o tipo de pagamento.";
-        return;
-      }
+      if (!codigo) { msg.innerHTML = "⚠️ Digite o código"; return; }
       
       loading.style.display = "block";
-      msg.innerText = "Aguarde pela permissão...";
-      
+      msg.innerHTML = "Validando...";
       simularProgresso();
 
       setTimeout(() => {
-        // ⚠️ SUBSTITUA ESTA SIMULAÇÃO PELA CHAMADA REAL AO APPS SCRIPT
-        const mockResponse = {
-          status: "ok",
-          restantes: 9,
-          data_final: "30/11/2025"
-        };
-
-        document.getElementById("progressContainer").style.display = "none";
-        if (mockResponse.status === "ok") {
+        if (codigo === codigoAtual) {
           msg.style.color = "green";
-          msg.innerHTML = `✅ Código válido!<br>PDFs restantes: ${mockResponse.restantes}<br>Válido até: ${mockResponse.data_final}`;
+          msg.innerHTML = "✅ Código válido! Gerando PDF...";
           
-          // Gerar o PDF automaticamente após validação
           setTimeout(() => {
+            document.getElementById("progressContainer").style.display = "none";
             baixarPDF();
-            document.getElementById("fluxo3").classList.remove("ativo");
-            document.getElementById("fluxo2").classList.add("ativo");
-            // Mostrar mensagem de sucesso
-            alert("✅ PDF gerado e baixado com sucesso!");
+            msg.innerHTML = "✅ PDF gerado!";
+            loading.style.display = "none";
+            
+            codigoAtual = gerarCodigoAleatorio();
+            document.getElementById('codigoAtual').textContent = codigoAtual;
+            document.getElementById('codigoAcesso').value = '';
+            
+            setTimeout(() => {
+              document.getElementById("fase3").classList.remove("ativo");
+              document.getElementById("fase1").classList.add("ativo");
+              document.getElementById("indicadorFase3").classList.remove("ativo");
+              document.getElementById("indicadorFase1").classList.add("ativo");
+              document.getElementById('parte1').style.display = 'block';
+              document.getElementById('parte2').style.display = 'none';
+            }, 1500);
           }, 1000);
-        } else if (mockResponse.status === "expirado") {
-          msg.innerText = "❌ Código expirado. Contacte o administrador.";
-        } else if (mockResponse.status === "limite") {
-          msg.innerText = "❌ Limite de PDFs atingido para este código.";
-        } else if (mockResponse.status === "nao_encontrado") {
-          msg.innerText = "❌ Código não encontrado. Verifique e tente novamente.";
         } else {
-          msg.innerText = "⚠️ Ocorreu um erro na validação. Tente novamente.";
+          msg.innerHTML = "❌ Código inválido!";
+          loading.style.display = "none";
+          document.getElementById("progressContainer").style.display = "none";
         }
-        loading.style.display = "none";
-      }, 3000);
+      }, 2000);
     }
 
+    // FUNÇÃO PDF - CAPTURA DADOS EDITADOS E TABELA AJUSTADA COM MARGENS CORRIGIDAS
     function baixarPDF() {
       const planoDataJSON = sessionStorage.getItem("planoData");
-      if (!planoDataJSON) {
-        alert("❌ Nenhum plano encontrado. Gere o plano antes.");
-        return;
-      }
+      if (!planoDataJSON) { alert("❌ Nenhum plano encontrado."); return; }
+      
       const planoData = JSON.parse(planoDataJSON);
+      
+      // CAPTURAR DADOS EDITADOS DIRETAMENTE DO HTML
+      const planoPDFElement = document.getElementById("planoPDF");
+      
+      // Extrair valor da escola do HTML (não duplicar)
+      const escolaElement = planoPDFElement.querySelector('div p span');
+      const escolaTexto = escolaElement ? escolaElement.innerText.trim() : planoData.escola;
+      
+      // Função para extrair texto de elementos contenteditable
+      function extrairTextoContentEditable(label) {
+        const elementos = planoPDFElement.querySelectorAll('[contenteditable="true"]');
+        for (let el of elementos) {
+          const parentText = el.parentElement ? el.parentElement.innerText : '';
+          if (parentText.includes(label) || (el.previousSibling && el.previousSibling.textContent && el.previousSibling.textContent.includes(label))) {
+            return el.innerText.trim();
+          }
+        }
+        return '';
+      }
+      
+      // Capturar objetivos editados
+      const objetivos = planoPDFElement.querySelectorAll('p[contenteditable="true"]');
+      const objGeralTexto = objetivos[0] ? objetivos[0].innerText.replace("Objetivo Geral:", "").trim() : `Desenvolver competências sobre "${planoData.tema}".`;
+      const objCogTexto = objetivos[1] ? objetivos[1].innerText.replace("Cognitivo:", "").trim() : `Compreender e explicar "${planoData.tema}".`;
+      const objPsiTexto = objetivos[2] ? objetivos[2].innerText.replace("Psicomotor:", "").trim() : `Aplicar conhecimentos sobre "${planoData.tema}".`;
+      const objAfetTexto = objetivos[3] ? objetivos[3].innerText.replace("Afetivo:", "").trim() : `Valorizar a importância de "${planoData.tema}".`;
+
       const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      
+      // Configurar fonte padrão para Times New Roman
+      doc.setFont("times", "normal");
+      
+      // TÍTULO - 12pt
+      doc.setFont("times", "bold");
+      doc.setFontSize(12);
+      doc.text("PLANO DE AULA", 148, 10, { align: "center" });
+
+      // DADOS BÁSICOS - todos 12pt com espaço após : e coluna direita a 250mm
+      let y = 16;
       doc.setFont("times", "normal");
       doc.setFontSize(12);
-      doc.text("Plano de Aula", 148, 12, { align: "center" });
-
-      // Dados básicos
-      let yLeft = 25, yRight = 25;
-      const addLine = (label, value, x, y) => {
-        if (!value) value = "";
-        doc.text(`${label}:`, x, y);
-        doc.text(value, x + 32, y);
-        return y + 6;
+      
+      // Função para adicionar linha com espaçamento após :
+      const addLinha = (label, valor, x, y, isBold = true) => {
+        if (isBold) {
+          doc.setFont("times", "bold");
+          doc.text(label + ":", x, y);
+          doc.setFont("times", "normal");
+        } else {
+          doc.text(label + ":", x, y);
+        }
+        // Adicionar dois espaços após os dois pontos
+        doc.text("  " + (valor || ""), x + doc.getTextWidth(label + ":") + 2, y);
       };
 
-      yLeft = addLine("Escola", planoData.escola, 10, yLeft);
-      yLeft = addLine("Data", planoData.data, 10, yLeft);
-      yLeft = addLine("Professor", planoData.professor, 10, yLeft);
-      yLeft = addLine("Unidade Temática", planoData.unidade, 10, yLeft);
-      yLeft = addLine("Tema", planoData.tema, 10, yLeft);
-      yLeft = addLine("Tipo de Aula", planoData.tipoAula, 10, yLeft);
-
-      yRight = addLine("Classe", planoData.classe, 235, yRight);
-      yRight = addLine("Turma", planoData.turma, 235, yRight);
-      yRight = addLine("Nº de Alunos", planoData.numAlunos, 235, yRight);
-      yRight = addLine("Lição nº", planoData.numLicao, 235, yRight);
-      yRight = addLine("Duração", "45 minutos", 235, yRight);
-      yRight = addLine("Período", planoData.periodo, 235, yRight);
-
-      let lastY = Math.max(yLeft, yRight);
-
-      // Objetivos
-      const planoPDFElement = document.getElementById("planoPDF");
-      const objetivoGeralElement = planoPDFElement.querySelector('p[contenteditable="true"]:first-of-type');
-      let objetivoGeralTexto = objetivoGeralElement ? objetivoGeralElement.innerText.replace("Objetivo Geral:", "").trim() : `Desenvolver competências sobre "${planoData.tema}".`;
-
+      // Linha 1: Escola (esquerda) e Classe (direita a 250mm)
+      addLinha("Escola", escolaTexto, 10, y);
       doc.setFont("times", "bold");
-      doc.text("Objetivo Geral:", 10, lastY + 5);
+      doc.text("Classe:", 250, y);
       doc.setFont("times", "normal");
-      const w = doc.getTextWidth("Objetivo Geral: ");
-      doc.text(objetivoGeralTexto, 10 + w, lastY + 5);
-      lastY += 12;
-
+      doc.text("  " + (planoData.classe || ""), 250 + doc.getTextWidth("Classe:") + 2, y);
+      y += 5;
+      
+      // Linha 2: Data e Turma
+      addLinha("Data", planoData.data, 10, y);
       doc.setFont("times", "bold");
-      doc.text("Objetivos Específicos:", 10, lastY);
+      doc.text("Turma:", 250, y);
       doc.setFont("times", "normal");
-      lastY += 6;
+      doc.text("  " + (planoData.turma || ""), 250 + doc.getTextWidth("Turma:") + 2, y);
+      y += 5;
+      
+      // Linha 3: Professor e Alunos
+      addLinha("Professor", planoData.professor, 10, y);
+      doc.setFont("times", "bold");
+      doc.text("Alunos:", 250, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + (planoData.numAlunos || ""), 250 + doc.getTextWidth("Alunos:") + 2, y);
+      y += 5;
+      
+      // Linha 4: Disciplina e Lição nº
+      addLinha("Disciplina", planoData.disciplina, 10, y);
+      doc.setFont("times", "bold");
+      doc.text("Lição nº:", 250, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + (planoData.numLicao || ""), 250 + doc.getTextWidth("Lição nº:") + 2, y);
+      y += 5;
+      
+      // Linha 5: Unidade Temática e Período
+      addLinha("Unidade Temática", planoData.unidade, 10, y);
+      doc.setFont("times", "bold");
+      doc.text("Período:", 250, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + (planoData.periodo || ""), 250 + doc.getTextWidth("Período:") + 2, y);
+      y += 5;
+      
+      // Linha 6: Tema e Duração
+      doc.setFont("times", "bold");
+      doc.text("Tema:", 10, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + (planoData.tema || ""), 10 + doc.getTextWidth("Tema:") + 2, y);
+      
+      doc.setFont("times", "bold");
+      doc.text("Duração:", 250, y);
+      doc.setFont("times", "normal");
+      doc.text("  45 min", 250 + doc.getTextWidth("Duração:") + 2, y);
+      y += 5;
+      
+      // Linha 7: Tipo de Aula
+      doc.setFont("times", "bold");
+      doc.text("Tipo de Aula:", 10, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + (planoData.tipoAula || ""), 10 + doc.getTextWidth("Tipo de Aula:") + 2, y);
+      y += 7;
 
-      const objetivosEspecificos = ["Cognitivo", "Psicomotor", "Afetivo"];
-      objetivosEspecificos.forEach((tipo, index) => {
-        const el = planoPDFElement.querySelectorAll('p[contenteditable="true"]')[index + 1];
-        const texto = el ? el.innerText.replace(`${tipo}:`, "").trim() : "";
-        doc.setFont("times", "bold");
-        doc.text(`${tipo}:`, 15, lastY);
-        doc.setFont("times", "normal");
-        const w2 = doc.getTextWidth(`${tipo}: `);
-        doc.text(texto, 15 + w2, lastY);
-        lastY += 6;
-      });
-      lastY += 5;
+      // OBJETIVOS - todos 12pt com dados editados e espaço após :
+      doc.setFont("times", "bold");
+      doc.setFontSize(12);
+      doc.text("Objetivos:", 10, y);
+      y += 5;
+      
+      doc.setFont("times", "bold");
+      doc.text("GERAL:", 15, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + objGeralTexto, 15 + doc.getTextWidth("GERAL:") + 2, y);
+      y += 5;
+      
+      doc.setFont("times", "bold");
+      doc.text("COGNITIVO:", 15, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + objCogTexto, 15 + doc.getTextWidth("COGNITIVO:") + 2, y);
+      y += 5;
+      
+      doc.setFont("times", "bold");
+      doc.text("PSICOMOTOR:", 15, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + objPsiTexto, 15 + doc.getTextWidth("PSICOMOTOR:") + 2, y);
+      y += 5;
+      
+      doc.setFont("times", "bold");
+      doc.text("AFECTIVO:", 15, y);
+      doc.setFont("times", "normal");
+      doc.text("  " + objAfetTexto, 15 + doc.getTextWidth("AFECTIVO:") + 2, y);
+      y += 7;
 
-      // Tabela
-      const tabela = planoPDFElement.querySelector('#tabelaPlano');
+      // TABELA - capturar dados editados da tabela com larguras ajustadas
+      const tabela = document.querySelector('#tabelaPlano');
+      let tableData = [];
+      
       if (tabela) {
         const rows = tabela.querySelectorAll("tbody tr");
-        const tableData = Array.from(rows).map(row => {
-          return Array.from(row.querySelectorAll("td")).map(td => {
-            let txt = td.innerText.trim();
-            txt = txt.replace(/-\s*/g, "- ")
-                     .replace(/\s*;\s*/g, "; ")
-                     .replace(/\s+/g, " ");
-            return txt;
-          });
-        });
-
-        doc.autoTable({
-          startY: lastY,
-          head: [['TEMPO','FUNÇÕES DIDÁCTICAS','CONTEÚDOS','ACTIVIDADES DO PROFESSOR','ACTIVIDADES DOS ALUNOS','MÉTODOS DE ENSINO','MEIOS DE ENSINO']],
-          body: tableData,
-          theme: 'grid',
-          styles: { 
-            font: 'times', 
-            fontSize: 10, 
-            textColor: [0, 0, 0],
-            lineWidth: 0.2,
-            lineColor: [0, 0, 0],
-            halign: 'left'
-          },
-          headStyles: { 
-            fillColor: [200, 200, 200], 
-            textColor: [0, 0, 0], 
-            fontStyle: 'bold',
-            halign: 'center',
-            lineWidth: 0.2,
-            lineColor: [0, 0, 0]
-          },
-          columnStyles: {
-            0: { cellWidth: 25 },
-            1: { cellWidth: 35 },
-            2: { cellWidth: 40 },
-            3: { cellWidth: 50 },
-            4: { cellWidth: 50 },
-            5: { cellWidth: 30 },
-            6: { cellWidth: 30 }
-          }
+        tableData = Array.from(rows).map(row => {
+          const cells = row.querySelectorAll("td");
+          return [
+            cells[0]?.innerText.trim() || "",
+            cells[1]?.innerText.trim() || "",
+            cells[2]?.innerText.trim() || "",
+            cells[3]?.innerText.trim() || "",
+            cells[4]?.innerText.trim() || "",
+            cells[5]?.innerText.trim() || "",
+            cells[6]?.innerText.trim() || ""
+          ];
         });
       }
+      
+      // Fallback se não conseguir extrair
+      if (tableData.length === 0) {
+        tableData = [
+          ["00-05 min", "Introdução e motivação", "Saudação e organização", 
+           "- Saúda os alunos; - Verifica ambiente; - Marca presença; - Orientar recapitulação; - Apresenta o tema: " + planoData.tema,
+           "- Responde; - Recapitula; - Anota tema", "Expositivo", "Quadro e giz"],
+          ["05-20 min", "Mediação", "Exploração: " + planoData.tema, 
+           "- Faz perguntas; - Explica; - Usa exemplos; - Relaciona", "- Participa; - Regista", "Elaboração conjunta", "Quadro/livro"],
+          ["20-35 min", "Consolidação", "Exercícios", "- Propõe; - Circula; - Esclarece", "- Resolve; - Pede ajuda", "Independente", "Caderno"],
+          ["35-45 min", "Avaliação", "TPC", "- Recolhe; - Marca TPC; - Resume", "- Apresenta; - Copia; - Despede", "Independente", "Folha"]
+        ];
+      }
 
-      // Quadro Moral - TEXTO AJUSTADO NO PDF
-      let quadroTexto = "";
-      const quadroElement = document.getElementById("quadroVisualizacao");
-      if (quadroElement) {
-        // Remover o texto de placeholder se existir
-        const htmlContent = quadroElement.innerHTML.replace(/<p[^>]*>O conteúdo aparecerá aqui após salvar<\/p>/, "");
-        if (htmlContent.trim()) {
-          // Extrair apenas o texto visível
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = htmlContent;
-          quadroTexto = tempDiv.textContent || tempDiv.innerText || "";
-          // Remover o título "EXPLICAÇÃO DO TEMA"
-          quadroTexto = quadroTexto.replace("EXPLICAÇÃO DO TEMA", "").trim();
+      doc.autoTable({
+        startY: y,
+        head: [['TEMPO','FUNÇÃO DIDÁCTICA','CONTEÚDOS','ACTIVIDADES DO PROFESSOR','ACTIVIDADES DOS ALUNOS','MÉTODOS','MEIOS']],
+        body: tableData,
+        theme: 'grid',
+        styles: { 
+          font: 'times', 
+          fontSize: 12,
+          textColor: '#000000',
+          lineColor: '#000000',
+          lineWidth: 0.1,
+          halign: 'left',
+          cellPadding: 2,
+          overflow: 'linebreak'
+        },
+        headStyles: { 
+          fillColor: [224, 224, 224], 
+          textColor: [0, 0, 0], 
+          fontStyle: 'bold',
+          halign: 'center',
+          fontSize: 12,
+          lineColor: '#000000'
+        },
+        columnStyles: {
+          0: { cellWidth: 23 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 35 },
+          3: { cellWidth: 65, halign: 'left' },
+          4: { cellWidth: 65, halign: 'left' },
+          5: { cellWidth: 28 },
+          6: { cellWidth: 30 }
+        },
+        // NÃO repete cabeçalho em páginas seguintes
+        showHead: 'firstPage',
+        margin: { left: 6, right: 3 },
+        didDrawPage: function(data) {
+          data.settings.margin.right = 3;
         }
-      }
+      });
 
-      if (imagemQuadroMoral) {
-        doc.addPage();
-        doc.setFont('times', 'normal');
+      // QUADRO MURAL - tudo 12pt Times New Roman
+      doc.addPage();
+      doc.setFont("times", "bold");
+      doc.setFontSize(12);
+      doc.text("QUADRO MURAL", 148, 10, { align: 'center' });
+      
+      // Adicionar explicação do tema
+      if (imagemQuadroMural) {
+        doc.setFont("times", "normal");
         doc.setFontSize(12);
-        doc.text("Quadro Ilustrativo", 148, 15, null, null, 'center');
-        const imgWidth = 267;
-        const imgHeight = 180;
-        doc.addImage(imagemQuadroMoral, 'JPEG', 15, 25, imgWidth, imgHeight, undefined, 'FAST');
-      } else if (quadroTexto.trim()) {
-        doc.addPage();
-        doc.setFont('times', 'normal');
+        doc.text("ILUSTRAÇÃO:", 10, 20);
+        doc.addImage(imagemQuadroMural, 'JPEG', 15, 25, 267, 160, undefined, 'FAST');
+      } else if (explicacaoTexto) {
+        doc.setFont("times", "bold");
         doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Explicação do Tema", 148, 15, null, null, 'center');
+        doc.text("EXPLICAÇÃO DO TEMA:", 10, 20);
+        doc.setFont("times", "normal");
+        doc.setFontSize(12);
         
-        // Formatação perfeita para o PDF
-        const margin = 20;
+        const margin = 15;
         const pageWidth = doc.internal.pageSize.getWidth();
         const textWidth = pageWidth - 2 * margin;
-        let currentY = 25;
+        let currentY = 28;
         const lineHeight = 6;
         
-        // Dividir o texto em parágrafos
-        const paragraphs = quadroTexto.split(/\n\s*\n/).filter(p => p.trim());
+        // Processar o texto preservando quebras de linha
+        const linhas = doc.splitTextToSize(explicacaoTexto, textWidth);
         
-        paragraphs.forEach(paragraph => {
-          const lines = doc.splitTextToSize(paragraph.trim(), textWidth);
-          
-          // Verificar se há espaço para este parágrafo
-          if (currentY + (lines.length * lineHeight) > 190) {
+        linhas.forEach(linha => {
+          if (currentY > 190) {
             doc.addPage();
-            doc.setFont('times', 'normal');
+            doc.setFont("times", "bold");
             doc.setFontSize(12);
-            doc.text("Explicação do Tema (continuação)", 148, 15, null, null, 'center');
-            currentY = 25;
+            doc.text("QUADRO MURAL (continuação)", 148, 10, { align: 'center' });
+            currentY = 20;
           }
-          
-          // Adicionar cada linha do parágrafo
-          lines.forEach(line => {
-            if (currentY > 190) {
-              doc.addPage();
-              currentY = 25;
-            }
-            doc.text(line, margin, currentY);
-            currentY += lineHeight;
-          });
-          
-          // Espaço entre parágrafos
+          doc.text(linha, margin, currentY);
           currentY += lineHeight;
         });
+      } else {
+        doc.setFont("times", "italic");
+        doc.setFontSize(12);
+        doc.text("Nenhuma explicação foi adicionada.", 148, 50, { align: 'center' });
       }
 
-      const dataFileName = planoData.data?.replace(/[\/]/g, "-") || 'sem-data';
+      const dataFileName = planoData.data?.replace(/[\/]/g, "-") || 'plano';
       doc.save(`Plano_de_Aula_MZ_${dataFileName}.pdf`);
     }
 
-    // Bloqueio de PrintScreen
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "PrintScreen") {
-        navigator.clipboard.writeText("Captura bloqueada.");
-        alert("Captura de ecrã bloqueada.");
-        e.preventDefault();
-      }
-    });
-
-    // Validações iniciais
+    // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
       const validations = [
         { id: 'classe', fn: (e) => apenasDigitosMax(e.target, 2) },
@@ -1212,21 +1459,25 @@ NÃO USE emojis, marcadores como ✓ ou •, nem formatação complexa. Use apen
         { id: 'periodo', fn: (e) => apenasLetras(e.target) },
         { id: 'escola', fn: (e) => apenasLetras(e.target) },
         { id: 'professor', fn: (e) => apenasLetras(e.target) },
+        { id: 'disciplina', fn: (e) => apenasLetras(e.target) },
         { id: 'unidade', fn: (e) => letrasENumeros(e.target) },
         { id: 'tema', fn: (e) => temaPermitido(e.target) },
-        { id: 'tipoAula', fn: (e) => apenasLetras(e.target) },
-        { id: 'codigoAcesso', fn: (e) => codigoConfirmacaoOnInput(e.target) },
-        { id: 'campoEdicaoQuadro', fn: (e) => { e.target.value = sanitizarQuadroInputRaw(e.target.value); } },
-        { id: 'disciplina', fn: (e) => apenasLetras(e.target) }
+        { id: 'tipoAula', fn: (e) => apenasLetras(e.target) }
       ];
 
       validations.forEach(v => {
         const el = document.getElementById(v.id);
-        if (el) {
-          el.addEventListener('input', v.fn);
-          el.addEventListener('blur', v.fn);
-        }
+        if (el) el.addEventListener('input', v.fn);
       });
+
+      const savedData = sessionStorage.getItem("planoData");
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        Object.keys(data).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = data[id] || '';
+        });
+      }
     });
   </script>
 </body>
