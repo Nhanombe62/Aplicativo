@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Gerador de Plano Quinzenal</title>
+    
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --primary-dark: #004c99;
+            --bg-color: #f4f6f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Times New Roman para tabelas e conteúdo principal */
+        body, .planos-tabela, .planos-tabela td, .planos-tabela th {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        
+        /* Roboto para elementos de interface */
+        .filtros-card, .btn, .filtro-grupo label, .info-item {
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body { background: var(--bg-color); padding: 20px 10px; color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Card Principal */
+        .filtros-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--primary-color);
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .filtros-header { text-align: center; margin-bottom: 25px; }
+        .filtros-header h3 { color: var(--primary-color); font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+        .filtros-header p { color: #666; font-size: 14px; }
+        
+        /* Layout específico para província e distrito como na imagem */
+        .linha-localizacao {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .linha-localizacao .filtro-grupo {
+            flex: 1;
+        }
+        
+        .filtros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .filtro-grupo { display: flex; flex-direction: column; }
+        .filtro-grupo.full-width { grid-column: 1 / -1; }
+        
+        .filtro-grupo label {
+            font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #555;
+            display: flex; align-items: center; gap: 6px;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        input, select {
+            width: 100%; padding: 12px 15px; border: 1px solid var(--border-color);
+            border-radius: 8px; font-size: 15px; background-color: #fafafa;
+            transition: all 0.3s ease; outline: none;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary-color); background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        input[type="text"] { background-image: none !important; }
+        
+        .semana-range {
+            display: flex; gap: 10px; align-items: center;
+            background: #f8f9fa; padding: 10px; border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+        .semana-range span { font-weight: bold; color: #888; font-size: 12px; }
+        
+        .btn-pesquisar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white; font-weight: 700; border: none; padding: 15px;
+            width: 100%; border-radius: 8px; margin-top: 25px;
+            font-size: 16px; cursor: pointer; transition: transform 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            font-family: 'Roboto', sans-serif;
+        }
+        .btn-pesquisar:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 102, 204, 0.3); }
+        .btn-pesquisar:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        /* Resultados */
+        .temas-transversais {
+            background: #e3f2fd; border-left: 5px solid var(--primary-color);
+            border-radius: 8px; padding: 20px; margin-bottom: 20px;
+        }
+        .temas-transversais h4 { font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 10px; }
+        .temas-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tema-tag {
+            background: white; border: 1px solid var(--primary-color);
+            color: var(--primary-color); border-radius: 20px;
+            padding: 6px 14px; font-size: 13px; font-weight: 600;
+        }
+        
+        .info-plano {
+            display: flex; flex-wrap: wrap; gap: 15px; background: white;
+            border: 1px solid #e0e0e0; padding: 15px; margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .info-item {
+            flex: 1 1 auto; display: flex; align-items: center; gap: 6px;
+            font-weight: 500; color: #555; background: #f8f9fa;
+            padding: 8px 12px; border-radius: 6px; font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .planos-tabela {
+            width: 100%; border-collapse: collapse; background: white;
+            margin-bottom: 20px; font-size: 12px; border-radius: 8px;
+            overflow: hidden; box-shadow: var(--shadow);
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .planos-tabela th {
+            background: #333; color: white; padding: 10px 6px;
+            border: 1px solid #444; text-align: center; font-weight: 600;
+            text-transform: uppercase; font-size: 12px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .planos-tabela td {
+            border: 1px solid #ddd; padding: 8px 6px; vertical-align: top;
+            color: #333; background: #fff; font-size: 12px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .planos-tabela tr:nth-child(even) td { background-color: #f9f9f9; }
+        
+        /* Estilo para modo edição */
+        .planos-tabela input, .planos-tabela textarea, .planos-tabela select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Times New Roman', Times, serif;
+            background: #fff9e6;
+        }
+        
+        .planos-tabela textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .planos-tabela select {
+            height: 32px;
+        }
+        
+        .acoes { display: flex; gap: 12px; margin: 25px 0; flex-wrap: wrap; }
+        .btn {
+            padding: 12px 20px; border: none; border-radius: 8px;
+            font-weight: 600; cursor: pointer; flex: 1; min-width: 120px;
+            font-size: 14px; transition: all 0.2s; display: flex;
+            align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: 'Roboto', sans-serif;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-editar { background: #ffc107; color: #333; }
+        .btn-pdf { background: #dc3545; color: white; }
+        .btn-salvar { background: #28a745; color: white; }
+        .btn-cancelar { background: #6c757d; color: white; }
+        .btn-nova-consulta { background: #17a2b8; color: white; }
+        
+        /* Estilos para o código de acesso - IGUAL AO PLANO VIP */
+        .codigo-section {
+            background: #e6f0ff;
+            border: 2px solid #a0c4ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .codigo-destaque {
+            background: linear-gradient(135deg, #2b5dab, #1a4a8a);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            font-family: monospace;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            letter-spacing: 4px;
+            border: 2px solid #ffd700;
+            text-align: center;
+        }
+        
+        .input-codigo {
+            width: 100%;
+            padding: 14px;
+            margin-top: 4px;
+            border: 2px solid #e0e7ff;
+            border-radius: 12px;
+            font-size: 22px;
+            font-family: "Times New Roman", Times, serif;
+            text-align: center;
+            letter-spacing: 3px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .input-codigo:focus {
+            border-color: #2b5dab;
+            outline: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background: linear-gradient(90deg, #2b5dab, #4a7fd4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .mensagem-codigo {
+            font-size: 14px;
+            word-break: break-word;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .erro-card {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            padding: 30px;
+            text-align: center;
+            color: #c53030;
+            border-radius: var(--radius);
+        }
+
+        /* Classe para ocultar elementos */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Título do Plano MZ */
+        .plano-mz-titulo {
+            text-align: center;
+            color: #2b5dab;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        
+        .plano-mz-subtitulo {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        @media print {
+            .filtros-card, .acoes { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { max-width: 100%; }
+        }
+    </style>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- PDF Libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Formulário de Dados -->
+        <div class="filtros-card" id="filtrosCard">
+            <div class="filtros-header">
+                <h3>📝 Dados para gerar Plano Quinzenal</h3>
+                <p>Preencha as informações locais e selecione o conteúdo pedagógico.</p>
+            </div>
+            
+            <!-- Linha específica para Província e Distrito (como na imagem) -->
+            <div class="linha-localizacao">
+                <div class="filtro-grupo">
+                    <label>📍 Província</label>
+                    <select id="provincia" onchange="carregarDistritos()">
+                        <option value="">Selecione a Província</option>
+                        <option value="Niassa">Niassa</option>
+                        <option value="Cabo Delgado">Cabo Delgado</option>
+                        <option value="Nampula">Nampula</option>
+                        <option value="Zambézia">Zambézia</option>
+                        <option value="Tete">Tete</option>
+                        <option value="Manica">Manica</option>
+                        <option value="Sofala">Sofala</option>
+                        <option value="Inhambane">Inhambane</option>
+                        <option value="Gaza">Gaza</option>
+                        <option value="Maputo Província">Maputo Província</option>
+                        <option value="Maputo Cidade">Maputo Cidade</option>
+                    </select>
+                </div>
+                
+                <div class="filtro-grupo">
+                    <label>🏛️ Distrito</label>
+                    <select id="distrito">
+                        <option value="">Primeiro selecione a província</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filtros-grid">
+                <div class="filtro-grupo">
+                    <label>🎓 Classe</label>
+                    <select id="classe" onchange="carregarDisciplinas()">
+                        <option value="">Selecione a classe</option>
+                        <option value="1ª Classe">1ª Classe</option>
+                        <option value="2ª Classe">2ª Classe</option>
+                        <option value="3ª Classe">3ª Classe</option>
+                        <option value="4ª Classe">4ª Classe</option>
+                        <option value="5ª Classe">5ª Classe</option>
+                        <option value="6ª Classe">6ª Classe</option>
+                        <option value="7ª Classe">7ª Classe</option>
+                        <option value="8ª Classe">8ª Classe</option>
+                        <option value="9ª Classe">9ª Classe</option>
+                        <option value="10ª Classe">10ª Classe</option>
+                        <option value="11ª Classe">11ª Classe</option>
+                        <option value="12ª Classe">12ª Classe</option>
+                    </select>
+                </div>
+                
+                <div class="filtro-grupo">
+                    <label>📖 Disciplina</label>
+                    <select id="disciplina">
+                        <option value="">Primeiro selecione a classe</option>
+                    </select>
+                </div>
+                
+                <div class="filtro-grupo">
+                    <label>📅 Trimestre</label>
+                    <select id="trimestre">
+                        <option value="">Selecione o trimestre</option>
+                        <option value="1º Trimestre">1º Trimestre</option>
+                        <option value="2º Trimestre">2º Trimestre</option>
+                        <option value="3º Trimestre">3º Trimestre</option>
+                    </select>
+                </div>
+                
+                <div class="filtro-grupo full-width">
+                    <label>🏫 Nome da Escola</label>
+                    <input type="text" id="nomeEscola" placeholder="Digite o nome completo da escola">
+                </div>
+                
+                <div class="filtro-grupo full-width">
+                    <label>📆 Período de Vigência (Máx. 3 semanas)</label>
+                    <div class="semana-range">
+                        <select id="semanaInicio" onchange="validarSemanas()">
+                            <option value="">Semana inicial</option>
+                            <option value="1ª Semana">1ª Semana</option>
+                            <option value="2ª Semana">2ª Semana</option>
+                            <option value="3ª Semana">3ª Semana</option>
+                            <option value="4ª Semana">4ª Semana</option>
+                            <option value="5ª Semana">5ª Semana</option>
+                            <option value="6ª Semana">6ª Semana</option>
+                            <option value="7ª Semana">7ª Semana</option>
+                            <option value="8ª Semana">8ª Semana</option>
+                            <option value="9ª Semana">9ª Semana</option>
+                            <option value="10ª Semana">10ª Semana</option>
+                            <option value="11ª Semana">11ª Semana</option>
+                            <option value="12ª Semana">12ª Semana</option>
+                            <option value="13ª Semana">13ª Semana</option>
+                            <option value="14ª Semana">14ª Semana</option>
+                        </select>
+                        <span>até</span>
+                        <select id="semanaFim" onchange="validarSemanas()">
+                            <option value="">Semana final</option>
+                            <option value="1ª Semana">1ª Semana</option>
+                            <option value="2ª Semana">2ª Semana</option>
+                            <option value="3ª Semana">3ª Semana</option>
+                            <option value="4ª Semana">4ª Semana</option>
+                            <option value="5ª Semana">5ª Semana</option>
+                            <option value="6ª Semana">6ª Semana</option>
+                            <option value="7ª Semana">7ª Semana</option>
+                            <option value="8ª Semana">8ª Semana</option>
+                            <option value="9ª Semana">9ª Semana</option>
+                            <option value="10ª Semana">10ª Semana</option>
+                            <option value="11ª Semana">11ª Semana</option>
+                            <option value="12ª Semana">12ª Semana</option>
+                            <option value="13ª Semana">13ª Semana</option>
+                            <option value="14ª Semana">14ª Semana</option>
+                        </select>
+                    </div>
+                    <div id="erroSemanas" style="color: #dc3545; font-size: 12px; margin-top: 5px; display: none;">
+                        ⚠️ O período não pode ultrapassar 3 semanas
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-pesquisar" onclick="gerarPlanoQuinzenal()">
+                <span>📋</span> GERAR PLANO QUINZENAL
+            </button>
+        </div>
+        
+        <div id="resultadoContainer"></div>
+    </div>
+
+    <script>
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyClUaP2QpNFnCNwh449i0ztzzSnBj8CWG4",
+            authDomain: "plano-de-aula-moz.firebaseapp.com",
+            projectId: "plano-de-aula-moz",
+            storageBucket: "plano-de-aula-moz.firebasestorage.app",
+            messagingSenderId: "710741933182",
+            appId: "1:710741933182:web:f3599eb809e31fe3eeec2f"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let planosAtuais = [];
+        let planosOriginais = [];
+        let codigoAtual = "";
+
+        // ===== DADOS DOS DISTRITOS POR PROVÍNCIA =====
+        const distritosPorProvincia = {
+            "Niassa": ["Cuamba", "Lago", "Lichinga", "Majune", "Mandimba", "Marrupa", "Maúa", "Mavago", "Mecanhelas", "Mecula", "Metarica", "Muembe", "N'gauma", "Nipepe", "Sanga"],
+            "Cabo Delgado": ["Ancuabe", "Balama", "Chiúre", "Ibo", "Macomia", "Mecúfi", "Meluco", "Mocímboa da Praia", "Montepuez", "Mueda", "Muidumbe", "Namuno", "Nangade", "Palma", "Pemba", "Quissanga"],
+            "Nampula": ["Angoche", "Eráti", "Ilha de Moçambique", "Lalaua", "Larde", "Liúpo", "Malema", "Meconta", "Mecubúri", "Memba", "Mogincual", "Mogovolas", "Moma", "Monapo", "Mossuril", "Muecate", "Murrupula", "Nacala", "Nacala-a-Velha", "Nacarôa", "Nampula", "Rapale", "Ribáuè"],
+            "Zambézia": ["Alto Molócuè", "Chinde", "Gile", "Gurué", "Ile", "Inhassunge", "Luabo", "Maganja da Costa", "Milange", "Mocuba", "Mopeia", "Morrumbala", "Namacurra", "Namarroi", "Nicoadala", "Pebane", "Quelimane"],
+            "Tete": ["Angónia", "Cahora-Bassa", "Changara", "Chifunde", "Chiuta", "Mágoè", "Marávia", "Moatize", "Mutarara", "Tsangano", "Zumbo"],
+            "Manica": ["Barué", "Gondola", "Guro", "Macate", "Machaze", "Macossa", "Manica", "Mossurize", "Sussundenga", "Tambara", "Vanduzi"],
+            "Sofala": ["Búzi", "Caia", "Chemba", "Cheringoma", "Chibabava", "Dondo", "Gorongosa", "Machanga", "Maringué", "Marromeu", "Muanza", "Nhamatanda"],
+            "Inhambane": ["Funhalouro", "Govuro", "Homoíne", "Inhambane", "Inharrime", "Inhassoro", "Jangamo", "Mabote", "Massinga", "Maxixe", "Morrumbene", "Panda", "Vilankulo", "Zavala"],
+            "Gaza": ["Bilene", "Chibuto", "Chicualacuala", "Chigubo", "Chókwè", "Guijá", "Limpopo", "Mabalane", "Manjacaze", "Mapai", "Massingir", "Xai-Xai"],
+            "Maputo Província": ["Boane", "Magude", "Manhiça", "Marracuene", "Matola", "Matutuíne", "Moamba", "Namaacha"],
+            "Maputo Cidade": ["KaMpfumo", "Nlhamankulu", "KaMaxaquene", "KaMavota", "KaMubukwana", "KaTembe", "KaNyaka"]
+        };
+
+        // ===== DISCIPLINAS POR CLASSE =====
+        const disciplinasPorClasse = {
+            "1ª Classe": ["Português", "Matemática", "Educação Física"],
+            "2ª Classe": ["Português", "Matemática", "Educação Física"],
+            "3ª Classe": ["Português", "Matemática", "Educação Física"],
+            "4ª Classe": ["Português", "Matemática", "Ciências Sociais", "Ciências Naturais", "Educação Física"],
+            "5ª Classe": ["Português", "Matemática", "Ciências Naturais", "Ciências Sociais", "Educação Visual", "Educação Física"],
+            "6ª Classe": ["Português", "Matemática", "Ciências Naturais", "Ciências Sociais", "Educação Visual", "Educação Física"],
+            "7ª Classe": ["Português", "Matemática", "Inglês", "Ciências Naturais", "História", "Geografia", "Educação Física"],
+            "8ª Classe": ["Português", "Matemática", "Inglês", "Ciências Naturais", "História", "Geografia", "Educação Física"],
+            "9ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"],
+            "10ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"],
+            "11ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"],
+            "12ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"]
+        };
+
+        // ===== FUNÇÕES DE CARREGAMENTO DINÂMICO =====
+        function carregarDistritos() {
+            const provincia = document.getElementById('provincia').value;
+            const distritoSelect = document.getElementById('distrito');
+            
+            distritoSelect.innerHTML = '';
+            
+            if (!provincia) {
+                distritoSelect.innerHTML = '<option value="">Primeiro selecione a província</option>';
+                return;
+            }
+            
+            const distritos = distritosPorProvincia[provincia] || [];
+            distritoSelect.innerHTML = '<option value="">Selecione o distrito</option>';
+            
+            distritos.sort().forEach(distrito => {
+                const option = document.createElement('option');
+                option.value = distrito;
+                option.textContent = distrito;
+                distritoSelect.appendChild(option);
+            });
+        }
+
+        function carregarDisciplinas() {
+            const classe = document.getElementById('classe').value;
+            const disciplinaSelect = document.getElementById('disciplina');
+            
+            disciplinaSelect.innerHTML = '';
+            
+            if (!classe) {
+                disciplinaSelect.innerHTML = '<option value="">Primeiro selecione a classe</option>';
+                return;
+            }
+            
+            const disciplinas = disciplinasPorClasse[classe] || [];
+            disciplinaSelect.innerHTML = '<option value="">Selecione a disciplina</option>';
+            
+            disciplinas.sort().forEach(disciplina => {
+                const option = document.createElement('option');
+                option.value = disciplina;
+                option.textContent = disciplina;
+                disciplinaSelect.appendChild(option);
+            });
+        }
+
+        function validarSemanas() {
+            const inicio = document.getElementById('semanaInicio').value;
+            const fim = document.getElementById('semanaFim').value;
+            const erroDiv = document.getElementById('erroSemanas');
+            
+            if (!inicio || !fim) {
+                erroDiv.style.display = 'none';
+                return true;
+            }
+            
+            const numInicio = extrairNumeroSemana(inicio);
+            const numFim = extrairNumeroSemana(fim);
+            const diferenca = numFim - numInicio;
+            
+            if (diferenca > 2) {
+                erroDiv.style.display = 'block';
+                return false;
+            } else {
+                erroDiv.style.display = 'none';
+                return true;
+            }
+        }
+
+        // ===== FUNÇÕES AUXILIARES =====
+        function extrairNumeroSemana(semana) {
+            if (!semana) return 0;
+            const match = semana.match(/(\d+)/);
+            return match ? parseInt(match[1]) : 0;
+        }
+
+        function extrairTemasTransversais(planos) {
+            const temasSet = new Set();
+            planos.forEach(plano => {
+                const temas = plano.TemasTransversais || plano.temasTransversais;
+                if (temas && temas.trim() !== '') {
+                    const temasArray = temas.split(',').map(t => t.trim());
+                    temasArray.forEach(t => { if (t) temasSet.add(t); });
+                }
+            });
+            return Array.from(temasSet);
+        }
+
+        function obterPeriodo(semana) {
+            const periodos = {
+                "1ª Semana": "02/03 a 06/03",
+                "2ª Semana": "09/03 a 13/03",
+                "3ª Semana": "16/03 a 20/03",
+                "4ª Semana": "23/03 a 27/03",
+                "5ª Semana": "30/03 a 03/04",
+                "6ª Semana": "06/04 a 10/04",
+                "7ª Semana": "13/04 a 17/04",
+                "8ª Semana": "20/04 a 24/04",
+                "9ª Semana": "27/04 a 01/05",
+                "10ª Semana": "04/05 a 08/05",
+                "11ª Semana": "11/05 a 15/05",
+                "12ª Semana": "18/05 a 22/05",
+                "13ª Semana": "25/05 a 29/05",
+                "14ª Semana": "01/06 a 05/06"
+            };
+            return periodos[semana] || semana;
+        }
+
+        function formatarComMarcadores(texto) {
+            if (!texto) return '-';
+            texto = String(texto);
+            const partes = texto.split(';').map(p => p.trim()).filter(p => p);
+            if (partes.length === 0) return '-';
+            if (partes.length === 1) return `- ${partes[0]}`;
+            let resultado = '';
+            partes.forEach((parte, index) => {
+                resultado += `- ${parte}`;
+                if (index < partes.length - 1) resultado += '\n';
+            });
+            return resultado;
+        }
+
+        function formatarClasse(classe) {
+            if (!classe) return null;
+            const mapa = {
+                "1ª Classe": "1a",
+                "2ª Classe": "2a",
+                "3ª Classe": "3a",
+                "4ª Classe": "4a",
+                "5ª Classe": "5a",
+                "6ª Classe": "6a",
+                "7ª Classe": "7a",
+                "8ª Classe": "8a",
+                "9ª Classe": "9a",
+                "10ª Classe": "10a",
+                "11ª Classe": "11a",
+                "12ª Classe": "12a"
+            };
+            return mapa[classe] || classe;
+        }
+
+        function formatarTrimestre(trimestre) {
+            if (!trimestre) return null;
+            const match = trimestre.match(/(\d+)/);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        function normalizarPlano(plano) {
+            return {
+                semana: plano.Semana || plano.semana,
+                unidadeTematica: plano.UnidadeTematica || plano.unidadeTematica,
+                objetivos: plano.Objectivos || plano.objetivos,
+                conteudo: plano.Conteudo || plano.conteudo || plano.Tema || plano.tema,
+                temasTransversais: plano.TemasTransversais || plano.temasTransversais,
+                cargaHoraria: plano.CargaHoraria || plano.cargaHoraria,
+                disciplina: plano.Disciplina || plano.disciplina,
+                classe: plano.Classe || plano.classe,
+                trimestre: plano.Trimestre || plano.trimestre
+            };
+        }
+
+        function validarFiltros() {
+            const provincia = document.getElementById('provincia').value;
+            const distrito = document.getElementById('distrito').value;
+            const classe = document.getElementById('classe').value;
+            const disciplina = document.getElementById('disciplina').value;
+            const trimestre = document.getElementById('trimestre').value;
+            const inicio = document.getElementById('semanaInicio').value;
+            const fim = document.getElementById('semanaFim').value;
+            
+            if (!provincia) {
+                alert('⚠️ Por favor, selecione a Província.');
+                return false;
+            }
+            if (!distrito) {
+                alert('⚠️ Por favor, selecione o Distrito.');
+                return false;
+            }
+            if (!classe) {
+                alert('⚠️ Por favor, selecione a CLASSE.');
+                return false;
+            }
+            if (!disciplina) {
+                alert('⚠️ Por favor, selecione a DISCIPLINA.');
+                return false;
+            }
+            if (!trimestre) {
+                alert('⚠️ Por favor, selecione o TRIMESTRE.');
+                return false;
+            }
+            if (!inicio || !fim) {
+                alert('⚠️ Por favor, selecione o período de semanas.');
+                return false;
+            }
+            if (!validarSemanas()) {
+                alert('⚠️ O período não pode ultrapassar 3 semanas.');
+                return false;
+            }
+            return true;
+        }
+
+        // Função para gerar código aleatório (igual ao plano VIP)
+        function gerarCodigoAleatorio() {
+            const prefixos = ['MZ', 'PL', 'AU', 'AL', 'UN', 'ZA', 'ES', 'PR', 'MO', 'CM'];
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+            let codigo = prefixo;
+            for (let i = 0; i < 4; i++) {
+                codigo += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return codigo;
+        }
+
+        // Função para simular progresso (igual ao plano VIP)
+        function simularProgresso() {
+            const pc = document.getElementById("progressContainer");
+            const pb = document.getElementById("progressBar");
+            const pt = document.getElementById("progressText");
+            pc.style.display = "block";
+            let p = 0;
+            const i = setInterval(() => {
+                p += 2;
+                pb.style.width = p + "%";
+                pt.textContent = p + "%";
+                if (p >= 100) clearInterval(i);
+            }, 30);
+        }
+
+        // GERAR PLANO QUINZENAL
+        async function gerarPlanoQuinzenal() {
+            if (!validarFiltros()) return;
+            
+            const resultadoContainer = document.getElementById('resultadoContainer');
+            resultadoContainer.innerHTML = '<div class="loading">⏳ Processando dados...</div>';
+            document.getElementById('filtrosCard').style.display = 'none';
+            
+            try {
+                const classeOriginal = document.getElementById('classe').value;
+                const classeFormatada = formatarClasse(classeOriginal);
+                const disciplina = document.getElementById('disciplina').value;
+                const trimestreOriginal = document.getElementById('trimestre').value;
+                const trimestreNum = formatarTrimestre(trimestreOriginal);
+                const semanaInicio = document.getElementById('semanaInicio').value;
+                const semanaFim = document.getElementById('semanaFim').value;
+                const provincia = document.getElementById('provincia').value;
+                const distrito = document.getElementById('distrito').value;
+                const nomeEscola = document.getElementById('nomeEscola').value || "Escola Sem Nome";
+
+                let query = db.collection('planos');
+                query = query.where('Classe', '==', classeFormatada);
+                query = query.where('Disciplina', '==', disciplina);
+                query = query.where('Trimestre', '==', trimestreNum);
+                query = query.where('Ano', '==', 2026);
+
+                const snapshot = await query.get();
+                
+                if (snapshot.empty) {
+                    resultadoContainer.innerHTML = `
+                        <div class="erro-card">
+                            <h3>⚠️ Nenhum plano encontrado</h3>
+                            <p>Não existem registos para ${classeOriginal} - ${disciplina}</p>
+                            <br>
+                            <button class="btn btn-nova-consulta" onclick="mostrarFiltros()" style="margin: 0 auto;">🔄 VOLTAR</button>
+                        </div>`;
+                    return;
+                }
+
+                const numInicio = extrairNumeroSemana(semanaInicio);
+                const numFim = extrairNumeroSemana(semanaFim);
+                
+                planosAtuais = [];                
+                snapshot.forEach(doc => {
+                    const plano = doc.data();
+                    const semana = plano.Semana || plano.semana;
+                    const numSemana = extrairNumeroSemana(semana);
+                    if (numSemana >= numInicio && numSemana <= numFim) {
+                        planosAtuais.push(normalizarPlano(plano));
+                    }
+                });
+
+                planosAtuais.sort((a, b) => extrairNumeroSemana(a.semana) - extrairNumeroSemana(b.semana));
+
+                if (planosAtuais.length === 0) {
+                    resultadoContainer.innerHTML = `
+                        <div class="erro-card">
+                            <h3>⚠️ Período vazio</h3>
+                            <p>Nenhum plano nas semanas selecionadas.</p>
+                            <br>
+                            <button class="btn btn-nova-consulta" onclick="mostrarFiltros()" style="margin: 0 auto;">🔄 VOLTAR</button>
+                        </div>`;
+                    return;
+                }
+
+                planosOriginais = JSON.parse(JSON.stringify(planosAtuais));
+                const temasLista = extrairTemasTransversais(planosAtuais);
+                
+                mostrarInterfacePlano(provincia, distrito, nomeEscola, classeOriginal, disciplina, trimestreOriginal, semanaInicio, semanaFim, temasLista);
+
+            } catch (error) {
+                console.error(error);
+                resultadoContainer.innerHTML = `<div class="erro-card">❌ Erro: ${error.message}</div>`;
+            }
+        }
+
+        function mostrarInterfacePlano(provincia, distrito, nomeEscola, classe, disciplina, trimestre, semanaInicio, semanaFim, temasLista) {
+            const resultadoContainer = document.getElementById('resultadoContainer');
+            
+            let temasHTML = temasLista.length > 0 
+                ? `<div class="temas-transversais">
+                    <h4>📌 TEMAS TRANSVERSAIS</h4>
+                    <div class="temas-tags">${temasLista.map(t => `<span class="tema-tag">${t}</span>`).join('')}</div>
+                   </div>`
+                : `<div class="temas-transversais" style="background:#fff3cd;border-left-color:#856404;">
+                    <h4 style="color:#856404;">ℹ️ INFORMAÇÃO</h4>
+                    <p style="text-align:center; color:#856404;">Nenhum tema transversal registado.</p>
+                   </div>`;
+            
+            const periodoInicio = obterPeriodo(semanaInicio);
+            const periodoFim = obterPeriodo(semanaFim);
+            
+            resultadoContainer.innerHTML = `
+                ${temasHTML}                
+                <div class="info-plano">
+                    <span class="info-item">📍 <strong>Prov:</strong> ${provincia}</span>
+                    <span class="info-item">🏛️ <strong>Dist:</strong> ${distrito}</span>
+                    <span class="info-item">🏫 <strong>Escola:</strong> ${nomeEscola}</span>
+                    <span class="info-item">🎓 <strong>Classe:</strong> ${classe}</span>
+                    <span class="info-item">📖 <strong>Disciplina:</strong> ${disciplina}</span>
+                    <span class="info-item">📅 <strong>Trimestre:</strong> ${trimestre}</span>
+                    <span class="info-item">📆 <strong>Vigência:</strong> ${periodoInicio} à ${periodoFim}</span>
+                </div>
+                <div id="tabelaContainer"></div>
+                <div class="acoes">
+                    <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ EDITAR</button>
+                    <button class="btn btn-pdf" onclick="mostrarCodigoAcesso()">📥 BAIXAR PDF</button>
+                    <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 NOVA PESQUISA</button>
+                </div>
+            `;
+            
+            mostrarTabelaPlanos(planosAtuais, false);
+        }
+
+        function mostrarTabelaPlanos(planos, modoEdicao = false) {
+            const tabelaContainer = document.getElementById('tabelaContainer');
+            let html = `<table class="planos-tabela"><thead><tr>
+                <th style="width: 8%">Semana</th>
+                <th style="width: 14%">Unid. Temática</th>
+                <th style="width: 24%">Objectivos</th>
+                <th style="width: 24%">Conteúdos</th>
+                <th style="width: 18%">Temas Trans.</th>
+                <th style="width: 12%">C.H.</th>
+            </tr></thead><tbody>`;
+            
+            planos.forEach((plano, index) => {
+                if (modoEdicao) {
+                    html += `<tr>
+                        <td><select data-index="${index}" data-campo="semana">${gerarOpcoesSemana(plano.semana)}</select></td>
+                        <td><input type="text" data-index="${index}" data-campo="unidadeTematica" value="${plano.unidadeTematica || ''}" placeholder="Unidade Temática"></td>
+                        <td><textarea data-index="${index}" data-campo="objetivos" rows="3" placeholder="Objectivos...">${plano.objetivos || ''}</textarea></td>
+                        <td><textarea data-index="${index}" data-campo="conteudo" rows="3" placeholder="Conteúdos...">${plano.conteudo || ''}</textarea></td>
+                        <td><input type="text" data-index="${index}" data-campo="temasTransversais" value="${plano.temasTransversais || ''}" placeholder="Temas transversais"></td>
+                        <td><input type="text" data-index="${index}" data-campo="cargaHoraria" value="${plano.cargaHoraria || ''}" placeholder="C.H." style="width:60px"></td>
+                    </tr>`;
+                } else {
+                    html += `<tr>
+                        <td style="text-align:center; font-weight:bold;">${plano.semana || '-'}</td>
+                        <td>${plano.unidadeTematica || '-'}</td>
+                        <td style="white-space:pre-line;">${formatarComMarcadores(plano.objetivos)}</td>
+                        <td style="white-space:pre-line;">${formatarComMarcadores(plano.conteudo)}</td>
+                        <td style="white-space:pre-line;">${formatarComMarcadores(plano.temasTransversais)}</td>
+                        <td style="text-align:center;">${plano.cargaHoraria || '-'}</td>
+                    </tr>`;
+                }
+            });
+            html += '</tbody></table>';
+            tabelaContainer.innerHTML = html;
+        }
+
+        function gerarOpcoesSemana(sel) {
+            let opts = '';
+            for (let i = 1; i <= 14; i++) {
+                const s = `${i}ª Semana`;
+                opts += `<option value="${s}" ${s === sel ? 'selected' : ''}>${s}</option>`;
+            }
+            return opts;
+        }
+
+        function habilitarEdicao() {
+            mostrarTabelaPlanos(planosAtuais, true);
+            document.querySelector('.acoes').innerHTML = `
+                <button class="btn btn-salvar" onclick="salvarEdicao()">💾 SALVAR</button>
+                <button class="btn btn-cancelar" onclick="cancelarEdicao()">❌ CANCELAR</button>
+                <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 VOLTAR</button>
+            `;
+        }
+
+        function salvarEdicao() {
+            document.querySelectorAll('[data-index]').forEach(campo => {
+                const idx = campo.getAttribute('data-index');
+                const nome = campo.getAttribute('data-campo');
+                if (planosAtuais[idx]) planosAtuais[idx][nome] = campo.value;
+            });
+            cancelarEdicao();
+            alert("✅ Alterações salvas nesta sessão!");
+        }
+
+        function cancelarEdicao() {
+            planosAtuais = JSON.parse(JSON.stringify(planosOriginais));
+            mostrarTabelaPlanos(planosAtuais, false);
+            const acoes = document.querySelector('.acoes');
+            acoes.innerHTML = `
+                <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ EDITAR</button>
+                <button class="btn btn-pdf" onclick="mostrarCodigoAcesso()">📥 BAIXAR PDF</button>
+                <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 VOLTAR</button>
+            `;
+        }
+
+        function mostrarFiltros() {
+            document.getElementById('filtrosCard').style.display = 'block';
+            document.getElementById('resultadoContainer').innerHTML = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== FUNÇÃO PARA MOSTRAR CÓDIGO DE ACESSO (OCULTANDO A TABELA) =====
+        function mostrarCodigoAcesso() {
+            if (!planosAtuais || planosAtuais.length === 0) {
+                alert('❌ Nenhum plano disponível para gerar PDF.');
+                return;
+            }
+
+            // Ocultar a tabela e os botões de ação
+            const tabelaContainer = document.getElementById('tabelaContainer');
+            const acoes = document.querySelector('.acoes');
+            const infoPlano = document.querySelector('.info-plano');
+            const temasTransversais = document.querySelector('.temas-transversais');
+            
+            tabelaContainer.classList.add('hidden');
+            acoes.classList.add('hidden');
+            if (infoPlano) infoPlano.classList.add('hidden');
+            if (temasTransversais) temasTransversais.classList.add('hidden');
+            
+            // Gerar novo código aleatório
+            codigoAtual = gerarCodigoAleatorio();
+            
+            // Criar seção de código com o título "Plano de Aula MZ - Quinzenal"
+            const codigoSection = document.createElement('div');
+            codigoSection.id = 'codigoSection';
+            codigoSection.className = 'codigo-section';
+            codigoSection.innerHTML = `
+                <div class="plano-mz-titulo">Plano de Aula MZ - Quinzenal</div>
+                <div class="plano-mz-subtitulo"></div>
+                
+                <p style="font-weight:bold; text-align:center; margin:20px 0 15px;">🔐 INSIRA O CÓDIGO DE ACESSO PARA BAIXAR O PDF</p>
+                
+                <div class="codigo-destaque" id="codigoAtual">${codigoAtual}</div>
+                
+                <p style="text-align:center; margin:10px 0;">Digite o código acima para gerar o PDF</p>
+                
+                <input type="text" id="codigoAcesso" class="input-codigo" placeholder="Digite o código" maxlength="8" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+                
+                <div id="mensagemCodigo" class="mensagem-codigo"></div>
+                <div class="loading" id="loading" style="display:none; text-align:center;">⏳ Validando...</div>
+                
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar">
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-pdf" onclick="validarCodigo()" style="margin-top:15px;">✅ CONFIRMAR CÓDIGO</button>
+                <button class="btn btn-cancelar" onclick="cancelarCodigo()" style="margin-top:10px;">❌ CANCELAR</button>
+            `;
+            
+            document.getElementById('resultadoContainer').appendChild(codigoSection);
+        }
+
+        // ===== FUNÇÃO PARA CANCELAR CÓDIGO E VOLTAR À TELA INICIAL =====
+        function cancelarCodigo() {
+            const codigoSection = document.getElementById('codigoSection');
+            if (codigoSection) {
+                codigoSection.remove();
+            }
+            
+            // Mostrar novamente a tabela e os botões
+            const tabelaContainer = document.getElementById('tabelaContainer');
+            const acoes = document.querySelector('.acoes');
+            const infoPlano = document.querySelector('.info-plano');
+            const temasTransversais = document.querySelector('.temas-transversais');
+            
+            tabelaContainer.classList.remove('hidden');
+            acoes.classList.remove('hidden');
+            if (infoPlano) infoPlano.classList.remove('hidden');
+            if (temasTransversais) temasTransversais.classList.remove('hidden');
+        }
+
+        // ===== FUNÇÃO PARA VALIDAR CÓDIGO (IGUAL AO PLANO VIP) =====
+        function validarCodigo() {
+            const codigo = document.getElementById("codigoAcesso").value.trim().toUpperCase();
+            const msg = document.getElementById("mensagemCodigo");
+            const loading = document.getElementById("loading");
+            
+            if (!codigo) { 
+                msg.innerHTML = "⚠️ Digite o código"; 
+                return; 
+            }
+            
+            loading.style.display = "block";
+            msg.innerHTML = "Validando...";
+            simularProgresso();
+
+            setTimeout(() => {
+                if (codigo === codigoAtual) {
+                    msg.style.color = "green";
+                    msg.innerHTML = "✅ Código válido! Gerando PDF...";
+                    
+                    setTimeout(() => {
+                        document.getElementById("progressContainer").style.display = "none";
+                        gerarPDF();
+                        msg.innerHTML = "✅ PDF gerado!";
+                        loading.style.display = "none";
+                        
+                        // Voltar à tela inicial após gerar PDF
+                        setTimeout(() => {
+                            cancelarCodigo();
+                        }, 1500);
+                    }, 1000);
+                } else {
+                    msg.innerHTML = "❌ Código inválido!";
+                    loading.style.display = "none";
+                    document.getElementById("progressContainer").style.display = "none";
+                }
+            }, 2000);
+        }
+
+        // ===== FUNÇÃO GERAR PDF (EXATAMENTE IGUAL AO VGB.HTML) =====
+        async function gerarPDF() {
+            // Obter dados do plano
+            const provincia = document.querySelector('.info-item:nth-child(1)')?.innerText.replace('📍 Prov:', '').trim() || '';
+            const distrito = document.querySelector('.info-item:nth-child(2)')?.innerText.replace('🏛️ Dist:', '').trim() || '';
+            const nomeEscola = document.querySelector('.info-item:nth-child(3)')?.innerText.replace('🏫 Escola:', '').trim() || '';
+            const classe = document.querySelector('.info-item:nth-child(4)')?.innerText.replace('🎓 Classe:', '').trim() || '';
+            const disciplina = document.querySelector('.info-item:nth-child(5)')?.innerText.replace('📖 Disciplina:', '').trim() || '';
+            const trimestre = document.querySelector('.info-item:nth-child(6)')?.innerText.replace('📅 Trimestre:', '').trim() || '';
+            const vigencia = document.querySelector('.info-item:nth-child(7)')?.innerText.replace('📆 Vigência:', '').trim() || '';
+            
+            const semanaInicio = document.getElementById('semanaInicio').value;
+            const semanaFim = document.getElementById('semanaFim').value;
+            
+            const { jsPDF } = window.jspdf;
+            
+            // PDF em formato A4 horizontal
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Normalizar textos
+            const provFormatada = provincia.toUpperCase();
+            const distFormatado = distrito.toUpperCase();
+            
+            // Fonte Times New Roman para todo o documento
+            pdf.setFont('Times', 'Roman');
+            
+            // ===================================================
+            // ADICIONAR IMAGEM DO BRASÃO (CENTRALIZADA)
+            // ===================================================
+            try {
+                const imgUrl = 'https://raw.githubusercontent.com/nhanomb3/planodeaula/6143d599ba10a0f35fdf07a14baca1b76518bed3/1770417519977.png';
+                const img = await fetch(imgUrl)
+                    .then(res => res.blob())
+                    .then(blob => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    }));
+                
+                // Adicionar imagem centralizada (tamanho reduzido)
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const imgWidth = 25; // Largura reduzida para combinar com as letras
+                const imgHeight = 18; // Altura proporcional
+                const xPos = (pageWidth - imgWidth) / 2;
+                pdf.addImage(img, 'PNG', xPos, 3, imgWidth, imgHeight);
+            } catch (e) {
+                console.log('Erro ao carregar imagem:', e);
+            }
+            
+            // ===================================================
+            // CABEÇALHO - TAMANHO 14 (AJUSTADO PARA INICIAR APÓS A IMAGEM)
+            // ===================================================
+            pdf.setFontSize(14);
+            pdf.setFont('Times', 'bold');
+            pdf.text('REPÚBLICA DE MOÇAMBIQUE', pdf.internal.pageSize.getWidth() / 2, 32, { align: 'center' });
+            
+            pdf.setFont('Times', 'bold');
+            pdf.text(`PROVÍNCIA DE ${provFormatada}`, pdf.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+            pdf.text(`GOVERNO DO DISTRITO DE ${distFormatado}`, pdf.internal.pageSize.getWidth() / 2, 48, { align: 'center' });
+            
+            pdf.setFont('Times', 'bold');
+            pdf.text(nomeEscola.toUpperCase(), pdf.internal.pageSize.getWidth() / 2, 58, { align: 'center' });
+            
+            pdf.setFont('Times', 'bold');
+            pdf.text(`PLANO QUINZENAL - ${disciplina}`, pdf.internal.pageSize.getWidth() / 2, 68, { align: 'center' });
+            
+            pdf.setFont('Times', 'normal');
+            pdf.text(`${classe} - ${trimestre} 2026`, pdf.internal.pageSize.getWidth() / 2, 76, { align: 'center' });
+            
+            // Período
+            const periodoInicio = obterPeriodo(semanaInicio);
+            const periodoFim = obterPeriodo(semanaFim);
+            pdf.setFont('Times', 'bold');
+            pdf.setFontSize(12);
+            pdf.text(`PERÍODO: ${periodoInicio} à ${periodoFim}`, 10, 86);
+            
+            // ===================================================
+            // TABELA - TAMANHO 12 COM COLUNAS REDIMENSIONADAS
+            // Unidade Temática e Temas Transversais reduzidos
+            // Conteúdos e Objectivos ampliados
+            // ===================================================
+            const headers = [['Semana', 'Unid. Temática', 'Objectivos Específicos', 'Conteúdos', 'Temas Trans.', 'C.H.']];
+            const body = [];
+            
+            planosAtuais.forEach(plano => {
+                body.push([
+                    plano.semana || '-',
+                    plano.unidadeTematica || '-',
+                    formatarComMarcadores(plano.objetivos),
+                    formatarComMarcadores(plano.conteudo),
+                    formatarComMarcadores(plano.temasTransversais),
+                    plano.cargaHoraria || '-'
+                ]);
+            });
+            
+            // Larguras das colunas para A4 horizontal (AJUSTADAS)
+            const colWidths = [
+                18,  // Semana (reduzido)
+                30,  // Unidade Temática (reduzido)
+                85,  // Objectivos (ampliado)
+                100, // Conteúdos (ampliado)
+                30,  // Temas Transversais (reduzido)
+                20   // Carga Horária
+            ];
+            
+            pdf.autoTable({
+                head: headers,
+                body: body,
+                startY: 94,
+                theme: 'grid',
+                styles: {
+                    font: 'Times',
+                    fontSize: 12,
+                    cellPadding: 3,
+                    lineColor: [0, 0, 0],
+                    textColor: [0, 0, 0],
+                    overflow: 'linebreak',
+                    cellWidth: 'wrap'
+                },
+                headStyles: {
+                    fillColor: [0, 0, 0],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold',
+                    fontSize: 12,
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { cellWidth: colWidths[0], halign: 'center', fontStyle: 'bold' },
+                    1: { cellWidth: colWidths[1], halign: 'left' },
+                    2: { cellWidth: colWidths[2], halign: 'left', valign: 'top' },
+                    3: { cellWidth: colWidths[3], halign: 'left', valign: 'top' },
+                    4: { cellWidth: colWidths[4], halign: 'left', valign: 'top' },
+                    5: { cellWidth: colWidths[5], halign: 'center' }
+                },
+                margin: { left: 5, right: 5 },
+                // NÃO REPETIR O CABEÇALHO NAS QUEBRAS DE PÁGINA
+                showHead: 'firstPage'
+            });
+            
+            // Salvar PDF
+            pdf.save(`Plano_Quinzenal_${classe}_${disciplina}.pdf`);
+        }
+    </script>
+</body>
+</html>
