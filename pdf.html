@@ -794,6 +794,9 @@
                         creator: 'Sistema de Geração de Blocos'
                     });
                     
+                    // Configurar fonte Times New Roman e espaçamento 1.5
+                    doc.setFont("times", "normal");
+                    
                     // PÁGINA 1 - CAPA
                     const marginLeft = 15;
                     const marginRight = 15;
@@ -907,9 +910,13 @@
                         doc.setFontSize(9);
                         doc.setFont("times", "normal");
                         doc.text(`Aula ${i} - Página 1/${totalPagesAula}`, 270, 12, { align: "right" });
-                        doc.setFontSize(20);
+                        
+                        // Título com tamanho 12
+                        doc.setFontSize(12);
                         doc.setFont("times", "bold");
                         doc.text("PLANO DE AULA", 148, 22, { align: "center" });
+                        
+                        // Informações iniciais com tamanho 12 e espaçamento 1.5
                         doc.setFontSize(12);
                         doc.setFont("times", "normal");
                         
@@ -959,7 +966,16 @@
                         doc.text("3. Afetivo: ___________________________________________________", 20, objY);
                         
                         const tableY = objY + 10;
-                        const colWidths = [22, 38, 34, 38, 38, 34, 38];
+                        
+                        // NOVAS LARGURAS DAS COLUNAS:
+                        // Tempo: pequeno (12mm)
+                        // Função Didáctica: médio-pequeno (22mm)
+                        // Conteúdos: médio (28mm)
+                        // Atividades do Professor: grande (55mm)
+                        // Atividades dos Alunos: médio-grande (48mm)
+                        // Métodos de Ensino: pequeno (20mm)
+                        // Meios de Ensino: pequeno (20mm)
+                        const colWidths = [12, 22, 28, 55, 48, 20, 20];
                         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
                         const scaleFactor = 267 / totalWidth;
                         const scaledWidths = colWidths.map(w => w * scaleFactor);
@@ -988,10 +1004,14 @@
                         // Linha 1: Introdução e Motivação
                         const row1Y = headerY + 12;
                         xPos = tableStartX;
+                        
+                        // Tempo
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row1Y, scaledWidths[0], 35, 'F');
                         doc.rect(xPos, row1Y, scaledWidths[0], 35);
                         xPos += scaledWidths[0];
+                        
+                        // Função Didáctica
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row1Y, scaledWidths[1], 35, 'F');
                         doc.rect(xPos, row1Y, scaledWidths[1], 35);
@@ -1003,20 +1023,47 @@
                             funcY1 += 5;
                         });
                         xPos += scaledWidths[1];
-                        for (let j = 2; j < 7; j++) {
-                            doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row1Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row1Y, scaledWidths[j], 35);
-                            xPos += scaledWidths[j];
-                        }
+                        
+                        // Conteúdos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row1Y, scaledWidths[2], 35, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[2], 35);
+                        xPos += scaledWidths[2];
+                        
+                        // Atividades do Professor (maior espaço)
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row1Y, scaledWidths[3], 35, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[3], 35);
+                        xPos += scaledWidths[3];
+                        
+                        // Atividades dos Alunos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row1Y, scaledWidths[4], 35, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[4], 35);
+                        xPos += scaledWidths[4];
+                        
+                        // Métodos de Ensino (pequeno)
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row1Y, scaledWidths[5], 35, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[5], 35);
+                        xPos += scaledWidths[5];
+                        
+                        // Meios de Ensino (pequeno)
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row1Y, scaledWidths[6], 35, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[6], 35);
                         
                         // Linha 2: Mediação e Assimilação
                         const row2Y = row1Y + 35;
                         xPos = tableStartX;
+                        
+                        // Tempo
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row2Y, scaledWidths[0], 35, 'F');
                         doc.rect(xPos, row2Y, scaledWidths[0], 35);
                         xPos += scaledWidths[0];
+                        
+                        // Função Didáctica
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row2Y, scaledWidths[1], 35, 'F');
                         doc.rect(xPos, row2Y, scaledWidths[1], 35);
@@ -1027,12 +1074,35 @@
                             funcY2 += 5;
                         });
                         xPos += scaledWidths[1];
-                        for (let j = 2; j < 7; j++) {
-                            doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row2Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row2Y, scaledWidths[j], 35);
-                            xPos += scaledWidths[j];
-                        }
+                        
+                        // Conteúdos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row2Y, scaledWidths[2], 35, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[2], 35);
+                        xPos += scaledWidths[2];
+                        
+                        // Atividades do Professor
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row2Y, scaledWidths[3], 35, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[3], 35);
+                        xPos += scaledWidths[3];
+                        
+                        // Atividades dos Alunos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row2Y, scaledWidths[4], 35, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[4], 35);
+                        xPos += scaledWidths[4];
+                        
+                        // Métodos de Ensino
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row2Y, scaledWidths[5], 35, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[5], 35);
+                        xPos += scaledWidths[5];
+                        
+                        // Meios de Ensino
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row2Y, scaledWidths[6], 35, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[6], 35);
                         
                         // PÁGINA 2 DA AULA
                         doc.addPage('a4', 'l');
@@ -1043,10 +1113,14 @@
                         // Linha 3: Domínio e Consolidação
                         const row3Y = 25;
                         xPos = tableStartX;
+                        
+                        // Tempo
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row3Y, scaledWidths[0], 35, 'F');
                         doc.rect(xPos, row3Y, scaledWidths[0], 35);
                         xPos += scaledWidths[0];
+                        
+                        // Função Didáctica
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row3Y, scaledWidths[1], 35, 'F');
                         doc.rect(xPos, row3Y, scaledWidths[1], 35);
@@ -1057,20 +1131,47 @@
                             funcY3 += 5;
                         });
                         xPos += scaledWidths[1];
-                        for (let j = 2; j < 7; j++) {
-                            doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row3Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row3Y, scaledWidths[j], 35);
-                            xPos += scaledWidths[j];
-                        }
+                        
+                        // Conteúdos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row3Y, scaledWidths[2], 35, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[2], 35);
+                        xPos += scaledWidths[2];
+                        
+                        // Atividades do Professor
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row3Y, scaledWidths[3], 35, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[3], 35);
+                        xPos += scaledWidths[3];
+                        
+                        // Atividades dos Alunos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row3Y, scaledWidths[4], 35, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[4], 35);
+                        xPos += scaledWidths[4];
+                        
+                        // Métodos de Ensino
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row3Y, scaledWidths[5], 35, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[5], 35);
+                        xPos += scaledWidths[5];
+                        
+                        // Meios de Ensino
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row3Y, scaledWidths[6], 35, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[6], 35);
                         
                         // Linha 4: Controlo e Avaliação
                         const row4Y = row3Y + 35;
                         xPos = tableStartX;
+                        
+                        // Tempo
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row4Y, scaledWidths[0], 35, 'F');
                         doc.rect(xPos, row4Y, scaledWidths[0], 35);
                         xPos += scaledWidths[0];
+                        
+                        // Função Didáctica
                         doc.setFillColor(255, 255, 255);
                         doc.rect(xPos, row4Y, scaledWidths[1], 35, 'F');
                         doc.rect(xPos, row4Y, scaledWidths[1], 35);
@@ -1081,12 +1182,35 @@
                             funcY4 += 5;
                         });
                         xPos += scaledWidths[1];
-                        for (let j = 2; j < 7; j++) {
-                            doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row4Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row4Y, scaledWidths[j], 35);
-                            xPos += scaledWidths[j];
-                        }
+                        
+                        // Conteúdos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row4Y, scaledWidths[2], 35, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[2], 35);
+                        xPos += scaledWidths[2];
+                        
+                        // Atividades do Professor
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row4Y, scaledWidths[3], 35, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[3], 35);
+                        xPos += scaledWidths[3];
+                        
+                        // Atividades dos Alunos
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row4Y, scaledWidths[4], 35, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[4], 35);
+                        xPos += scaledWidths[4];
+                        
+                        // Métodos de Ensino
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row4Y, scaledWidths[5], 35, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[5], 35);
+                        xPos += scaledWidths[5];
+                        
+                        // Meios de Ensino
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(xPos, row4Y, scaledWidths[6], 35, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[6], 35);
                         
                         // Se mural não foi adicionado, adicionar "Quadro Mural" na página 2
                         if (!dados.muralAdicionado) {
