@@ -231,7 +231,7 @@
                 ✅ VALIDAR CÓDIGO E LIBERAR DOWNLOAD
             </button>
             
-            <!-- Seção de pagamento M-Pesa -->
+            <!-- Seção de pagamento E-Mola -->
             <div class="payment-mpesa">
                 <h4>📱 Pagamento por E-Mola</h4>
                 <p>Para obter um código, faça o pagamento para:</p>
@@ -253,7 +253,15 @@
             <!-- Resultado -->
             <div class="payment-result" id="paymentResult"></div>
             
-            <div class="test-code-info">
+            <!-- Área de simulação de código (TESTE) -->
+            <div class="test-code-info" id="testCodeInfo">
+                <strong>🔑 CÓDIGOS DE TESTE:</strong><br>
+                Digite <strong>TESTE10</strong> para 10 aulas<br>
+                Digite <strong>TESTE20</strong> para 20 aulas<br>
+                Digite <strong>TESTE30</strong> para 30 aulas<br>
+                Digite <strong>TESTE40</strong> para 40 aulas<br>
+                Digite <strong>TESTE50</strong> para 50 aulas<br>
+                Digite <strong>TESTE60</strong> para 60 aulas
             </div>
         </div>
     </div>
@@ -345,6 +353,28 @@
             
             let valorBase = dados.valorTotal;
             
+            // CORREÇÃO 1: Formatar data corretamente
+            let dataFormatada = "_____/_________/20______";
+            if (dados.dataGeracao) {
+                // Verificar se a data está no formato dd/mm/aaaa
+                if (dados.dataGeracao.includes('/')) {
+                    dataFormatada = dados.dataGeracao;
+                } else {
+                    // Tentar converter se for outro formato
+                    try {
+                        const dataParts = dados.dataGeracao.split('-');
+                        if (dataParts.length === 3) {
+                            // Formato aaaa-mm-dd
+                            dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+                        } else {
+                            dataFormatada = dados.dataGeracao;
+                        }
+                    } catch (e) {
+                        dataFormatada = dados.dataGeracao;
+                    }
+                }
+            }
+            
             infoContainer.innerHTML = `
                 <h3>📋 Dados do Bloco</h3>
                 <div class="info-row">
@@ -397,16 +427,6 @@
                 </div>
             `;
             
-            let dataFormatada = "_____/_________/20______";
-            if (dados.dataGeracao) {
-                const dataObj = new Date(dados.dataGeracao);
-                dataFormatada = dataObj.toLocaleDateString('pt-MZ', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-            }
-            
             let currentPercentage = 0;
             let pdfDoc = null;
             let pdfGenerated = false;
@@ -456,7 +476,7 @@
                     
                     // Habilitar input de código
                     codigoInput.disabled = false;
-                    codigoInput.placeholder = "EX: ABC123";
+                    codigoInput.placeholder = "EX: TESTE10, TESTE20...";
                     codigoInput.focus();
                     
                     // Habilitar botão de validação
@@ -479,7 +499,7 @@
                         selectedAula = pacote;
                         selectedAulaPacote = pacote;
                         codigoInput.disabled = false;
-                        codigoInput.placeholder = "EX: ABC123";
+                        codigoInput.placeholder = "EX: TESTE10, TESTE20...";
                         validarBtn.disabled = false;
                     }
                 });
@@ -495,8 +515,8 @@
                 }
             });
             
-            // Função para validar código
-            async function validarCodigo() {
+            // CORREÇÃO 2: Função de validação com simulação de código
+            function validarCodigo() {
                 const codigo = codigoInput.value.trim().toUpperCase();
                 
                 if (!selectedAula) {
@@ -509,94 +529,43 @@
                     return;
                 }
                 
-
-                if (codigo === "") {
-
-                    paymentLoader.style.display = 'block';
-                    paymentResult.style.display = 'none';
-                    validarBtn.disabled = true;
-                    
-                    setTimeout(() => {
-                        paymentLoader.style.display = 'none';
-                        
-                        // Verificar se o pacote é suficiente
-                        const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
-                        const aulasSolicitadas = dados.numAulas;
-                        
-                        if (pacoteSelecionado < aulasSolicitadas) {
-                            showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
-                            validarBtn.disabled = false;
-                            return;
-                        }
-                        
-                        codigoValidado = true;
-                        showPaymentResult("success", "✅ Código validado com sucesso! Iniciando download...");
-                        
-                        setTimeout(() => {
-                            paymentModal.classList.remove('active');
-                            baixarPDF();
-                        }, 1000);
-                    }, 1500);
-                    return;
-                }
-                
                 // Mostrar loader
                 paymentLoader.style.display = 'block';
                 paymentResult.style.display = 'none';
                 validarBtn.disabled = true;
                 
-                // Obter informações do navegador
-                const userAgent = navigator.userAgent;
-                
-                try {
-                    // NOVO LINK DO GOOGLE APPS SCRIPT
-                    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyp3DYFfRNt9mcC8sU1hG6cXa5lll0End82ABA1pRDL-lCRWhNdWDmpC1y5Cwee09kx/exec';
-                    
-                    // Fazer chamada para o Google Apps Script
-                    const url = GOOGLE_APPS_SCRIPT_URL + '?tipoAula=' + encodeURIComponent(selectedAula) + '&codigo=' + encodeURIComponent(codigo) + '&userAgent=' + encodeURIComponent(userAgent);
-                    
-                    const response = await fetch(url);
-                    const resultado = await response.json();
-                    
+                // SIMULAÇÃO DE VALIDAÇÃO DE CÓDIGO
+                setTimeout(() => {
                     paymentLoader.style.display = 'none';
-                    validarBtn.disabled = false;
                     
-                    if (resultado.success) {
-                        // Verificar se o pacote é suficiente
-                        const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
-                        const aulasSolicitadas = dados.numAulas;
-                        
-                        if (pacoteSelecionado < aulasSolicitadas) {
-                            showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
-                            return;
-                        }
-                        
+                    // Extrair número de aulas do pacote selecionado
+                    const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
+                    const aulasSolicitadas = dados.numAulas;
+                    
+                    // Verificar se o pacote é suficiente
+                    if (pacoteSelecionado < aulasSolicitadas) {
+                        showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
+                        validarBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // SIMULAÇÃO: Códigos de teste
+                    // TESTE10, TESTE20, TESTE30, TESTE40, TESTE50, TESTE60
+                    const codigoValido = codigo === `TESTE${pacoteSelecionado}`;
+                    
+                    if (codigoValido) {
                         codigoValidado = true;
                         showPaymentResult("success", "✅ Código validado com sucesso! Iniciando download...");
                         
                         setTimeout(() => {
                             paymentModal.classList.remove('active');
                             baixarPDF();
-                        }, 1000);
-                        
+                        }, 1500);
                     } else {
-                        // MODIFICAÇÃO AQUI: Tratar mensagem específica do Google Apps Script
-                        let errorMessage = resultado.message || "❌ Código inválido ou já utilizado!";
-                        
-                        // Se a mensagem contiver "Código inválido para o pacote selecionado"
-                        if (errorMessage.includes("Código inválido para o pacote selecionado")) {
-                            errorMessage = "Erro: o código não existe no sistema.";
-                        }
-                        
-                        showPaymentResult("error", errorMessage);
+                        showPaymentResult("error", "❌ Código inválido! Use os códigos de teste mostrados abaixo.");
+                        validarBtn.disabled = false;
                     }
-                    
-                } catch (error) {
-                    console.error('Erro na validação:', error);
-                    paymentLoader.style.display = 'none';
-                    validarBtn.disabled = false;
-                    showPaymentResult("error", "Erro ao conectar com o servidor. Tente novamente.");
-                }
+                }, 1500);
             }
             
             function showPaymentResult(tipo, mensagem) {
@@ -727,8 +696,6 @@
                     mainContainer.classList.remove('blurred');
                     successSection.classList.remove('hidden');
                     document.getElementById('totalPaginasGeradas').textContent = totalPaginas;
-                    document.getElementById('resumoPaginas').textContent = totalPaginas;
-                    document.getElementById('resumoValor').textContent = valorBase + " MZN";
                     autoSelectPacote();
                 }, 1000);
             }
@@ -747,6 +714,11 @@
                     pdfDoc.save(fileName);
                     downloadPdfBtn.disabled = true;
                     downloadPdfBtn.textContent = "✅ PDF Baixado";
+                    
+                    // Fechar modal após download
+                    setTimeout(() => {
+                        paymentModal.classList.remove('active');
+                    }, 500);
                 } else if (!codigoValidado) {
                     alert("Código não validado. Por favor, valide primeiro.");
                 } else {
@@ -967,14 +939,14 @@
                         
                         const tableY = objY + 10;
                         
-                        // NOVAS LARGURAS DAS COLUNAS:
-                        // Tempo: pequeno (12mm)
-                        // Função Didáctica: médio-pequeno (22mm)
-                        // Conteúdos: médio (28mm)
-                        // Atividades do Professor: grande (55mm)
-                        // Atividades dos Alunos: médio-grande (48mm)
-                        // Métodos de Ensino: pequeno (20mm)
-                        // Meios de Ensino: pequeno (20mm)
+                        // LARGURAS DAS COLUNAS AJUSTADAS:
+                        // Tempo: 15mm (aumentado)
+                        // Função Didáctica: 22mm
+                        // Conteúdos: 22mm (diminuído)
+                        // Atividades do Professor: 58mm (aumentado)
+                        // Atividades dos Alunos: 48mm
+                        // Métodos de Ensino: 20mm
+                        // Meios de Ensino: 20mm
                         const colWidths = [15, 22, 22, 58, 48, 20, 20];
                         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
                         const scaleFactor = 267 / totalWidth;
