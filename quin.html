@@ -22,12 +22,10 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Times New Roman para tabelas e conteúdo principal */
         body, .planos-tabela, .planos-tabela td, .planos-tabela th {
             font-family: 'Times New Roman', Times, serif;
         }
         
-        /* Roboto para elementos de interface */
         .filtros-card, .btn, .filtro-grupo label, .info-item {
             font-family: 'Roboto', sans-serif;
         }
@@ -43,14 +41,12 @@
             margin-bottom: 20px;
             box-shadow: var(--shadow);
             border-top: 5px solid var(--primary-color);
-            font-family: 'Roboto', sans-serif;
         }
 
         .filtros-header { text-align: center; margin-bottom: 25px; }
         .filtros-header h3 { color: var(--primary-color); font-size: 22px; font-weight: 700; margin-bottom: 5px; }
         .filtros-header p { color: #666; font-size: 14px; }
         
-        /* Layout específico para província e distrito como na imagem */
         .linha-localizacao {
             display: flex;
             gap: 20px;
@@ -74,14 +70,12 @@
         .filtro-grupo label {
             font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #555;
             display: flex; align-items: center; gap: 6px;
-            font-family: 'Roboto', sans-serif;
         }
         
         input, select {
             width: 100%; padding: 12px 15px; border: 1px solid var(--border-color);
             border-radius: 8px; font-size: 15px; background-color: #fafafa;
             transition: all 0.3s ease; outline: none;
-            font-family: 'Roboto', sans-serif;
         }
         
         input:focus, select:focus {
@@ -89,8 +83,6 @@
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
 
-        input[type="text"] { background-image: none !important; }
-        
         .semana-range {
             display: flex; gap: 10px; align-items: center;
             background: #f8f9fa; padding: 10px; border-radius: 8px;
@@ -105,12 +97,9 @@
             font-size: 16px; cursor: pointer; transition: transform 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
             text-transform: uppercase; letter-spacing: 0.5px;
-            font-family: 'Roboto', sans-serif;
         }
         .btn-pesquisar:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 102, 204, 0.3); }
-        .btn-pesquisar:disabled { background: #ccc; cursor: not-allowed; transform: none; }
         
-        /* Resultados */
         .temas-transversais {
             background: #e3f2fd; border-left: 5px solid var(--primary-color);
             border-radius: 8px; padding: 20px; margin-bottom: 20px;
@@ -132,57 +121,96 @@
             flex: 1 1 auto; display: flex; align-items: center; gap: 6px;
             font-weight: 500; color: #555; background: #f8f9fa;
             padding: 8px 12px; border-radius: 6px; font-size: 14px;
-            font-family: 'Roboto', sans-serif;
         }
         
+        /* ESTILO DA TABELA - IGUAL À IMAGEM */
         .planos-tabela {
-            width: 100%; border-collapse: collapse; background: white;
-            margin-bottom: 20px; font-size: 12px; border-radius: 8px;
-            overflow: hidden; box-shadow: var(--shadow);
-            font-family: 'Times New Roman', Times, serif;
-        }
-        .planos-tabela th {
-            background: #333; color: white; padding: 10px 6px;
-            border: 1px solid #444; text-align: center; font-weight: 600;
-            text-transform: uppercase; font-size: 12px;
-            font-family: 'Times New Roman', Times, serif;
-        }
-        .planos-tabela td {
-            border: 1px solid #ddd; padding: 8px 6px; vertical-align: top;
-            color: #333; background: #fff; font-size: 12px;
-            font-family: 'Times New Roman', Times, serif;
-        }
-        .planos-tabela tr:nth-child(even) td { background-color: #f9f9f9; }
-        
-        /* Estilo para modo edição */
-        .planos-tabela input, .planos-tabela textarea, .planos-tabela select {
             width: 100%;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 12px;
-            font-family: 'Times New Roman', Times, serif;
-            background: #fff9e6;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
         }
         
-        .planos-tabela textarea {
-            min-height: 60px;
-            resize: vertical;
+        .planos-tabela th {
+            background: #333;
+            color: white;
+            padding: 15px 10px;
+            border: 1px solid #444;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
         }
         
-        .planos-tabela select {
-            height: 32px;
+        .planos-tabela td {
+            border: 1px solid #ddd;
+            padding: 15px 12px;
+            vertical-align: top;
+            color: #333;
+            background: #fff;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: background-color 0.2s;
         }
         
-        .acoes { display: flex; gap: 12px; margin: 25px 0; flex-wrap: wrap; }
+        .planos-tabela tr:nth-child(even) td {
+            background-color: #f9f9f9;
+        }
+        
+        /* MODO EDIÇÃO - USANDO CONTENTEDITABLE */
+        .modo-edicao td {
+            background-color: #fff9e6;
+        }
+        
+        .modo-edicao td[contenteditable="true"] {
+            cursor: text;
+            outline: none;
+            position: relative;
+        }
+        
+        .modo-edicao td[contenteditable="true"]:hover {
+            background-color: #fff3cd;
+        }
+        
+        .modo-edicao td[contenteditable="true"]:focus {
+            background-color: #fff3cd;
+            outline: 2px solid var(--primary-color);
+            outline-offset: -2px;
+        }
+        
+        /* Células não editáveis (cabeçalho) */
+        .planos-tabela th {
+            user-select: none;
+        }
+        
+        .acoes {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
         .btn {
-            padding: 12px 20px; border: none; border-radius: 8px;
-            font-weight: 600; cursor: pointer; flex: 1; min-width: 120px;
-            font-size: 14px; transition: all 0.2s; display: flex;
-            align-items: center; justify-content: center; gap: 8px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            min-width: 140px;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-family: 'Roboto', sans-serif;
         }
+        
         .btn:hover { transform: translateY(-2px); }
         .btn-editar { background: #ffc107; color: #333; }
         .btn-pdf { background: #dc3545; color: white; }
@@ -190,7 +218,138 @@
         .btn-cancelar { background: #6c757d; color: white; }
         .btn-nova-consulta { background: #17a2b8; color: white; }
         
-        /* Estilos para o código de acesso - IGUAL AO PLANO VIP */
+        /* Modal de aviso */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-aviso {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            border-top: 8px solid #ffc107;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-aviso h2 {
+            color: #856404;
+            margin-bottom: 20px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-aviso p {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .modal-aviso .destaque {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .modal-aviso .destaque strong {
+            color: var(--primary-dark);
+            font-size: 18px;
+        }
+        
+        .modal-aviso .btn-ok {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+        
+        .modal-aviso .btn-ok:hover {
+            background: #218838;
+            transform: scale(1.02);
+        }
+        
+        /* SELETOR DE VARIANTE - POSICIONADO ABAIXO DA DISCIPLINA */
+        .variante-container {
+            display: none;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        
+        .variante-box {
+            background: #f0f7ff;
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .variante-box label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        .opcoes-variante {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .opcao-variante {
+            padding: 8px 25px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .opcao-variante:hover {
+            background: #e3f2fd;
+            border-color: var(--primary-color);
+        }
+        
+        .opcao-variante.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+        
         .codigo-section {
             background: #e6f0ff;
             border: 2px solid #a0c4ff;
@@ -282,12 +441,10 @@
             border-radius: var(--radius);
         }
 
-        /* Classe para ocultar elementos */
         .hidden {
             display: none !important;
         }
         
-        /* Título do Plano MZ */
         .plano-mz-titulo {
             text-align: center;
             color: #2b5dab;
@@ -302,33 +459,54 @@
             color: #666;
             font-size: 16px;
             margin-bottom: 20px;
-            font-family: 'Times New Roman', Times, serif;
+        }
+
+        /* Estilo para o conteúdo da tabela */
+        .visualizacao {
+            white-space: pre-line;
+            min-height: 40px;
         }
 
         @media print {
-            .filtros-card, .acoes { display: none !important; }
+            .filtros-card, .acoes, .modal-overlay { display: none !important; }
             body { background: white; padding: 0; }
             .container { max-width: 100%; }
         }
     </style>
     
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <!-- PDF Libs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
+    <!-- Modal de Aviso -->
+    <div id="modalAviso" class="modal-overlay">
+        <div class="modal-aviso">
+            <h2>⚠️ Atenção Professor!</h2>
+            <p>Todas disciplinas estão com conteúdos actualizados, mas existem:</p>
+            <ul style="margin-left: 20px; margin-bottom: 15px; color: #666;">
+                <li>📌 Disciplinas em falta</li>
+                <li>📌 Disciplinas que os conteúdos ainda não estão disponíveis</li>
+            </ul>
+            <p>Estamos a trabalhar para disponibilizar todos os conteúdos o mais breve possível.</p>
+            
+            <div class="destaque">
+                <strong>✅ Para o 1º Trimestre de 1ª a 6ª Classe:</strong>
+                <p style="margin-top: 10px; color: var(--primary-dark);">Todas disciplinas estão disponíveis e actualizadas!</p>
+            </div>
+            
+            <button class="btn-ok" onclick="fecharModal()">OK, ENTENDI</button>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- Formulário de Dados -->
         <div class="filtros-card" id="filtrosCard">
             <div class="filtros-header">
                 <h3>📝 Dados para gerar Plano Quinzenal</h3>
                 <p>Preencha as informações locais e selecione o conteúdo pedagógico.</p>
             </div>
             
-            <!-- Linha específica para Província e Distrito (como na imagem) -->
             <div class="linha-localizacao">
                 <div class="filtro-grupo">
                     <label>📍 Província</label>
@@ -359,7 +537,7 @@
             <div class="filtros-grid">
                 <div class="filtro-grupo">
                     <label>🎓 Classe</label>
-                    <select id="classe" onchange="carregarDisciplinas()">
+                    <select id="classe" onchange="carregarDisciplinas(); verificarVariante()">
                         <option value="">Selecione a classe</option>
                         <option value="1ª Classe">1ª Classe</option>
                         <option value="2ª Classe">2ª Classe</option>
@@ -376,11 +554,22 @@
                     </select>
                 </div>
                 
-                <div class="filtro-grupo">
+                <div class="filtro-grupo" style="position: relative;">
                     <label>📖 Disciplina</label>
-                    <select id="disciplina">
+                    <select id="disciplina" onchange="verificarVariante()">
                         <option value="">Primeiro selecione a classe</option>
                     </select>
+                    
+                    <!-- SELETOR DE VARIANTE - POSICIONADO ABAIXO DA DISCIPLINA -->
+                    <div id="varianteContainer" class="variante-container">
+                        <div class="variante-box">
+                            <label>🔢 Variante:</label>
+                            <div class="opcoes-variante">
+                                <div class="opcao-variante" onclick="selecionarVariante('Letra')" id="varLetra">📝 Letras</div>
+                                <div class="opcao-variante" onclick="selecionarVariante('Ciências')" id="varCiencias">🔬 Ciências</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="filtro-grupo">
@@ -468,8 +657,25 @@
         let planosAtuais = [];
         let planosOriginais = [];
         let codigoAtual = "";
+        let varianteSelecionada = "";
+        let idiomaAtual = "pt";
+        let modoEdicaoAtivo = false;
 
-        // ===== DADOS DOS DISTRITOS POR PROVÍNCIA =====
+        // Controle do modal de aviso
+        window.onload = function() {
+            if (!sessionStorage.getItem('avisoMostrado')) {
+                document.getElementById('modalAviso').style.display = 'flex';
+                sessionStorage.setItem('avisoMostrado', 'true');
+            } else {
+                document.getElementById('modalAviso').style.display = 'none';
+            }
+        }
+
+        function fecharModal() {
+            document.getElementById('modalAviso').style.display = 'none';
+        }
+
+        // DADOS DOS DISTRITOS
         const distritosPorProvincia = {
             "Niassa": ["Cuamba", "Lago", "Lichinga", "Majune", "Mandimba", "Marrupa", "Maúa", "Mavago", "Mecanhelas", "Mecula", "Metarica", "Muembe", "N'gauma", "Nipepe", "Sanga"],
             "Cabo Delgado": ["Ancuabe", "Balama", "Chiúre", "Ibo", "Macomia", "Mecúfi", "Meluco", "Mocímboa da Praia", "Montepuez", "Mueda", "Muidumbe", "Namuno", "Nangade", "Palma", "Pemba", "Quissanga"],
@@ -484,7 +690,7 @@
             "Maputo Cidade": ["KaMpfumo", "Nlhamankulu", "KaMaxaquene", "KaMavota", "KaMubukwana", "KaTembe", "KaNyaka"]
         };
 
-        // ===== DISCIPLINAS POR CLASSE =====
+        // DISCIPLINAS POR CLASSE
         const disciplinasPorClasse = {
             "1ª Classe": ["Português", "Matemática", "Educação Física"],
             "2ª Classe": ["Português", "Matemática", "Educação Física"],
@@ -492,29 +698,24 @@
             "4ª Classe": ["Português", "Matemática", "Ciências Sociais", "Ciências Naturais", "Educação Física"],
             "5ª Classe": ["Português", "Matemática", "Ciências Naturais", "Ciências Sociais", "Educação Visual", "Educação Física"],
             "6ª Classe": ["Português", "Matemática", "Ciências Naturais", "Ciências Sociais", "Educação Visual", "Educação Física"],
-            "7ª Classe": ["Português", "Matemática", "Inglês", "Ciências Naturais", "História", "Geografia", "Educação Física"],
-            "8ª Classe": ["Português", "Matemática", "Inglês", "Ciências Naturais", "História", "Geografia", "Educação Física"],
-            "9ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"],
-            "10ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"],
-            "11ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"],
-            "12ª Classe": ["Português", "Matemática", "Inglês", "Biologia", "Física", "Química", "História", "Geografia", "Educação Física"]
+            "7ª Classe": ["Português", "Matemática", "Inglês", "História", "Geografia", "Biologia", "Educação Física", "TICs", "Agropecuária", "Física"],
+            "8ª Classe": ["Português", "Matemática", "Inglês", "História", "Geografia", "Biologia", "Educação Física", "TICs", "Agropecuária", "Física"],
+            "9ª Classe": ["Português", "Matemática", "Inglês", "História", "Geografia", "Biologia", "Física", "Química", "Educação Física", "Francês", "TICs", "Agropecuária"],
+            "10ª Classe": ["Português", "Matemática", "Inglês", "História", "Geografia", "Biologia", "Física", "Química", "Educação Física", "Francês", "Filosofia"],
+            "11ª Classe": ["Português", "Matemática", "Inglês", "História", "Geografia", "Biologia", "Física", "Química", "Educação Física", "Francês", "Filosofia", "TICs", "Desenho e Geometria Descritiva"],
+            "12ª Classe": ["Português", "Matemática", "Inglês", "História", "Geografia", "Biologia", "Física", "Química", "Educação Física", "Francês", "Filosofia", "Psicologia", "TICs"]
         };
 
-        // ===== FUNÇÕES DE CARREGAMENTO DINÂMICO =====
         function carregarDistritos() {
             const provincia = document.getElementById('provincia').value;
             const distritoSelect = document.getElementById('distrito');
-            
             distritoSelect.innerHTML = '';
-            
             if (!provincia) {
                 distritoSelect.innerHTML = '<option value="">Primeiro selecione a província</option>';
                 return;
             }
-            
             const distritos = distritosPorProvincia[provincia] || [];
             distritoSelect.innerHTML = '<option value="">Selecione o distrito</option>';
-            
             distritos.sort().forEach(distrito => {
                 const option = document.createElement('option');
                 option.value = distrito;
@@ -526,17 +727,13 @@
         function carregarDisciplinas() {
             const classe = document.getElementById('classe').value;
             const disciplinaSelect = document.getElementById('disciplina');
-            
             disciplinaSelect.innerHTML = '';
-            
             if (!classe) {
                 disciplinaSelect.innerHTML = '<option value="">Primeiro selecione a classe</option>';
                 return;
             }
-            
             const disciplinas = disciplinasPorClasse[classe] || [];
             disciplinaSelect.innerHTML = '<option value="">Selecione a disciplina</option>';
-            
             disciplinas.sort().forEach(disciplina => {
                 const option = document.createElement('option');
                 option.value = disciplina;
@@ -545,21 +742,40 @@
             });
         }
 
+        function verificarVariante() {
+            const classe = document.getElementById('classe').value;
+            const disciplina = document.getElementById('disciplina').value;
+            const varianteContainer = document.getElementById('varianteContainer');
+            
+            if ((classe === '11ª Classe' || classe === '12ª Classe') && disciplina === 'Matemática') {
+                varianteContainer.style.display = 'block';
+                document.getElementById('varLetra').classList.remove('selected');
+                document.getElementById('varCiencias').classList.remove('selected');
+                varianteSelecionada = "";
+            } else {
+                varianteContainer.style.display = 'none';
+                varianteSelecionada = "";
+            }
+        }
+
+        function selecionarVariante(variante) {
+            varianteSelecionada = variante;
+            document.getElementById('varLetra').classList.remove('selected');
+            document.getElementById('varCiencias').classList.remove('selected');
+            document.getElementById(`var${variante}`).classList.add('selected');
+        }
+
         function validarSemanas() {
             const inicio = document.getElementById('semanaInicio').value;
             const fim = document.getElementById('semanaFim').value;
             const erroDiv = document.getElementById('erroSemanas');
-            
             if (!inicio || !fim) {
                 erroDiv.style.display = 'none';
                 return true;
             }
-            
             const numInicio = extrairNumeroSemana(inicio);
             const numFim = extrairNumeroSemana(fim);
-            const diferenca = numFim - numInicio;
-            
-            if (diferenca > 2) {
+            if (numFim - numInicio > 2) {
                 erroDiv.style.display = 'block';
                 return false;
             } else {
@@ -568,7 +784,6 @@
             }
         }
 
-        // ===== FUNÇÕES AUXILIARES =====
         function extrairNumeroSemana(semana) {
             if (!semana) return 0;
             const match = semana.match(/(\d+)/);
@@ -580,8 +795,7 @@
             planos.forEach(plano => {
                 const temas = plano.TemasTransversais || plano.temasTransversais;
                 if (temas && temas.trim() !== '') {
-                    const temasArray = temas.split(',').map(t => t.trim());
-                    temasArray.forEach(t => { if (t) temasSet.add(t); });
+                    temas.split(',').map(t => t.trim()).forEach(t => { if (t) temasSet.add(t); });
                 }
             });
             return Array.from(temasSet);
@@ -613,29 +827,15 @@
             const partes = texto.split(';').map(p => p.trim()).filter(p => p);
             if (partes.length === 0) return '-';
             if (partes.length === 1) return `- ${partes[0]}`;
-            let resultado = '';
-            partes.forEach((parte, index) => {
-                resultado += `- ${parte}`;
-                if (index < partes.length - 1) resultado += '\n';
-            });
-            return resultado;
+            return partes.map(p => `- ${p}`).join('\n');
         }
 
         function formatarClasse(classe) {
             if (!classe) return null;
             const mapa = {
-                "1ª Classe": "1a",
-                "2ª Classe": "2a",
-                "3ª Classe": "3a",
-                "4ª Classe": "4a",
-                "5ª Classe": "5a",
-                "6ª Classe": "6a",
-                "7ª Classe": "7a",
-                "8ª Classe": "8a",
-                "9ª Classe": "9a",
-                "10ª Classe": "10a",
-                "11ª Classe": "11a",
-                "12ª Classe": "12a"
+                "1ª Classe": "1a", "2ª Classe": "2a", "3ª Classe": "3a", "4ª Classe": "4a",
+                "5ª Classe": "5a", "6ª Classe": "6a", "7ª Classe": "7a", "8ª Classe": "8a",
+                "9ª Classe": "9a", "10ª Classe": "10a", "11ª Classe": "11a", "12ª Classe": "12a"
             };
             return mapa[classe] || classe;
         }
@@ -669,38 +869,21 @@
             const inicio = document.getElementById('semanaInicio').value;
             const fim = document.getElementById('semanaFim').value;
             
-            if (!provincia) {
-                alert('⚠️ Por favor, selecione a Província.');
+            if ((classe === '11ª Classe' || classe === '12ª Classe') && disciplina === 'Matemática' && !varianteSelecionada) {
+                alert('⚠️ Por favor, selecione a variante de Matemática (Letras ou Ciências).');
                 return false;
             }
-            if (!distrito) {
-                alert('⚠️ Por favor, selecione o Distrito.');
-                return false;
-            }
-            if (!classe) {
-                alert('⚠️ Por favor, selecione a CLASSE.');
-                return false;
-            }
-            if (!disciplina) {
-                alert('⚠️ Por favor, selecione a DISCIPLINA.');
-                return false;
-            }
-            if (!trimestre) {
-                alert('⚠️ Por favor, selecione o TRIMESTRE.');
-                return false;
-            }
-            if (!inicio || !fim) {
-                alert('⚠️ Por favor, selecione o período de semanas.');
-                return false;
-            }
-            if (!validarSemanas()) {
-                alert('⚠️ O período não pode ultrapassar 3 semanas.');
-                return false;
-            }
+            
+            if (!provincia) { alert('⚠️ Selecione a Província.'); return false; }
+            if (!distrito) { alert('⚠️ Selecione o Distrito.'); return false; }
+            if (!classe) { alert('⚠️ Selecione a CLASSE.'); return false; }
+            if (!disciplina) { alert('⚠️ Selecione a DISCIPLINA.'); return false; }
+            if (!trimestre) { alert('⚠️ Selecione o TRIMESTRE.'); return false; }
+            if (!inicio || !fim) { alert('⚠️ Selecione o período de semanas.'); return false; }
+            if (!validarSemanas()) { alert('⚠️ O período não pode ultrapassar 3 semanas.'); return false; }
             return true;
         }
 
-        // Função para gerar código aleatório (igual ao plano VIP)
         function gerarCodigoAleatorio() {
             const prefixos = ['MZ', 'PL', 'AU', 'AL', 'UN', 'ZA', 'ES', 'PR', 'MO', 'CM'];
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -712,7 +895,6 @@
             return codigo;
         }
 
-        // Função para simular progresso (igual ao plano VIP)
         function simularProgresso() {
             const pc = document.getElementById("progressContainer");
             const pb = document.getElementById("progressBar");
@@ -727,7 +909,6 @@
             }, 30);
         }
 
-        // GERAR PLANO QUINZENAL
         async function gerarPlanoQuinzenal() {
             if (!validarFiltros()) return;
             
@@ -738,7 +919,12 @@
             try {
                 const classeOriginal = document.getElementById('classe').value;
                 const classeFormatada = formatarClasse(classeOriginal);
-                const disciplina = document.getElementById('disciplina').value;
+                let disciplina = document.getElementById('disciplina').value;
+                
+                if ((classeOriginal === '11ª Classe' || classeOriginal === '12ª Classe') && disciplina === 'Matemática' && varianteSelecionada) {
+                    disciplina = `Matemática (${varianteSelecionada})`;
+                }
+                
                 const trimestreOriginal = document.getElementById('trimestre').value;
                 const trimestreNum = formatarTrimestre(trimestreOriginal);
                 const semanaInicio = document.getElementById('semanaInicio').value;
@@ -747,13 +933,16 @@
                 const distrito = document.getElementById('distrito').value;
                 const nomeEscola = document.getElementById('nomeEscola').value || "Escola Sem Nome";
 
-                let query = db.collection('planos');
-                query = query.where('Classe', '==', classeFormatada);
-                query = query.where('Disciplina', '==', disciplina);
-                query = query.where('Trimestre', '==', trimestreNum);
-                query = query.where('Ano', '==', 2026);
+                if (disciplina.includes('Francês')) idiomaAtual = 'fr';
+                else if (disciplina.includes('Inglês')) idiomaAtual = 'en';
+                else idiomaAtual = 'pt';
 
-                const snapshot = await query.get();
+                const snapshot = await db.collection('planos')
+                    .where('Classe', '==', classeFormatada)
+                    .where('Disciplina', '==', disciplina)
+                    .where('Trimestre', '==', trimestreNum)
+                    .where('Ano', '==', 2026)
+                    .get();
                 
                 if (snapshot.empty) {
                     resultadoContainer.innerHTML = `
@@ -808,12 +997,12 @@
             
             let temasHTML = temasLista.length > 0 
                 ? `<div class="temas-transversais">
-                    <h4>📌 TEMAS TRANSVERSAIS</h4>
+                    <h4>📌 ${idiomaAtual === 'fr' ? 'THÈMES TRANSVERSAUX' : idiomaAtual === 'en' ? 'CROSS-CUTTING THEMES' : 'TEMAS TRANSVERSAIS'}</h4>
                     <div class="temas-tags">${temasLista.map(t => `<span class="tema-tag">${t}</span>`).join('')}</div>
                    </div>`
                 : `<div class="temas-transversais" style="background:#fff3cd;border-left-color:#856404;">
-                    <h4 style="color:#856404;">ℹ️ INFORMAÇÃO</h4>
-                    <p style="text-align:center; color:#856404;">Nenhum tema transversal registado.</p>
+                    <h4 style="color:#856404;">ℹ️ ${idiomaAtual === 'fr' ? 'INFORMATION' : idiomaAtual === 'en' ? 'INFORMATION' : 'INFORMAÇÃO'}</h4>
+                    <p style="text-align:center; color:#856404;">${idiomaAtual === 'fr' ? 'Aucun thème transversal enregistré' : idiomaAtual === 'en' ? 'No cross-cutting theme recorded' : 'Nenhum tema transversal registado'}</p>
                    </div>`;
             
             const periodoInicio = obterPeriodo(semanaInicio);
@@ -822,97 +1011,141 @@
             resultadoContainer.innerHTML = `
                 ${temasHTML}                
                 <div class="info-plano">
-                    <span class="info-item">📍 <strong>Prov:</strong> ${provincia}</span>
-                    <span class="info-item">🏛️ <strong>Dist:</strong> ${distrito}</span>
-                    <span class="info-item">🏫 <strong>Escola:</strong> ${nomeEscola}</span>
-                    <span class="info-item">🎓 <strong>Classe:</strong> ${classe}</span>
-                    <span class="info-item">📖 <strong>Disciplina:</strong> ${disciplina}</span>
-                    <span class="info-item">📅 <strong>Trimestre:</strong> ${trimestre}</span>
-                    <span class="info-item">📆 <strong>Vigência:</strong> ${periodoInicio} à ${periodoFim}</span>
+                    <span class="info-item">📍 <strong>${idiomaAtual === 'fr' ? 'Prov' : idiomaAtual === 'en' ? 'Prov' : 'Prov'}:</strong> ${provincia}</span>
+                    <span class="info-item">🏛️ <strong>${idiomaAtual === 'fr' ? 'Dist' : idiomaAtual === 'en' ? 'Dist' : 'Dist'}:</strong> ${distrito}</span>
+                    <span class="info-item">🏫 <strong>${idiomaAtual === 'fr' ? 'École' : idiomaAtual === 'en' ? 'School' : 'Escola'}:</strong> ${nomeEscola}</span>
+                    <span class="info-item">🎓 <strong>${idiomaAtual === 'fr' ? 'Classe' : idiomaAtual === 'en' ? 'Class' : 'Classe'}:</strong> ${classe}</span>
+                    <span class="info-item">📖 <strong>${idiomaAtual === 'fr' ? 'Discipline' : idiomaAtual === 'en' ? 'Subject' : 'Disciplina'}:</strong> ${disciplina}</span>
+                    <span class="info-item">📅 <strong>${idiomaAtual === 'fr' ? 'Trimestre' : idiomaAtual === 'en' ? 'Term' : 'Trimestre'}:</strong> ${trimestre}</span>
+                    <span class="info-item">📆 <strong>${idiomaAtual === 'fr' ? 'Période' : idiomaAtual === 'en' ? 'Period' : 'Vigência'}:</strong> ${periodoInicio} à ${periodoFim}</span>
                 </div>
                 <div id="tabelaContainer"></div>
                 <div class="acoes">
-                    <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ EDITAR</button>
-                    <button class="btn btn-pdf" onclick="mostrarCodigoAcesso()">📥 BAIXAR PDF</button>
-                    <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 NOVA PESQUISA</button>
+                    <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ ${idiomaAtual === 'fr' ? 'ÉDITER' : idiomaAtual === 'en' ? 'EDIT' : 'EDITAR'}</button>
+                    <button class="btn btn-pdf" onclick="mostrarCodigoAcesso()">📥 ${idiomaAtual === 'fr' ? 'TÉLÉCHARGER PDF' : idiomaAtual === 'en' ? 'DOWNLOAD PDF' : 'BAIXAR PDF'}</button>
+                    <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 ${idiomaAtual === 'fr' ? 'NOUVELLE RECHERCHE' : idiomaAtual === 'en' ? 'NEW SEARCH' : 'NOVA PESQUISA'}</button>
                 </div>
             `;
+            
+            window.planosParaEdicao = planosAtuais;
+            window.planosOriginaisEdicao = JSON.parse(JSON.stringify(planosAtuais));
             
             mostrarTabelaPlanos(planosAtuais, false);
         }
 
         function mostrarTabelaPlanos(planos, modoEdicao = false) {
             const tabelaContainer = document.getElementById('tabelaContainer');
-            let html = `<table class="planos-tabela"><thead><tr>
-                <th style="width: 8%">Semana</th>
-                <th style="width: 14%">Unid. Temática</th>
-                <th style="width: 24%">Objectivos</th>
-                <th style="width: 24%">Conteúdos</th>
-                <th style="width: 18%">Temas Trans.</th>
-                <th style="width: 12%">C.H.</th>
+            
+            let tituloSemana, tituloUnidade, tituloObjetivos, tituloConteudos, tituloTemas, tituloCH;
+            
+            if (idiomaAtual === 'fr') {
+                tituloSemana = 'Semaine';
+                tituloUnidade = 'Unité Thématique';
+                tituloObjetivos = 'Objectifs Spécifiques';
+                tituloConteudos = 'Contenus';
+                tituloTemas = 'Thèmes Trans.';
+                tituloCH = 'C.H.';
+            } else if (idiomaAtual === 'en') {
+                tituloSemana = 'Week';
+                tituloUnidade = 'Thematic Unit';
+                tituloObjetivos = 'Specific Objectives';
+                tituloConteudos = 'Contents';
+                tituloTemas = 'Cross-cutting';
+                tituloCH = 'C.H.';
+            } else {
+                tituloSemana = 'Semana';
+                tituloUnidade = 'Unid. Temática';
+                tituloObjetivos = 'Objectivos';
+                tituloConteudos = 'Conteúdos';
+                tituloTemas = 'Temas Trans.';
+                tituloCH = 'C.H.';
+            }
+            
+            let html = `<table class="planos-tabela ${modoEdicao ? 'modo-edicao' : ''}" id="tabelaPlanos"><thead><tr>
+                <th style="width: 8%">${tituloSemana}</th>
+                <th style="width: 14%">${tituloUnidade}</th>
+                <th style="width: 24%">${tituloObjetivos}</th>
+                <th style="width: 24%">${tituloConteudos}</th>
+                <th style="width: 18%">${tituloTemas}</th>
+                <th style="width: 12%">${tituloCH}</th>
             </tr></thead><tbody>`;
             
             planos.forEach((plano, index) => {
-                if (modoEdicao) {
-                    html += `<tr>
-                        <td><select data-index="${index}" data-campo="semana">${gerarOpcoesSemana(plano.semana)}</select></td>
-                        <td><input type="text" data-index="${index}" data-campo="unidadeTematica" value="${plano.unidadeTematica || ''}" placeholder="Unidade Temática"></td>
-                        <td><textarea data-index="${index}" data-campo="objetivos" rows="3" placeholder="Objectivos...">${plano.objetivos || ''}</textarea></td>
-                        <td><textarea data-index="${index}" data-campo="conteudo" rows="3" placeholder="Conteúdos...">${plano.conteudo || ''}</textarea></td>
-                        <td><input type="text" data-index="${index}" data-campo="temasTransversais" value="${plano.temasTransversais || ''}" placeholder="Temas transversais"></td>
-                        <td><input type="text" data-index="${index}" data-campo="cargaHoraria" value="${plano.cargaHoraria || ''}" placeholder="C.H." style="width:60px"></td>
-                    </tr>`;
-                } else {
-                    html += `<tr>
-                        <td style="text-align:center; font-weight:bold;">${plano.semana || '-'}</td>
-                        <td>${plano.unidadeTematica || '-'}</td>
-                        <td style="white-space:pre-line;">${formatarComMarcadores(plano.objetivos)}</td>
-                        <td style="white-space:pre-line;">${formatarComMarcadores(plano.conteudo)}</td>
-                        <td style="white-space:pre-line;">${formatarComMarcadores(plano.temasTransversais)}</td>
-                        <td style="text-align:center;">${plano.cargaHoraria || '-'}</td>
-                    </tr>`;
-                }
+                html += `<tr>`;
+                
+                // Semana - editável apenas em modo edição
+                html += `<td ${modoEdicao ? 'contenteditable="true" data-index="' + index + '" data-campo="semana"' : ''}>${plano.semana || '-'}</td>`;
+                
+                // Unidade Temática
+                html += `<td ${modoEdicao ? 'contenteditable="true" data-index="' + index + '" data-campo="unidadeTematica"' : ''}>${plano.unidadeTematica || '-'}</td>`;
+                
+                // Objectivos (preservar marcadores)
+                html += `<td ${modoEdicao ? 'contenteditable="true" data-index="' + index + '" data-campo="objetivos"' : ''} style="white-space:pre-line;">${modoEdicao ? (plano.objetivos || '') : formatarComMarcadores(plano.objetivos)}</td>`;
+                
+                // Conteúdos
+                html += `<td ${modoEdicao ? 'contenteditable="true" data-index="' + index + '" data-campo="conteudo"' : ''} style="white-space:pre-line;">${modoEdicao ? (plano.conteudo || '') : formatarComMarcadores(plano.conteudo)}</td>`;
+                
+                // Temas Transversais
+                html += `<td ${modoEdicao ? 'contenteditable="true" data-index="' + index + '" data-campo="temasTransversais"' : ''}>${modoEdicao ? (plano.temasTransversais || '') : formatarComMarcadores(plano.temasTransversais)}</td>`;
+                
+                // Carga Horária
+                html += `<td ${modoEdicao ? 'contenteditable="true" data-index="' + index + '" data-campo="cargaHoraria" style="text-align:center;"' : 'style="text-align:center;"'}>${plano.cargaHoraria || '-'}</td>`;
+                
+                html += `</tr>`;
             });
+            
             html += '</tbody></table>';
             tabelaContainer.innerHTML = html;
-        }
-
-        function gerarOpcoesSemana(sel) {
-            let opts = '';
-            for (let i = 1; i <= 14; i++) {
-                const s = `${i}ª Semana`;
-                opts += `<option value="${s}" ${s === sel ? 'selected' : ''}>${s}</option>`;
-            }
-            return opts;
+            
+            modoEdicaoAtivo = modoEdicao;
         }
 
         function habilitarEdicao() {
+            // Ativar modo de edição na tabela principal com contenteditable
             mostrarTabelaPlanos(planosAtuais, true);
+            
+            // Atualizar botões
             document.querySelector('.acoes').innerHTML = `
-                <button class="btn btn-salvar" onclick="salvarEdicao()">💾 SALVAR</button>
-                <button class="btn btn-cancelar" onclick="cancelarEdicao()">❌ CANCELAR</button>
-                <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 VOLTAR</button>
+                <button class="btn btn-salvar" onclick="salvarEdicao()">💾 ${idiomaAtual === 'fr' ? 'SAUVEGARDER' : idiomaAtual === 'en' ? 'SAVE' : 'SALVAR'}</button>
+                <button class="btn btn-cancelar" onclick="cancelarEdicao()">❌ ${idiomaAtual === 'fr' ? 'ANNULER' : idiomaAtual === 'en' ? 'CANCEL' : 'CANCELAR'}</button>
+                <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 ${idiomaAtual === 'fr' ? 'RETOUR' : idiomaAtual === 'en' ? 'BACK' : 'VOLTAR'}</button>
             `;
         }
 
         function salvarEdicao() {
-            document.querySelectorAll('[data-index]').forEach(campo => {
-                const idx = campo.getAttribute('data-index');
-                const nome = campo.getAttribute('data-campo');
-                if (planosAtuais[idx]) planosAtuais[idx][nome] = campo.value;
+            // Coletar todos os valores editados via contenteditable
+            const cells = document.querySelectorAll('[contenteditable="true"]');
+            cells.forEach(cell => {
+                const index = cell.getAttribute('data-index');
+                const campo = cell.getAttribute('data-campo');
+                if (index !== null && campo !== null && planosAtuais[index]) {
+                    planosAtuais[index][campo] = cell.innerText.trim();
+                }
             });
+            
+            // Atualizar originais com as alterações
+            planosOriginais = JSON.parse(JSON.stringify(planosAtuais));
+            
+            // Sair do modo edição
             cancelarEdicao();
-            alert("✅ Alterações salvas nesta sessão!");
+            
+            alert(idiomaAtual === 'fr' ? "✅ Modifications enregistrées!" : 
+                  idiomaAtual === 'en' ? "✅ Changes saved!" : 
+                  "✅ Alterações salvas!");
         }
 
         function cancelarEdicao() {
+            // Restaurar os dados originais
             planosAtuais = JSON.parse(JSON.stringify(planosOriginais));
+            
+            // Voltar ao modo visualização
             mostrarTabelaPlanos(planosAtuais, false);
-            const acoes = document.querySelector('.acoes');
-            acoes.innerHTML = `
-                <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ EDITAR</button>
-                <button class="btn btn-pdf" onclick="mostrarCodigoAcesso()">📥 BAIXAR PDF</button>
-                <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 VOLTAR</button>
+            
+            // Restaurar botões
+            document.querySelector('.acoes').innerHTML = `
+                <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ ${idiomaAtual === 'fr' ? 'ÉDITER' : idiomaAtual === 'en' ? 'EDIT' : 'EDITAR'}</button>
+                <button class="btn btn-pdf" onclick="mostrarCodigoAcesso()">📥 ${idiomaAtual === 'fr' ? 'TÉLÉCHARGER PDF' : idiomaAtual === 'en' ? 'DOWNLOAD PDF' : 'BAIXAR PDF'}</button>
+                <button class="btn btn-nova-consulta" onclick="mostrarFiltros()">🔍 ${idiomaAtual === 'fr' ? 'NOUVELLE RECHERCHE' : idiomaAtual === 'en' ? 'NEW SEARCH' : 'NOVA PESQUISA'}</button>
             `;
         }
 
@@ -922,14 +1155,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ===== FUNÇÃO PARA MOSTRAR CÓDIGO DE ACESSO (OCULTANDO A TABELA) =====
         function mostrarCodigoAcesso() {
             if (!planosAtuais || planosAtuais.length === 0) {
-                alert('❌ Nenhum plano disponível para gerar PDF.');
+                alert(idiomaAtual === 'fr' ? '❌ Aucun plan disponible' : 
+                      idiomaAtual === 'en' ? '❌ No plan available' : 
+                      '❌ Nenhum plano disponível');
                 return;
             }
 
-            // Ocultar a tabela e os botões de ação
             const tabelaContainer = document.getElementById('tabelaContainer');
             const acoes = document.querySelector('.acoes');
             const infoPlano = document.querySelector('.info-plano');
@@ -940,244 +1173,170 @@
             if (infoPlano) infoPlano.classList.add('hidden');
             if (temasTransversais) temasTransversais.classList.add('hidden');
             
-            // Gerar novo código aleatório
             codigoAtual = gerarCodigoAleatorio();
             
-            // Criar seção de código com o título "Plano de Aula MZ - Quinzenal"
             const codigoSection = document.createElement('div');
             codigoSection.id = 'codigoSection';
             codigoSection.className = 'codigo-section';
             codigoSection.innerHTML = `
-                <div class="plano-mz-titulo">Plano de Aula MZ - Quinzenal</div>
-                <div class="plano-mz-subtitulo"></div>
-                
-                <p style="font-weight:bold; text-align:center; margin:20px 0 15px;">🔐 INSIRA O CÓDIGO DE ACESSO PARA BAIXAR O PDF</p>
-                
+                <div class="plano-mz-titulo">Plano de Aula MZ - ${idiomaAtual === 'fr' ? 'Quinzaine' : idiomaAtual === 'en' ? 'Fortnightly' : 'Quinzenal'}</div>
+                <p style="font-weight:bold; text-align:center; margin:20px 0 15px;">🔐 ${idiomaAtual === 'fr' ? 'ENTREZ LE CODE' : idiomaAtual === 'en' ? 'ENTER CODE' : 'INSIRA O CÓDIGO'}</p>
                 <div class="codigo-destaque" id="codigoAtual">${codigoAtual}</div>
-                
-                <p style="text-align:center; margin:10px 0;">Digite o código acima para gerar o PDF</p>
-                
-                <input type="text" id="codigoAcesso" class="input-codigo" placeholder="Digite o código" maxlength="8" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
-                
+                <input type="text" id="codigoAcesso" class="input-codigo" placeholder="${idiomaAtual === 'fr' ? 'Code' : idiomaAtual === 'en' ? 'Code' : 'Código'}" maxlength="8" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
                 <div id="mensagemCodigo" class="mensagem-codigo"></div>
-                <div class="loading" id="loading" style="display:none; text-align:center;">⏳ Validando...</div>
-                
+                <div class="loading" id="loading" style="display:none;">⏳ ${idiomaAtual === 'fr' ? 'Validation...' : idiomaAtual === 'en' ? 'Validating...' : 'Validando...'}</div>
                 <div class="progress-container" id="progressContainer">
-                    <div class="progress-bar" id="progressBar">
-                        <span class="progress-text" id="progressText">0%</span>
-                    </div>
+                    <div class="progress-bar" id="progressBar"><span id="progressText">0%</span></div>
                 </div>
-                
-                <button class="btn btn-pdf" onclick="validarCodigo()" style="margin-top:15px;">✅ CONFIRMAR CÓDIGO</button>
-                <button class="btn btn-cancelar" onclick="cancelarCodigo()" style="margin-top:10px;">❌ CANCELAR</button>
+                <button class="btn btn-pdf" onclick="validarCodigo()" style="margin-top:15px;">✅ ${idiomaAtual === 'fr' ? 'CONFIRMER' : idiomaAtual === 'en' ? 'CONFIRM' : 'CONFIRMAR'}</button>
+                <button class="btn btn-cancelar" onclick="cancelarCodigo()" style="margin-top:10px;">❌ ${idiomaAtual === 'fr' ? 'ANNULER' : idiomaAtual === 'en' ? 'CANCEL' : 'CANCELAR'}</button>
             `;
             
             document.getElementById('resultadoContainer').appendChild(codigoSection);
         }
 
-        // ===== FUNÇÃO PARA CANCELAR CÓDIGO E VOLTAR À TELA INICIAL =====
         function cancelarCodigo() {
             const codigoSection = document.getElementById('codigoSection');
-            if (codigoSection) {
-                codigoSection.remove();
-            }
+            if (codigoSection) codigoSection.remove();
             
-            // Mostrar novamente a tabela e os botões
-            const tabelaContainer = document.getElementById('tabelaContainer');
-            const acoes = document.querySelector('.acoes');
-            const infoPlano = document.querySelector('.info-plano');
-            const temasTransversais = document.querySelector('.temas-transversais');
-            
-            tabelaContainer.classList.remove('hidden');
-            acoes.classList.remove('hidden');
-            if (infoPlano) infoPlano.classList.remove('hidden');
-            if (temasTransversais) temasTransversais.classList.remove('hidden');
+            document.getElementById('tabelaContainer').classList.remove('hidden');
+            document.querySelector('.acoes').classList.remove('hidden');
+            document.querySelector('.info-plano')?.classList.remove('hidden');
+            document.querySelector('.temas-transversais')?.classList.remove('hidden');
         }
 
-        // ===== FUNÇÃO PARA VALIDAR CÓDIGO (IGUAL AO PLANO VIP) =====
         function validarCodigo() {
             const codigo = document.getElementById("codigoAcesso").value.trim().toUpperCase();
             const msg = document.getElementById("mensagemCodigo");
             const loading = document.getElementById("loading");
             
             if (!codigo) { 
-                msg.innerHTML = "⚠️ Digite o código"; 
+                msg.innerHTML = idiomaAtual === 'fr' ? "⚠️ Entrez le code" : idiomaAtual === 'en' ? "⚠️ Enter code" : "⚠️ Digite o código"; 
                 return; 
             }
             
             loading.style.display = "block";
-            msg.innerHTML = "Validando...";
+            msg.innerHTML = idiomaAtual === 'fr' ? "Validation..." : idiomaAtual === 'en' ? "Validating..." : "Validando...";
             simularProgresso();
 
             setTimeout(() => {
                 if (codigo === codigoAtual) {
                     msg.style.color = "green";
-                    msg.innerHTML = "✅ Código válido! Gerando PDF...";
+                    msg.innerHTML = idiomaAtual === 'fr' ? "✅ Code valide! Génération PDF..." : idiomaAtual === 'en' ? "✅ Valid code! Generating PDF..." : "✅ Código válido! Gerando PDF...";
                     
                     setTimeout(() => {
                         document.getElementById("progressContainer").style.display = "none";
                         gerarPDF();
-                        msg.innerHTML = "✅ PDF gerado!";
+                        msg.innerHTML = idiomaAtual === 'fr' ? "✅ PDF généré!" : idiomaAtual === 'en' ? "✅ PDF generated!" : "✅ PDF gerado!";
                         loading.style.display = "none";
                         
-                        // Voltar à tela inicial após gerar PDF
                         setTimeout(() => {
                             cancelarCodigo();
+                            window.location.reload();
                         }, 1500);
                     }, 1000);
                 } else {
-                    msg.innerHTML = "❌ Código inválido!";
+                    msg.innerHTML = idiomaAtual === 'fr' ? "❌ Code invalide!" : idiomaAtual === 'en' ? "❌ Invalid code!" : "❌ Código inválido!";
                     loading.style.display = "none";
                     document.getElementById("progressContainer").style.display = "none";
                 }
             }, 2000);
         }
 
-        // ===== FUNÇÃO GERAR PDF (EXATAMENTE IGUAL AO VGB.HTML) =====
         async function gerarPDF() {
-            // Obter dados do plano
-            const provincia = document.querySelector('.info-item:nth-child(1)')?.innerText.replace('📍 Prov:', '').trim() || '';
-            const distrito = document.querySelector('.info-item:nth-child(2)')?.innerText.replace('🏛️ Dist:', '').trim() || '';
-            const nomeEscola = document.querySelector('.info-item:nth-child(3)')?.innerText.replace('🏫 Escola:', '').trim() || '';
-            const classe = document.querySelector('.info-item:nth-child(4)')?.innerText.replace('🎓 Classe:', '').trim() || '';
-            const disciplina = document.querySelector('.info-item:nth-child(5)')?.innerText.replace('📖 Disciplina:', '').trim() || '';
-            const trimestre = document.querySelector('.info-item:nth-child(6)')?.innerText.replace('📅 Trimestre:', '').trim() || '';
-            const vigencia = document.querySelector('.info-item:nth-child(7)')?.innerText.replace('📆 Vigência:', '').trim() || '';
+            const provincia = document.querySelector('.info-item:nth-child(1)')?.innerText.replace(/^[^:]*:/, '').trim() || '';
+            const distrito = document.querySelector('.info-item:nth-child(2)')?.innerText.replace(/^[^:]*:/, '').trim() || '';
+            const nomeEscola = document.querySelector('.info-item:nth-child(3)')?.innerText.replace(/^[^:]*:/, '').trim() || '';
+            const classe = document.querySelector('.info-item:nth-child(4)')?.innerText.replace(/^[^:]*:/, '').trim() || '';
+            const disciplina = document.querySelector('.info-item:nth-child(5)')?.innerText.replace(/^[^:]*:/, '').trim() || '';
+            const trimestre = document.querySelector('.info-item:nth-child(6)')?.innerText.replace(/^[^:]*:/, '').trim() || '';
             
             const semanaInicio = document.getElementById('semanaInicio').value;
             const semanaFim = document.getElementById('semanaFim').value;
             
             const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
             
-            // PDF em formato A4 horizontal
-            const pdf = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm',
-                format: 'a4'
-            });
-            
-            // Normalizar textos
-            const provFormatada = provincia.toUpperCase();
-            const distFormatado = distrito.toUpperCase();
-            
-            // Fonte Times New Roman para todo o documento
             pdf.setFont('Times', 'Roman');
             
-            // ===================================================
-            // ADICIONAR IMAGEM DO BRASÃO (CENTRALIZADA)
-            // ===================================================
             try {
                 const imgUrl = 'https://raw.githubusercontent.com/nhanomb3/planodeaula/6143d599ba10a0f35fdf07a14baca1b76518bed3/1770417519977.png';
-                const img = await fetch(imgUrl)
-                    .then(res => res.blob())
-                    .then(blob => new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(blob);
-                    }));
-                
-                // Adicionar imagem centralizada (tamanho reduzido)
+                const img = await fetch(imgUrl).then(res => res.blob()).then(blob => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                }));
                 const pageWidth = pdf.internal.pageSize.getWidth();
-                const imgWidth = 25; // Largura reduzida para combinar com as letras
-                const imgHeight = 18; // Altura proporcional
-                const xPos = (pageWidth - imgWidth) / 2;
-                pdf.addImage(img, 'PNG', xPos, 3, imgWidth, imgHeight);
-            } catch (e) {
-                console.log('Erro ao carregar imagem:', e);
-            }
+                pdf.addImage(img, 'PNG', (pageWidth - 25) / 2, 3, 25, 18);
+            } catch (e) { console.log('Erro ao carregar imagem:', e); }
             
-            // ===================================================
-            // CABEÇALHO - TAMANHO 14 (AJUSTADO PARA INICIAR APÓS A IMAGEM)
-            // ===================================================
             pdf.setFontSize(14);
             pdf.setFont('Times', 'bold');
             pdf.text('REPÚBLICA DE MOÇAMBIQUE', pdf.internal.pageSize.getWidth() / 2, 32, { align: 'center' });
-            
-            pdf.setFont('Times', 'bold');
-            pdf.text(`PROVÍNCIA DE ${provFormatada}`, pdf.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
-            pdf.text(`GOVERNO DO DISTRITO DE ${distFormatado}`, pdf.internal.pageSize.getWidth() / 2, 48, { align: 'center' });
-            
-            pdf.setFont('Times', 'bold');
+            pdf.text(`PROVÍNCIA DE ${provincia.toUpperCase()}`, pdf.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+            pdf.text(`GOVERNO DO DISTRITO DE ${distrito.toUpperCase()}`, pdf.internal.pageSize.getWidth() / 2, 48, { align: 'center' });
             pdf.text(nomeEscola.toUpperCase(), pdf.internal.pageSize.getWidth() / 2, 58, { align: 'center' });
             
-            pdf.setFont('Times', 'bold');
-            pdf.text(`PLANO QUINZENAL - ${disciplina}`, pdf.internal.pageSize.getWidth() / 2, 68, { align: 'center' });
+            let tituloPlano = `PLANO QUINZENAL - ${disciplina}`;
+            if (idiomaAtual === 'fr') tituloPlano = `PLAN QUINZENAL - ${disciplina}`;
+            else if (idiomaAtual === 'en') tituloPlano = `FORTNIGHTLY PLAN - ${disciplina}`;
+            pdf.text(tituloPlano, pdf.internal.pageSize.getWidth() / 2, 68, { align: 'center' });
             
             pdf.setFont('Times', 'normal');
             pdf.text(`${classe} - ${trimestre} 2026`, pdf.internal.pageSize.getWidth() / 2, 76, { align: 'center' });
             
-            // Período
             const periodoInicio = obterPeriodo(semanaInicio);
             const periodoFim = obterPeriodo(semanaFim);
             pdf.setFont('Times', 'bold');
             pdf.setFontSize(12);
-            pdf.text(`PERÍODO: ${periodoInicio} à ${periodoFim}`, 10, 86);
             
-            // ===================================================
-            // TABELA - TAMANHO 12 COM COLUNAS REDIMENSIONADAS
-            // Unidade Temática e Temas Transversais reduzidos
-            // Conteúdos e Objectivos ampliados
-            // ===================================================
-            const headers = [['Semana', 'Unid. Temática', 'Objectivos Específicos', 'Conteúdos', 'Temas Trans.', 'C.H.']];
-            const body = [];
+            let periodoTexto = `PERÍODO: ${periodoInicio} à ${periodoFim}`;
+            if (idiomaAtual === 'fr') periodoTexto = `PÉRIODE: ${periodoInicio} à ${periodoFim}`;
+            else if (idiomaAtual === 'en') periodoTexto = `PERIOD: ${periodoInicio} to ${periodoFim}`;
+            pdf.text(periodoTexto, 10, 86);
             
-            planosAtuais.forEach(plano => {
-                body.push([
-                    plano.semana || '-',
-                    plano.unidadeTematica || '-',
-                    formatarComMarcadores(plano.objetivos),
-                    formatarComMarcadores(plano.conteudo),
-                    formatarComMarcadores(plano.temasTransversais),
-                    plano.cargaHoraria || '-'
-                ]);
-            });
+            let tituloSemana, tituloUnidade, tituloObjetivos, tituloConteudos, tituloTemas, tituloCH;
+            if (idiomaAtual === 'fr') {
+                tituloSemana = 'Semaine'; tituloUnidade = 'Unité Thématique'; tituloObjetivos = 'Objectifs Spécifiques';
+                tituloConteudos = 'Contenus'; tituloTemas = 'Thèmes Trans.'; tituloCH = 'C.H.';
+            } else if (idiomaAtual === 'en') {
+                tituloSemana = 'Week'; tituloUnidade = 'Thematic Unit'; tituloObjetivos = 'Specific Objectives';
+                tituloConteudos = 'Contents'; tituloTemas = 'Cross-cutting'; tituloCH = 'C.H.';
+            } else {
+                tituloSemana = 'Semana'; tituloUnidade = 'Unid. Temática'; tituloObjetivos = 'Objectivos Específicos';
+                tituloConteudos = 'Conteúdos'; tituloTemas = 'Temas Trans.'; tituloCH = 'C.H.';
+            }
             
-            // Larguras das colunas para A4 horizontal (AJUSTADAS)
-            const colWidths = [
-                18,  // Semana (reduzido)
-                30,  // Unidade Temática (reduzido)
-                85,  // Objectivos (ampliado)
-                100, // Conteúdos (ampliado)
-                30,  // Temas Transversais (reduzido)
-                20   // Carga Horária
-            ];
+            const headers = [[tituloSemana, tituloUnidade, tituloObjetivos, tituloConteudos, tituloTemas, tituloCH]];
+            const body = planosAtuais.map(plano => [
+                plano.semana || '-',
+                plano.unidadeTematica || '-',
+                formatarComMarcadores(plano.objetivos),
+                formatarComMarcadores(plano.conteudo),
+                formatarComMarcadores(plano.temasTransversais),
+                plano.cargaHoraria || '-'
+            ]);
             
             pdf.autoTable({
                 head: headers,
                 body: body,
                 startY: 94,
                 theme: 'grid',
-                styles: {
-                    font: 'Times',
-                    fontSize: 12,
-                    cellPadding: 3,
-                    lineColor: [0, 0, 0],
-                    textColor: [0, 0, 0],
-                    overflow: 'linebreak',
-                    cellWidth: 'wrap'
-                },
-                headStyles: {
-                    fillColor: [0, 0, 0],
-                    textColor: [255, 255, 255],
-                    fontStyle: 'bold',
-                    fontSize: 12,
-                    halign: 'center'
-                },
+                styles: { font: 'Times', fontSize: 12, cellPadding: 3, lineColor: [0,0,0], textColor: [0,0,0], overflow: 'linebreak' },
+                headStyles: { fillColor: [0,0,0], textColor: [255,255,255], fontStyle: 'bold', halign: 'center' },
                 columnStyles: {
-                    0: { cellWidth: colWidths[0], halign: 'center', fontStyle: 'bold' },
-                    1: { cellWidth: colWidths[1], halign: 'left' },
-                    2: { cellWidth: colWidths[2], halign: 'left', valign: 'top' },
-                    3: { cellWidth: colWidths[3], halign: 'left', valign: 'top' },
-                    4: { cellWidth: colWidths[4], halign: 'left', valign: 'top' },
-                    5: { cellWidth: colWidths[5], halign: 'center' }
+                    0: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
+                    1: { cellWidth: 30, halign: 'left' },
+                    2: { cellWidth: 85, halign: 'left', valign: 'top' },
+                    3: { cellWidth: 100, halign: 'left', valign: 'top' },
+                    4: { cellWidth: 30, halign: 'left', valign: 'top' },
+                    5: { cellWidth: 20, halign: 'center' }
                 },
                 margin: { left: 5, right: 5 },
-                // NÃO REPETIR O CABEÇALHO NAS QUEBRAS DE PÁGINA
                 showHead: 'firstPage'
             });
             
-            // Salvar PDF
             pdf.save(`Plano_Quinzenal_${classe}_${disciplina}.pdf`);
         }
     </script>
