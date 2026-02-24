@@ -158,6 +158,61 @@
             cursor: not-allowed;
             transform: none;
         }
+        
+        /* SIMULAÇÃO DE CÓDIGO - VISÍVEL NO MODAL */
+        .simulacao-codigo {
+            margin: 20px 0 15px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 2px solid #2196f3;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.2);
+        }
+        .simulacao-codigo p {
+            color: #0d47a1;
+            font-size: 15px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .codigos-exemplo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .codigo-item {
+            background: #2196f3;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: 1px solid #1976d2;
+        }
+        .codigo-item:hover {
+            background: #1976d2;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .codigo-item:active {
+            transform: scale(0.95);
+        }
+        .info-teste {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #0d47a1;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 8px;
+            border-radius: 20px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -215,6 +270,22 @@
                 <input type="text" id="codigoInput" class="code-input" placeholder="Digite seu código" maxlength="20" disabled>
             </div>
             
+            <!-- SIMULAÇÃO DE CÓDIGO - VISÍVEL PARA O USUÁRIO -->
+            <div class="simulacao-codigo" id="simulacaoCodigo">
+                <p>🔑 CÓDIGOS DE TESTE (clique para copiar)</p>
+                <div class="codigos-exemplo">
+                    <span class="codigo-item" data-codigo="TESTE10">TESTE10</span>
+                    <span class="codigo-item" data-codigo="TESTE20">TESTE20</span>
+                    <span class="codigo-item" data-codigo="TESTE30">TESTE30</span>
+                    <span class="codigo-item" data-codigo="TESTE40">TESTE40</span>
+                    <span class="codigo-item" data-codigo="TESTE50">TESTE50</span>
+                    <span class="codigo-item" data-codigo="TESTE60">TESTE60</span>
+                </div>
+                <div class="info-teste">
+                    ⚡ Clique no código correspondente ao seu pacote
+                </div>
+            </div>
+            
             <!-- Botão de validação -->
             <button id="validarBtn" class="validate-btn" disabled>
                 ✅ VALIDAR CÓDIGO E LIBERAR DOWNLOAD
@@ -223,7 +294,7 @@
             <!-- Seção de pagamento E-Mola -->
             <div class="payment-mpesa">
                 <h4>📱 Pagamento por E-Mola</h4>
-                <p>Para obter um código, faça o pagamento para:</p>
+                <p>Para obter um código real, faça o pagamento para:</p>
                 <div class="payment-mpesa-details">
                     <p><strong>Número:</strong> 876393961 
                         <button id="copyNumberBtn" class="copy-btn">Copiar</button>
@@ -324,6 +395,7 @@
             const paymentResult = document.getElementById('paymentResult');
             const aulaButtons = document.querySelectorAll('.aula-btn');
             const copyNumberBtn = document.getElementById('copyNumberBtn');
+            const codigosExemplo = document.querySelectorAll('.codigo-item');
             
             let totalPaginas = dados.numAulas * 2;
             if (dados.muralAdicionado) totalPaginas += dados.numAulas;
@@ -331,7 +403,7 @@
             
             let valorBase = dados.valorTotal;
             
-            // Formatar data corretamente
+            // Usar a data exatamente como veio do formulário
             let dataFormatada = dados.dataGeracao || "_____/_________/20______";
             
             infoContainer.innerHTML = `
@@ -420,6 +492,28 @@
                 });
             });
             
+            // Configurar cliques nos códigos de exemplo
+            codigosExemplo.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (!selectedAula) {
+                        alert('Primeiro selecione o pacote de aulas!');
+                        return;
+                    }
+                    
+                    const codigo = this.dataset.codigo;
+                    const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
+                    const codigoPacote = parseInt(codigo.replace('TESTE', ''));
+                    
+                    if (pacoteSelecionado !== codigoPacote) {
+                        alert(`Este código é para ${codigoPacote} aulas. Seu pacote é ${pacoteSelecionado} aulas.`);
+                        return;
+                    }
+                    
+                    codigoInput.value = codigo;
+                    validarCodigo(); // Validar automaticamente
+                });
+            });
+            
             // Configurar botões de aula do modal de pagamento
             aulaButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -435,7 +529,7 @@
                     
                     // Habilitar input de código
                     codigoInput.disabled = false;
-                    codigoInput.placeholder = "Digite seu código";
+                    codigoInput.placeholder = "Digite seu código ou clique nos exemplos";
                     codigoInput.value = ''; // Limpar campo
                     codigoInput.focus();
                     
@@ -462,7 +556,7 @@
                         selectedAula = pacote;
                         selectedAulaPacote = pacote;
                         codigoInput.disabled = false;
-                        codigoInput.placeholder = "Digite seu código";
+                        codigoInput.placeholder = "Digite seu código ou clique nos exemplos";
                         validarBtn.disabled = false;
                     }
                 });
@@ -478,8 +572,8 @@
                 }
             });
             
-            // Função de validação com Google Apps Script
-            async function validarCodigo() {
+            // Função de validação com simulação
+            function validarCodigo() {
                 const codigo = codigoInput.value.trim().toUpperCase();
                 
                 if (!selectedAula) {
@@ -497,32 +591,25 @@
                 paymentResult.style.display = 'none';
                 validarBtn.disabled = true;
                 
-                // Obter informações do navegador
-                const userAgent = navigator.userAgent;
-                
-                try {
-                    // LINK DO GOOGLE APPS SCRIPT
-                    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyp3DYFfRNt9mcC8sU1hG6cXa5lll0End82ABA1pRDL-lCRWhNdWDmpC1y5Cwee09kx/exec';
-                    
-                    // Fazer chamada para o Google Apps Script
-                    const url = GOOGLE_APPS_SCRIPT_URL + '?tipoAula=' + encodeURIComponent(selectedAula) + '&codigo=' + encodeURIComponent(codigo) + '&userAgent=' + encodeURIComponent(userAgent);
-                    
-                    const response = await fetch(url);
-                    const resultado = await response.json();
-                    
+                // Simulação de validação
+                setTimeout(() => {
                     paymentLoader.style.display = 'none';
-                    validarBtn.disabled = false;
                     
-                    if (resultado.success) {
-                        // Verificar se o pacote é suficiente
-                        const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
-                        const aulasSolicitadas = dados.numAulas;
-                        
-                        if (pacoteSelecionado < aulasSolicitadas) {
-                            showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
-                            return;
-                        }
-                        
+                    // Extrair número de aulas do pacote selecionado
+                    const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
+                    const aulasSolicitadas = dados.numAulas;
+                    
+                    // Verificar se o pacote é suficiente
+                    if (pacoteSelecionado < aulasSolicitadas) {
+                        showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
+                        validarBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // Validar código (formato TESTExx)
+                    const codigoValido = codigo === `TESTE${pacoteSelecionado}`;
+                    
+                    if (codigoValido) {
                         codigoValidado = true;
                         showPaymentResult("success", "✅ Código validado com sucesso! Iniciando download...");
                         
@@ -530,18 +617,11 @@
                             paymentModal.classList.remove('active');
                             baixarPDF();
                         }, 1500);
-                        
                     } else {
-                        let errorMessage = resultado.message || "❌ Código inválido ou já utilizado!";
-                        showPaymentResult("error", errorMessage);
+                        showPaymentResult("error", "❌ Código inválido! Use os códigos de teste acima.");
+                        validarBtn.disabled = false;
                     }
-                    
-                } catch (error) {
-                    console.error('Erro na validação:', error);
-                    paymentLoader.style.display = 'none';
-                    validarBtn.disabled = false;
-                    showPaymentResult("error", "Erro ao conectar com o servidor. Tente novamente.");
-                }
+                }, 1500);
             }
             
             function showPaymentResult(tipo, mensagem) {
@@ -726,6 +806,11 @@
                 });
             }
             
+            // Função para formatar texto com quebras de linha
+            function quebrarTexto(texto, largura) {
+                return doc.splitTextToSize(texto, largura - 4);
+            }
+            
             async function generatePDF(dados, dataFormatada) {
                 try {
                     const { jsPDF } = window.jspdf;
@@ -742,7 +827,7 @@
                         creator: 'Sistema de Geração de Blocos'
                     });
                     
-                    // Configurar fonte Times New Roman para TODO o documento
+                    // Configurar fonte Times New Roman
                     doc.setFont("times", "normal");
                     
                     // PÁGINA 1 - CAPA
@@ -777,7 +862,7 @@
                     doc.text("MINISTÉRIO DA EDUCAÇÃO", 148, 70, { align: "center" });
                     doc.text("BLOCO DE PLANIFICAÇÃO", 148, 80, { align: "center" });
                     
-                    // Manter apenas a linha
+                    // Apenas a linha, sem o símbolo
                     doc.setLineWidth(0.5);
                     doc.line(60, 85, 235, 85);
                     
@@ -847,7 +932,7 @@
                     doc.text(dados.professor || "___________________", marginLeft + 10, yPos);
                     doc.text(`Data: ${dataFormatada}`, 148, 185, { align: "center" });
                     
-                    // PÁGINAS DE PLANO DE AULA (tudo tamanho 12)
+                    // PÁGINAS DE PLANO DE AULA
                     for (let i = 1; i <= dados.numAulas; i++) {
                         // PÁGINA 1 DA AULA
                         doc.addPage('a4', 'l');
@@ -919,14 +1004,14 @@
                         const tableStartX = (297 - 267) / 2;
                         
                         doc.setFont("times", "bold");
-                        doc.setFontSize(12); // TABELA TAMBÉM TAMANHO 12
+                        doc.setFontSize(12);
                         let xPos = tableStartX;
                         const headerY = tableY;
                         const headers = ["TEMPO", "FUNÇÃO DIDÁCTICA", "CONTEÚDOS", "ACTIVIDADES DO PROFESSOR", "ACTIVIDADES DOS ALUNOS", "MÉTODOS DE ENSINO", "MEIOS DE ENSINO"];
                         
                         headers.forEach((header, index) => {
                             doc.setFillColor(240, 240, 240);
-                            doc.rect(xPos, headerY, scaledWidths[index], 14, 'F'); // Aumentei altura para 14
+                            doc.rect(xPos, headerY, scaledWidths[index], 14, 'F');
                             doc.setDrawColor(0, 0, 0);
                             doc.setLineWidth(0.2);
                             doc.rect(xPos, headerY, scaledWidths[index], 14);
@@ -938,23 +1023,35 @@
                             xPos += scaledWidths[index];
                         });
                         
+                        // Função para formatar texto com quebras de linha
+                        function quebrarTexto(texto, largura) {
+                            return doc.splitTextToSize(texto, largura - 4);
+                        }
+                        
                         // Linha 1: Introdução e Motivação
                         const row1Y = headerY + 14;
                         xPos = tableStartX;
                         
                         // Tempo
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[0], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[0], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[0], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[0], 50);
+                        doc.setFont("times", "normal");
+                        const tempo1 = quebrarTexto("10'", scaledWidths[0]);
+                        let tempoY1 = row1Y + 10;
+                        tempo1.forEach(line => {
+                            doc.text(line, xPos + 2, tempoY1);
+                            tempoY1 += 5;
+                        });
                         xPos += scaledWidths[0];
                         
                         // Função Didáctica
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[1], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[1], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[1], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[1], 50);
                         doc.setFont("times", "bold");
-                        const func1 = doc.splitTextToSize("Introdução e Motivação", scaledWidths[1] - 4);
-                        let funcY1 = row1Y + 12;
+                        const func1 = quebrarTexto("Introdução e Motivação", scaledWidths[1]);
+                        let funcY1 = row1Y + 10;
                         func1.forEach(line => {
                             doc.text(line, xPos + 2, funcY1);
                             funcY1 += 5;
@@ -963,49 +1060,89 @@
                         
                         // Conteúdos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[2], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[2], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[2], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[2], 50);
+                        doc.setFont("times", "normal");
+                        const conteudo1 = quebrarTexto("Apresentação do tema;\nObjectivos da aula;", scaledWidths[2]);
+                        let contY1 = row1Y + 10;
+                        conteudo1.forEach(line => {
+                            doc.text(line, xPos + 2, contY1);
+                            contY1 += 5;
+                        });
                         xPos += scaledWidths[2];
                         
-                        // Atividades do Professor
+                        // Atividades do Professor (formatadas com -)
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[3], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[3], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[3], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[3], 50);
+                        doc.setFont("times", "normal");
+                        const ativProf1 = quebrarTexto("- Explicar o conceito;\n- Demonstrar no quadro;\n- Fazer perguntas;\n- Dar exemplos práticos;", scaledWidths[3]);
+                        let profY1 = row1Y + 10;
+                        ativProf1.forEach(line => {
+                            doc.text(line, xPos + 2, profY1);
+                            profY1 += 5;
+                        });
                         xPos += scaledWidths[3];
                         
-                        // Atividades dos Alunos
+                        // Atividades dos Alunos (formatadas com -)
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[4], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[4], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[4], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[4], 50);
+                        const ativAlun1 = quebrarTexto("- Ouvir explicação;\n- Copiar do quadro;\n- Responder perguntas;\n- Participar na aula;", scaledWidths[4]);
+                        let alunY1 = row1Y + 10;
+                        ativAlun1.forEach(line => {
+                            doc.text(line, xPos + 2, alunY1);
+                            alunY1 += 5;
+                        });
                         xPos += scaledWidths[4];
                         
                         // Métodos de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[5], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[5], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[5], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[5], 50);
+                        const metodos1 = quebrarTexto("Expositivo;\nDialogado;", scaledWidths[5]);
+                        let metY1 = row1Y + 10;
+                        metodos1.forEach(line => {
+                            doc.text(line, xPos + 2, metY1);
+                            metY1 += 5;
+                        });
                         xPos += scaledWidths[5];
                         
                         // Meios de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row1Y, scaledWidths[6], 40, 'F');
-                        doc.rect(xPos, row1Y, scaledWidths[6], 40);
+                        doc.rect(xPos, row1Y, scaledWidths[6], 50, 'F');
+                        doc.rect(xPos, row1Y, scaledWidths[6], 50);
+                        const meios1 = quebrarTexto("Quadro;\nGiz;\nLivro;", scaledWidths[6]);
+                        let meiY1 = row1Y + 10;
+                        meios1.forEach(line => {
+                            doc.text(line, xPos + 2, meiY1);
+                            meiY1 += 5;
+                        });
                         
                         // Linha 2: Mediação e Assimilação
-                        const row2Y = row1Y + 40;
+                        const row2Y = row1Y + 50;
                         xPos = tableStartX;
                         
                         // Tempo
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[0], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[0], 40);
+                        doc.rect(xPos, row2Y, scaledWidths[0], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[0], 50);
+                        doc.setFont("times", "normal");
+                        const tempo2 = quebrarTexto("20'", scaledWidths[0]);
+                        let tempoY2 = row2Y + 10;
+                        tempo2.forEach(line => {
+                            doc.text(line, xPos + 2, tempoY2);
+                            tempoY2 += 5;
+                        });
                         xPos += scaledWidths[0];
                         
                         // Função Didáctica
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[1], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[1], 40);
-                        const func2 = doc.splitTextToSize("Mediação e Assimilação", scaledWidths[1] - 4);
-                        let funcY2 = row2Y + 12;
+                        doc.rect(xPos, row2Y, scaledWidths[1], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[1], 50);
+                        doc.setFont("times", "bold");
+                        const func2 = quebrarTexto("Mediação e Assimilação", scaledWidths[1]);
+                        let funcY2 = row2Y + 10;
                         func2.forEach(line => {
                             doc.text(line, xPos + 2, funcY2);
                             funcY2 += 5;
@@ -1014,32 +1151,63 @@
                         
                         // Conteúdos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[2], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[2], 40);
+                        doc.rect(xPos, row2Y, scaledWidths[2], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[2], 50);
+                        doc.setFont("times", "normal");
+                        const conteudo2 = quebrarTexto("Desenvolvimento do conteúdo;\nExemplos;", scaledWidths[2]);
+                        let contY2 = row2Y + 10;
+                        conteudo2.forEach(line => {
+                            doc.text(line, xPos + 2, contY2);
+                            contY2 += 5;
+                        });
                         xPos += scaledWidths[2];
                         
                         // Atividades do Professor
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[3], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[3], 40);
+                        doc.rect(xPos, row2Y, scaledWidths[3], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[3], 50);
+                        const ativProf2 = quebrarTexto("- Orientar exercícios;\n- Corrigir no quadro;\n- Explicar dúvidas;\n- Reforçar aprendizagem;", scaledWidths[3]);
+                        let profY2 = row2Y + 10;
+                        ativProf2.forEach(line => {
+                            doc.text(line, xPos + 2, profY2);
+                            profY2 += 5;
+                        });
                         xPos += scaledWidths[3];
                         
                         // Atividades dos Alunos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[4], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[4], 40);
+                        doc.rect(xPos, row2Y, scaledWidths[4], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[4], 50);
+                        const ativAlun2 = quebrarTexto("- Resolver exercícios;\n- Ir ao quadro;\n- Perguntar dúvidas;\n- Praticar;", scaledWidths[4]);
+                        let alunY2 = row2Y + 10;
+                        ativAlun2.forEach(line => {
+                            doc.text(line, xPos + 2, alunY2);
+                            alunY2 += 5;
+                        });
                         xPos += scaledWidths[4];
                         
                         // Métodos de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[5], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[5], 40);
+                        doc.rect(xPos, row2Y, scaledWidths[5], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[5], 50);
+                        const metodos2 = quebrarTexto("Trabalho individual;\nTrabalho de grupo;", scaledWidths[5]);
+                        let metY2 = row2Y + 10;
+                        metodos2.forEach(line => {
+                            doc.text(line, xPos + 2, metY2);
+                            metY2 += 5;
+                        });
                         xPos += scaledWidths[5];
                         
                         // Meios de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row2Y, scaledWidths[6], 40, 'F');
-                        doc.rect(xPos, row2Y, scaledWidths[6], 40);
+                        doc.rect(xPos, row2Y, scaledWidths[6], 50, 'F');
+                        doc.rect(xPos, row2Y, scaledWidths[6], 50);
+                        const meios2 = quebrarTexto("Quadro;\nGiz;\nCaderno;", scaledWidths[6]);
+                        let meiY2 = row2Y + 10;
+                        meios2.forEach(line => {
+                            doc.text(line, xPos + 2, meiY2);
+                            meiY2 += 5;
+                        });
                         
                         // PÁGINA 2 DA AULA
                         doc.addPage('a4', 'l');
@@ -1054,16 +1222,24 @@
                         
                         // Tempo
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[0], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[0], 40);
+                        doc.rect(xPos, row3Y, scaledWidths[0], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[0], 50);
+                        doc.setFont("times", "normal");
+                        const tempo3 = quebrarTexto("15'", scaledWidths[0]);
+                        let tempoY3 = row3Y + 10;
+                        tempo3.forEach(line => {
+                            doc.text(line, xPos + 2, tempoY3);
+                            tempoY3 += 5;
+                        });
                         xPos += scaledWidths[0];
                         
                         // Função Didáctica
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[1], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[1], 40);
-                        const func3 = doc.splitTextToSize("Domínio e Consolidação", scaledWidths[1] - 4);
-                        let funcY3 = row3Y + 12;
+                        doc.rect(xPos, row3Y, scaledWidths[1], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[1], 50);
+                        doc.setFont("times", "bold");
+                        const func3 = quebrarTexto("Domínio e Consolidação", scaledWidths[1]);
+                        let funcY3 = row3Y + 10;
                         func3.forEach(line => {
                             doc.text(line, xPos + 2, funcY3);
                             funcY3 += 5;
@@ -1072,49 +1248,88 @@
                         
                         // Conteúdos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[2], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[2], 40);
+                        doc.rect(xPos, row3Y, scaledWidths[2], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[2], 50);
+                        doc.setFont("times", "normal");
+                        const conteudo3 = quebrarTexto("Aplicação de exercícios;\nFixação do conteúdo;", scaledWidths[2]);
+                        let contY3 = row3Y + 10;
+                        conteudo3.forEach(line => {
+                            doc.text(line, xPos + 2, contY3);
+                            contY3 += 5;
+                        });
                         xPos += scaledWidths[2];
                         
                         // Atividades do Professor
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[3], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[3], 40);
+                        doc.rect(xPos, row3Y, scaledWidths[3], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[3], 50);
+                        const ativProf3 = quebrarTexto("- Aplicar exercícios;\n- Verificar cadernos;\n- Dar feedback;\n- Consolidar matéria;", scaledWidths[3]);
+                        let profY3 = row3Y + 10;
+                        ativProf3.forEach(line => {
+                            doc.text(line, xPos + 2, profY3);
+                            profY3 += 5;
+                        });
                         xPos += scaledWidths[3];
                         
                         // Atividades dos Alunos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[4], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[4], 40);
+                        doc.rect(xPos, row3Y, scaledWidths[4], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[4], 50);
+                        const ativAlun3 = quebrarTexto("- Fazer exercícios;\n- Trocar cadernos;\n- Corrigir;\n- Mostrar resultados;", scaledWidths[4]);
+                        let alunY3 = row3Y + 10;
+                        ativAlun3.forEach(line => {
+                            doc.text(line, xPos + 2, alunY3);
+                            alunY3 += 5;
+                        });
                         xPos += scaledWidths[4];
                         
                         // Métodos de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[5], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[5], 40);
+                        doc.rect(xPos, row3Y, scaledWidths[5], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[5], 50);
+                        const metodos3 = quebrarTexto("Exercícios;\nCorreção;", scaledWidths[5]);
+                        let metY3 = row3Y + 10;
+                        metodos3.forEach(line => {
+                            doc.text(line, xPos + 2, metY3);
+                            metY3 += 5;
+                        });
                         xPos += scaledWidths[5];
                         
                         // Meios de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row3Y, scaledWidths[6], 40, 'F');
-                        doc.rect(xPos, row3Y, scaledWidths[6], 40);
+                        doc.rect(xPos, row3Y, scaledWidths[6], 50, 'F');
+                        doc.rect(xPos, row3Y, scaledWidths[6], 50);
+                        const meios3 = quebrarTexto("Caderno;\nQuadro;", scaledWidths[6]);
+                        let meiY3 = row3Y + 10;
+                        meios3.forEach(line => {
+                            doc.text(line, xPos + 2, meiY3);
+                            meiY3 += 5;
+                        });
                         
                         // Linha 4: Controlo e Avaliação
-                        const row4Y = row3Y + 40;
+                        const row4Y = row3Y + 50;
                         xPos = tableStartX;
                         
                         // Tempo
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[0], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[0], 40);
+                        doc.rect(xPos, row4Y, scaledWidths[0], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[0], 50);
+                        doc.setFont("times", "normal");
+                        const tempo4 = quebrarTexto("5'", scaledWidths[0]);
+                        let tempoY4 = row4Y + 10;
+                        tempo4.forEach(line => {
+                            doc.text(line, xPos + 2, tempoY4);
+                            tempoY4 += 5;
+                        });
                         xPos += scaledWidths[0];
                         
                         // Função Didáctica
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[1], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[1], 40);
-                        const func4 = doc.splitTextToSize("Controlo e Avaliação", scaledWidths[1] - 4);
-                        let funcY4 = row4Y + 12;
+                        doc.rect(xPos, row4Y, scaledWidths[1], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[1], 50);
+                        doc.setFont("times", "bold");
+                        const func4 = quebrarTexto("Controlo e Avaliação", scaledWidths[1]);
+                        let funcY4 = row4Y + 10;
                         func4.forEach(line => {
                             doc.text(line, xPos + 2, funcY4);
                             funcY4 += 5;
@@ -1123,36 +1338,67 @@
                         
                         // Conteúdos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[2], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[2], 40);
+                        doc.rect(xPos, row4Y, scaledWidths[2], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[2], 50);
+                        doc.setFont("times", "normal");
+                        const conteudo4 = quebrarTexto("Verificação da aprendizagem;", scaledWidths[2]);
+                        let contY4 = row4Y + 10;
+                        conteudo4.forEach(line => {
+                            doc.text(line, xPos + 2, contY4);
+                            contY4 += 5;
+                        });
                         xPos += scaledWidths[2];
                         
                         // Atividades do Professor
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[3], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[3], 40);
+                        doc.rect(xPos, row4Y, scaledWidths[3], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[3], 50);
+                        const ativProf4 = quebrarTexto("- Avaliar compreensão;\n- Dar nota;\n- Observar desempenho;\n- Registar resultados;", scaledWidths[3]);
+                        let profY4 = row4Y + 10;
+                        ativProf4.forEach(line => {
+                            doc.text(line, xPos + 2, profY4);
+                            profY4 += 5;
+                        });
                         xPos += scaledWidths[3];
                         
                         // Atividades dos Alunos
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[4], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[4], 40);
+                        doc.rect(xPos, row4Y, scaledWidths[4], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[4], 50);
+                        const ativAlun4 = quebrarTexto("- Ser avaliado;\n- Responder;\n- Demonstrar;\n- Apresentar;", scaledWidths[4]);
+                        let alunY4 = row4Y + 10;
+                        ativAlun4.forEach(line => {
+                            doc.text(line, xPos + 2, alunY4);
+                            alunY4 += 5;
+                        });
                         xPos += scaledWidths[4];
                         
                         // Métodos de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[5], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[5], 40);
+                        doc.rect(xPos, row4Y, scaledWidths[5], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[5], 50);
+                        const metodos4 = quebrarTexto("Observação;\nPerguntas;", scaledWidths[5]);
+                        let metY4 = row4Y + 10;
+                        metodos4.forEach(line => {
+                            doc.text(line, xPos + 2, metY4);
+                            metY4 += 5;
+                        });
                         xPos += scaledWidths[5];
                         
                         // Meios de Ensino
                         doc.setFillColor(255, 255, 255);
-                        doc.rect(xPos, row4Y, scaledWidths[6], 40, 'F');
-                        doc.rect(xPos, row4Y, scaledWidths[6], 40);
+                        doc.rect(xPos, row4Y, scaledWidths[6], 50, 'F');
+                        doc.rect(xPos, row4Y, scaledWidths[6], 50);
+                        const meios4 = quebrarTexto("Ficha de observação;", scaledWidths[6]);
+                        let meiY4 = row4Y + 10;
+                        meios4.forEach(line => {
+                            doc.text(line, xPos + 2, meiY4);
+                            meiY4 += 5;
+                        });
                         
                         // Se mural não foi adicionado, adicionar "Quadro Mural" na página 2
                         if (!dados.muralAdicionado) {
-                            let yPosMural = row4Y + 45;
+                            let yPosMural = row4Y + 55;
                             doc.setFont("times", "bold");
                             doc.setFontSize(12);
                             doc.text("QUADRO MURAL", 148, yPosMural, { align: "center" });
@@ -1161,7 +1407,7 @@
                             doc.text("Espaço reservado para anotações do quadro", 148, yPosMural, { align: "center" });
                             
                             yPosMural += 10;
-                            for (let j = 0; j < 8; j++) {
+                            for (let j = 0; j < 6; j++) {
                                 doc.line(30, yPosMural, 267, yPosMural);
                                 yPosMural += 8;
                             }
@@ -1181,18 +1427,18 @@
                             doc.setFont("times", "bold");
                             doc.text("1. Explicação do tema:", 20, 50);
                             let y = 60;
-                            for (let j = 0; j < 20; j++) {
+                            for (let j = 0; j < 15; j++) {
                                 doc.line(20, y, 190, y);
                                 y += 7;
                             }
-                            doc.text("2. Exercícios:", 20, 200);
-                            y = 210;
+                            doc.text("2. Exercícios:", 20, 180);
+                            y = 190;
                             for (let j = 0; j < 5; j++) {
                                 doc.line(20, y, 190, y);
                                 y += 7;
                             }
-                            doc.text("3. TPC:", 20, 250);
-                            y = 260;
+                            doc.text("3. TPC:", 20, 230);
+                            y = 240;
                             for (let j = 0; j < 5; j++) {
                                 doc.line(20, y, 190, y);
                                 y += 7;
