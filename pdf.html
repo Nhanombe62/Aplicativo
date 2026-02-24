@@ -159,61 +159,37 @@
             transform: none;
         }
         
-        /* OVERLAY DE SIMULAÇÃO - Aparece sobre o campo de código */
-        .simulacao-overlay {
+        /* Loader sobreposto ao campo de código */
+        .loader-overlay {
             position: relative;
-            margin: 15px 0;
+            margin: 10px 0;
         }
-        .simulacao-content {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border: 2px solid #2196f3;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-            margin-bottom: 15px;
-        }
-        .simulacao-content p {
-            color: #0d47a1;
-            font-size: 16px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        .simulacao-content input {
+        .loader-overlay .payment-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 15px;
-            border: 2px solid #2196f3;
-            border-radius: 8px;
-            font-size: 18px;
-            text-align: center;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 10px;
         }
-        .simulacao-content button {
-            background: #2196f3;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
+        .loader-overlay .payment-loader.active {
+            display: flex;
         }
-        .simulacao-content button:hover {
-            background: #1976d2;
-            transform: scale(1.02);
+        .loader-overlay .payment-loader .payment-spinner {
+            width: 30px;
+            height: 30px;
+            border-width: 3px;
         }
-        .simulacao-content button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        .simulacao-info {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #0d47a1;
+        .loader-overlay .payment-loader p {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #4f46e5;
         }
     </style>
 </head>
@@ -266,28 +242,19 @@
                 </div>
             </div>
             
-            <!-- Passo 2: Inserir código - COM OVERLAY DE SIMULAÇÃO -->
+            <!-- Passo 2: Inserir código - COM LOADER SOBREPOSTO -->
             <div class="payment-step">
                 <h4>2. Insira seu código:</h4>
-                
-                <!-- Overlay de simulação - aparece quando seleciona o plano -->
-                <div id="simulacaoOverlay" class="simulacao-overlay" style="display: none;">
-                    <div class="simulacao-content">
-                        <p>🔐 SIMULAÇÃO DE VALIDAÇÃO</p>
-                        <input type="text" id="simulacaoCodigo" placeholder="Digite o código de confirmação" maxlength="20">
-                        <button id="simulacaoValidarBtn">VALIDAR CÓDIGO</button>
-                        <div class="simulacao-info">
-                            Use qualquer código para testar<br>
-                            <small>(Apenas para demonstração)</small>
-                        </div>
+                <div class="loader-overlay">
+                    <input type="text" id="codigoInput" class="code-input" placeholder="Selecione o pacote primeiro" maxlength="20" disabled>
+                    <div id="codigoLoader" class="payment-loader">
+                        <div class="payment-spinner"></div>
+                        <p>Validando código...</p>
                     </div>
                 </div>
-                
-                <!-- Campo de código real (inicialmente desativado) -->
-                <input type="text" id="codigoInput" class="code-input" placeholder="Selecione o pacote primeiro" maxlength="20" disabled>
             </div>
             
-            <!-- Botão de validação (inicialmente desativado) -->
+            <!-- Botão de validação -->
             <button id="validarBtn" class="validate-btn" disabled>
                 ✅ VALIDAR CÓDIGO E LIBERAR DOWNLOAD
             </button>
@@ -303,12 +270,6 @@
                     <p><strong>Nome:</strong> Edmilson Bartolomeu Nhanombe</p>
                     <p><em>Após o pagamento, você receberá um código de confirmação via SMS.</em></p>
                 </div>
-            </div>
-            
-            <!-- Loader -->
-            <div class="payment-loader" id="paymentLoader">
-                <div class="payment-spinner"></div>
-                <p>Validando código...</p>
             </div>
             
             <!-- Resultado -->
@@ -392,15 +353,10 @@
             const paymentModal = document.getElementById('paymentModal');
             const codigoInput = document.getElementById('codigoInput');
             const validarBtn = document.getElementById('validarBtn');
-            const paymentLoader = document.getElementById('paymentLoader');
             const paymentResult = document.getElementById('paymentResult');
             const aulaButtons = document.querySelectorAll('.aula-btn');
             const copyNumberBtn = document.getElementById('copyNumberBtn');
-            
-            // Elementos da simulação
-            const simulacaoOverlay = document.getElementById('simulacaoOverlay');
-            const simulacaoCodigo = document.getElementById('simulacaoCodigo');
-            const simulacaoValidarBtn = document.getElementById('simulacaoValidarBtn');
+            const codigoLoader = document.getElementById('codigoLoader');
             
             let totalPaginas = dados.numAulas * 2;
             if (dados.muralAdicionado) totalPaginas += dados.numAulas;
@@ -408,7 +364,7 @@
             
             let valorBase = dados.valorTotal;
             
-            // Usar a data exatamente como veio do formulário
+            // Usar a data exatamente como veio do formulário (sem conversão)
             let dataFormatada = dados.dataGeracao || "_____/_________/20______";
             
             infoContainer.innerHTML = `
@@ -510,15 +466,20 @@
                     selectedAula = this.dataset.aula;
                     selectedAulaPacote = this.dataset.aula;
                     
-                    // MOSTRAR OVERLAY DE SIMULAÇÃO e desativar campo real
-                    simulacaoOverlay.style.display = 'block';
-                    codigoInput.disabled = true;
-                    codigoInput.placeholder = "Use a simulação acima";
-                    validarBtn.disabled = true;
+                    // Habilitar input de código
+                    codigoInput.disabled = false;
+                    codigoInput.placeholder = "Digite seu código de acesso";
+                    codigoInput.value = '';
+                    codigoInput.focus();
                     
-                    // Limpar campos
-                    simulacaoCodigo.value = '';
+                    // Habilitar botão de validação
+                    validarBtn.disabled = false;
+                    
+                    // Limpar resultado anterior
                     paymentResult.style.display = 'none';
+                    
+                    // Esconder loader se estiver visível
+                    codigoLoader.style.display = 'none';
                 });
             });
             
@@ -536,68 +497,93 @@
                         btn.classList.add('selected');
                         selectedAula = pacote;
                         selectedAulaPacote = pacote;
-                        
-                        // MOSTRAR OVERLAY DE SIMULAÇÃO
-                        simulacaoOverlay.style.display = 'block';
-                        codigoInput.disabled = true;
-                        codigoInput.placeholder = "Use a simulação acima";
-                        validarBtn.disabled = true;
+                        codigoInput.disabled = false;
+                        codigoInput.placeholder = "Digite seu código de acesso";
+                        validarBtn.disabled = false;
                     }
                 });
             }
             
-            // Configurar botão de validação da simulação
-            simulacaoValidarBtn.addEventListener('click', function() {
-                const codigo = simulacaoCodigo.value.trim().toUpperCase();
+            // Configurar botão de validação
+            validarBtn.addEventListener('click', validarCodigo);
+            
+            // Configurar input para aceitar Enter
+            codigoInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !validarBtn.disabled) {
+                    validarCodigo();
+                }
+            });
+            
+            // Função de validação REAL com Google Apps Script
+            async function validarCodigo() {
+                const codigo = codigoInput.value.trim().toUpperCase();
                 
                 if (!selectedAula) {
-                    alert("Selecione o tipo de aula primeiro!");
+                    showPaymentResult("error", "Selecione o tipo de aula primeiro!");
                     return;
                 }
                 
                 if (!codigo) {
-                    alert("Digite o código!");
+                    showPaymentResult("error", "Digite o código!");
                     return;
                 }
                 
-                // Mostrar loader
-                paymentLoader.style.display = 'block';
+                // Mostrar loader SOBRE o campo de código
+                codigoLoader.style.display = 'flex';
                 paymentResult.style.display = 'none';
-                this.disabled = true;
+                validarBtn.disabled = true;
+                codigoInput.disabled = true;
                 
-                // Simulação de validação
-                setTimeout(() => {
-                    paymentLoader.style.display = 'none';
-                    this.disabled = false;
+                // Obter informações do navegador
+                const userAgent = navigator.userAgent;
+                
+                try {
+                    // LINK DO GOOGLE APPS SCRIPT (validação REAL)
+                    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyp3DYFfRNt9mcC8sU1hG6cXa5lll0End82ABA1pRDL-lCRWhNdWDmpC1y5Cwee09kx/exec';
                     
-                    // Extrair número de aulas do pacote selecionado
-                    const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
-                    const aulasSolicitadas = dados.numAulas;
+                    // Fazer chamada para o Google Apps Script
+                    const url = GOOGLE_APPS_SCRIPT_URL + '?tipoAula=' + encodeURIComponent(selectedAula) + '&codigo=' + encodeURIComponent(codigo) + '&userAgent=' + encodeURIComponent(userAgent);
                     
-                    // Verificar se o pacote é suficiente
-                    if (pacoteSelecionado < aulasSolicitadas) {
-                        showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
-                        return;
+                    const response = await fetch(url);
+                    const resultado = await response.json();
+                    
+                    codigoLoader.style.display = 'none';
+                    
+                    if (resultado.success) {
+                        // Verificar se o pacote é suficiente
+                        const pacoteSelecionado = parseInt(selectedAula.split(' ')[0]);
+                        const aulasSolicitadas = dados.numAulas;
+                        
+                        if (pacoteSelecionado < aulasSolicitadas) {
+                            showPaymentResult("error", `Código válido apenas para ${pacoteSelecionado} aulas. Seu PDF tem ${aulasSolicitadas} aulas.`);
+                            validarBtn.disabled = false;
+                            codigoInput.disabled = false;
+                            return;
+                        }
+                        
+                        codigoValidado = true;
+                        showPaymentResult("success", "✅ Código validado com sucesso! Iniciando download...");
+                        
+                        setTimeout(() => {
+                            paymentModal.classList.remove('active');
+                            baixarPDF();
+                        }, 1500);
+                        
+                    } else {
+                        let errorMessage = resultado.message || "❌ Código inválido ou já utilizado!";
+                        showPaymentResult("error", errorMessage);
+                        validarBtn.disabled = false;
+                        codigoInput.disabled = false;
                     }
                     
-                    // Na simulação, qualquer código é válido
-                    codigoValidado = true;
-                    showPaymentResult("success", "✅ Código validado com sucesso! Iniciando download...");
-                    
-                    setTimeout(() => {
-                        paymentModal.classList.remove('active');
-                        baixarPDF();
-                    }, 1500);
-                    
-                }, 1500);
-            });
-            
-            // Configurar input da simulação para aceitar Enter
-            simulacaoCodigo.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !simulacaoValidarBtn.disabled) {
-                    simulacaoValidarBtn.click();
+                } catch (error) {
+                    console.error('Erro na validação:', error);
+                    codigoLoader.style.display = 'none';
+                    validarBtn.disabled = false;
+                    codigoInput.disabled = false;
+                    showPaymentResult("error", "Erro ao conectar com o servidor. Tente novamente.");
                 }
-            });
+            }
             
             function showPaymentResult(tipo, mensagem) {
                 paymentResult.style.display = 'block';
@@ -832,7 +818,7 @@
                     doc.text("MINISTÉRIO DA EDUCAÇÃO", 148, 70, { align: "center" });
                     doc.text("BLOCO DE PLANIFICAÇÃO", 148, 80, { align: "center" });
                     
-                    // Apenas a linha, sem o símbolo
+                    // Apenas a linha, sem o símbolo (removido o "⬛")
                     doc.setLineWidth(0.5);
                     doc.line(60, 85, 235, 85);
                     
@@ -842,7 +828,7 @@
                     doc.text(`DISCIPLINA: ${dados.disciplina || "___________________"}`, 148, 120, { align: "center" });
                     doc.text(`CLASSE: ${dados.classe || "___________________"}`, 148, 130, { align: "center" });
                     
-                    // Mostrar apenas "BLOCO COM 20 AULAS"
+                    // Mostrar apenas "BLOCO COM 20 AULAS" (sem páginas)
                     let infoAulas = `BLOCO COM ${dados.numAulas} AULAS`;
                     if (dados.muralAdicionado) {
                         infoAulas += ` COM QUADRO MURAL`;
@@ -902,7 +888,7 @@
                     doc.text(dados.professor || "___________________", marginLeft + 10, yPos);
                     doc.text(`Data: ${dataFormatada}`, 148, 185, { align: "center" });
                     
-                    // PÁGINAS DE PLANO DE AULA - TABELA VAZIA (como no bloco (1).html)
+                    // PÁGINAS DE PLANO DE AULA
                     for (let i = 1; i <= dados.numAulas; i++) {
                         // PÁGINA 1 DA AULA
                         doc.addPage('a4', 'l');
@@ -966,7 +952,7 @@
                         
                         const tableY = objY + 10;
                         
-                        // LARGURAS DAS COLUNAS AJUSTADAS (como no bloco original)
+                        // LARGURAS DAS COLUNAS AJUSTADAS
                         const colWidths = [15, 22, 22, 58, 48, 20, 20];
                         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
                         const scaleFactor = 267 / totalWidth;
@@ -993,7 +979,7 @@
                             xPos += scaledWidths[index];
                         });
                         
-                        // Linha 1: Introdução e Motivação - COMPLETAMENTE VAZIA
+                        // Linha 1: Introdução e Motivação - VAZIA (apenas retângulos)
                         const row1Y = headerY + 14;
                         xPos = tableStartX;
                         
@@ -1004,7 +990,7 @@
                             xPos += scaledWidths[j];
                         }
                         
-                        // Linha 2: Mediação e Assimilação - COMPLETAMENTE VAZIA
+                        // Linha 2: Mediação e Assimilação - VAZIA
                         const row2Y = row1Y + 35;
                         xPos = tableStartX;
                         
@@ -1022,7 +1008,7 @@
                         doc.setFont("times", "normal");
                         doc.text(`Aula ${i} - Página 2/${totalPagesAula}`, 270, 12, { align: "right" });
                         
-                        // Linha 3: Domínio e Consolidação - COMPLETAMENTE VAZIA
+                        // Linha 3: Domínio e Consolidação - VAZIA
                         const row3Y = 25;
                         xPos = tableStartX;
                         
@@ -1033,7 +1019,7 @@
                             xPos += scaledWidths[j];
                         }
                         
-                        // Linha 4: Controlo e Avaliação - COMPLETAMENTE VAZIA
+                        // Linha 4: Controlo e Avaliação - VAZIA
                         const row4Y = row3Y + 35;
                         xPos = tableStartX;
                         
