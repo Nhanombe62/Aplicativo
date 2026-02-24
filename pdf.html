@@ -412,7 +412,7 @@
                     <div>${dados.periodo || "Não informado"}</div>
                 </div>
                 <div class="info-row" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 15px;">
-                    <div class="info-label">💰 Valor a Pagar:</div>
+                    <div class="info-label">💰 Valor Estimado:</div>
                     <div style="color: #27ae60; font-weight: bold; font-size: 18px;">
                         ${valorBase} MZN
                     </div>
@@ -970,9 +970,9 @@
                         
                         const tableY = objY + 10;
                         
-                        // NOVAS LARGURAS DAS COLUNAS - AJUSTADAS PARA NÃO CORTAR CONTEÚDO
-                        // Aumentadas as colunas de CONTEÚDOS e MEIOS DE ENSINO
-                        const colWidths = [15, 22, 28, 52, 48, 24, 15];
+                        // NOVAS LARGURAS DAS COLUNAS - MEIOS DE ENSINO AUMENTADO SIGNIFICATIVAMENTE
+                        // Colunas: TEMPO, FUNÇÃO DIDÁCTICA, CONTEÚDOS, ACTIVIDADES DO PROFESSOR, ACTIVIDADES DOS ALUNOS, MÉTODOS DE ENSINO, MEIOS DE ENSINO
+                        const colWidths = [15, 22, 25, 48, 44, 22, 20];
                         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
                         const scaleFactor = 267 / totalWidth;
                         const scaledWidths = colWidths.map(w => w * scaleFactor);
