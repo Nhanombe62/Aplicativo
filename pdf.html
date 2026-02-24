@@ -412,7 +412,7 @@
                     <div>${dados.periodo || "Não informado"}</div>
                 </div>
                 <div class="info-row" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 15px;">
-                    <div class="info-label">💰 Valor Estimado:</div>
+                    <div class="info-label">💰 Valor a Pagar:</div>
                     <div style="color: #27ae60; font-weight: bold; font-size: 18px;">
                         ${valorBase} MZN
                     </div>
@@ -970,8 +970,9 @@
                         
                         const tableY = objY + 10;
                         
-                        // NOVAS LARGURAS DAS COLUNAS - AUMENTADO MÉTODOS DE ENSINO
-                        const colWidths = [15, 22, 23, 56, 48, 24, 10];
+                        // NOVAS LARGURAS DAS COLUNAS - AJUSTADAS PARA NÃO CORTAR CONTEÚDO
+                        // Aumentadas as colunas de CONTEÚDOS e MEIOS DE ENSINO
+                        const colWidths = [15, 22, 28, 52, 48, 24, 15];
                         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
                         const scaleFactor = 267 / totalWidth;
                         const scaledWidths = colWidths.map(w => w * scaleFactor);
@@ -997,25 +998,25 @@
                             xPos += scaledWidths[index];
                         });
                         
-                        // Linha 1: Introdução e Motivação - VAZIA
+                        // Linha 1: Introdução e Motivação - VAZIA (altura aumentada para 40mm)
                         const row1Y = headerY + 14;
                         xPos = tableStartX;
                         
                         for (let j = 0; j < 7; j++) {
                             doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row1Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row1Y, scaledWidths[j], 35);
+                            doc.rect(xPos, row1Y, scaledWidths[j], 40, 'F');
+                            doc.rect(xPos, row1Y, scaledWidths[j], 40);
                             xPos += scaledWidths[j];
                         }
                         
-                        // Linha 2: Mediação e Assimilação - VAZIA
-                        const row2Y = row1Y + 35;
+                        // Linha 2: Mediação e Assimilação - VAZIA (altura aumentada para 40mm)
+                        const row2Y = row1Y + 40;
                         xPos = tableStartX;
                         
                         for (let j = 0; j < 7; j++) {
                             doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row2Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row2Y, scaledWidths[j], 35);
+                            doc.rect(xPos, row2Y, scaledWidths[j], 40, 'F');
+                            doc.rect(xPos, row2Y, scaledWidths[j], 40);
                             xPos += scaledWidths[j];
                         }
                         
@@ -1026,25 +1027,25 @@
                         doc.setFont("times", "normal");
                         doc.text(`Aula ${i} - Página 2/${totalPagesAula}`, 270, 12, { align: "right" });
                         
-                        // Linha 3: Domínio e Consolidação - VAZIA
+                        // Linha 3: Domínio e Consolidação - VAZIA (altura aumentada para 40mm)
                         const row3Y = 25;
                         xPos = tableStartX;
                         
                         for (let j = 0; j < 7; j++) {
                             doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row3Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row3Y, scaledWidths[j], 35);
+                            doc.rect(xPos, row3Y, scaledWidths[j], 40, 'F');
+                            doc.rect(xPos, row3Y, scaledWidths[j], 40);
                             xPos += scaledWidths[j];
                         }
                         
-                        // Linha 4: Controlo e Avaliação - VAZIA
-                        const row4Y = row3Y + 35;
+                        // Linha 4: Controlo e Avaliação - VAZIA (altura aumentada para 40mm)
+                        const row4Y = row3Y + 40;
                         xPos = tableStartX;
                         
                         for (let j = 0; j < 7; j++) {
                             doc.setFillColor(255, 255, 255);
-                            doc.rect(xPos, row4Y, scaledWidths[j], 35, 'F');
-                            doc.rect(xPos, row4Y, scaledWidths[j], 35);
+                            doc.rect(xPos, row4Y, scaledWidths[j], 40, 'F');
+                            doc.rect(xPos, row4Y, scaledWidths[j], 40);
                             xPos += scaledWidths[j];
                         }
                         
