@@ -812,7 +812,7 @@
                     doc.setTextColor(0, 0, 0);
                     
                     // CAPA - Tudo tamanho 12
-                    doc.setFontSize(12);
+                    doc.setFontSize(15);
                     doc.setFont("times", "bold");
                     doc.text("REPÚBLICA DE MOÇAMBIQUE", 148, 60, { align: "center" });
                     doc.text("MINISTÉRIO DA EDUCAÇÃO", 148, 70, { align: "center" });
@@ -838,7 +838,7 @@
                     doc.setFont("times", "bold");
                     doc.text("DISCIPLINA:", 148, 134, { align: "center" });
                     doc.setFont("times", "normal");
-                    doc.text(dados.disciplina || "___________________", 148, 141, { align: "center" });
+                    doc.text(dados.disciplina || "____________________________", 148, 141, { align: "center" });
                     
                     // CLASSE: em negrito, valor em nova linha sem negrito
                     doc.setFont("times", "bold");
@@ -971,7 +971,7 @@
                         const tableY = objY + 10;
                         
                         // NOVAS LARGURAS DAS COLUNAS - AUMENTADO MÉTODOS DE ENSINO
-                        const colWidths = [15, 22, 22, 58, 48, 25, 15];
+                        const colWidths = [15, 22, 23, 56, 48, 25, 13];
                         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
                         const scaleFactor = 267 / totalWidth;
                         const scaledWidths = colWidths.map(w => w * scaleFactor);
