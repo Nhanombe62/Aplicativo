@@ -694,7 +694,7 @@
           <strong>Instructions:</strong><br>
           1. Click "OPEN CHATGPT" - it will open ChatGPT with perfect formatting<br>
           2. Copy ALL the ChatGPT response<br>
-          3. Paste below and click "PROCESS & FILL TABLE"<br>
+          3. Paste below and click "SAVE LESSON PLAN"<br>
           4. The system will automatically extract ALL teacher & learner activities
         </p>
         
@@ -706,7 +706,7 @@
             <span>🔍 OPEN CHATGPT</span>
           </button>
           <button class="btn btn-primary" onclick="processExplanationWithProgress()">
-            ⏳ PROCESS & FILL ALL 10 CELLS
+            💾 SAVE LESSON PLAN
           </button>
           <button class="btn btn-secondary" onclick="clearAllText()">
             CLEAR ALL TEXT
@@ -722,9 +722,6 @@
         </button>
         <button class="btn btn-success" onclick="generatePDF()">
           📥 DOWNLOAD AS PDF
-        </button>
-        <button class="btn btn-primary" onclick="saveAllData()">
-          💾 SAVE LESSON PLAN
         </button>
       </div>
     </div>
@@ -1051,15 +1048,19 @@ LEARNER ACTIVITIES: [Detailed learner activities for conclusion. Start with "Lea
               
               if (validateSections(sections)) {
                 fillTableFromSections(sections);
+                // Auto-save after processing
+                autoSaveData();
                 overlay.style.display = 'none';
-                alert('✓ Table filled successfully! All 10 cells updated.');
+                alert('✓ Lesson plan saved successfully! All 10 cells updated.');
                 trackEvent('action', 'table_filled_success', 'ChatGPT explanation successfully filled table');
               } else {
                 const fallbackSections = extractSectionsFallback(explanation);
                 if (validateSections(fallbackSections)) {
                   fillTableFromSections(fallbackSections);
+                  // Auto-save after processing
+                  autoSaveData();
                   overlay.style.display = 'none';
-                  alert('✓ Table filled using alternative parsing.');
+                  alert('✓ Lesson plan saved using alternative parsing.');
                   trackEvent('action', 'table_filled_fallback', 'Used fallback parsing method');
                 } else {
                   throw new Error('Could not extract all sections');
@@ -1313,14 +1314,6 @@ LEARNER ACTIVITIES: [Detailed learner activities for conclusion. Start with "Lea
       });
       
       return formData;
-    }
-    
-    // Manual save function
-    function saveAllData() {
-      const planData = collectAllData();
-      localStorage.setItem('lessonPlanData', JSON.stringify(planData));
-      alert('✅ All data saved successfully! The ChatGPT explanation was not saved.');
-      trackEvent('action', 'save_data', 'User saved lesson plan data (without ChatGPT explanation)');
     }
     
     // Generate PDF function
